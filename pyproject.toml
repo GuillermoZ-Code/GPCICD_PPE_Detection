@@ -1,0 +1,57 @@
+[project]
+name = "gpcicd-ppe-detection"
+version = "0.1.0"
+description = "Detección de Equipos de Protección Personal (EPP) mediante visión por computador. Proyecto del curso GPCICD M2-M4."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.13"
+keywords = ["computer-vision", "ppe", "safety", "object-detection"]
+authors = [
+    { name = "GuillermoZ", email = "Guillermo.zabala@uao.edu.co" },
+]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection"
+Repository = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection"
+Issues = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues"
+
+[build-system]
+requires = ["uv_build>=0.12.2,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "ppe_detection"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=3.7",
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "ty>=0.0.1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "C4"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ppe_detection"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
