@@ -2,10 +2,11 @@
 
 | Carpeta / archivo | Contenido |
 |-------------------|-----------|
-| `adr/` | Architecture Decision Records (0001–0005). |
+| `adr/` | Architecture Decision Records (0001–0005); índice en [`adr/README.md`](adr/README.md). |
 | `architecture/` | Diagrama Archify: `arquitectura.json` (fuente) y `arquitectura.html` (artefacto). |
 | `curso/` | Contexto del curso, checklists M2–M4 y `backlog.md` espejo de las issues. |
-| `spikes/` | Investigaciones técnicas acotadas (se crean con SPI-01/SPI-02). |
+| `dataset/` | EDA del dataset: auditoría, duplicados, fuga y baseline ([EDA.md](dataset/EDA.md)). |
+| `spikes/` | Investigaciones técnicas acotadas: [SPI-01](spikes/SPI-01-compatibilidad-yolo.md) y [SPI-02](spikes/SPI-02-baseline-evaluacion.md). |
 | `research/` | Notas de investigación y comparativas (si aplica). |
 
 > El historial de decisiones resumido vive en
