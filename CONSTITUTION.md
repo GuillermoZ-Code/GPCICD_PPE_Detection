@@ -1,13 +1,12 @@
 # CONSTITUTION — GPCICD PPE Detection
 
-> **Verdad central del proyecto.** Este documento define el propósito, el stack, la
-> estructura, las convenciones y el flujo de trabajo de `GPCICD PPE Detection`. Si algo
-> aquí contradice al código, el código manda **y este archivo se actualiza**.
+> **Verdad central del proyecto.** Este documento define el propósito, el equipo, el
+> stack, la arquitectura, las convenciones y el flujo de trabajo de
+> `GPCICD PPE Detection`. Si algo aquí contradice al código, el código manda **y este
+> archivo se actualiza en el mismo commit**.
 
-> ⚠️ **Directiva de mantenimiento:** cada vez que se realicen cambios significativos
-> (nuevas funcionalidades, cambios arquitectónicos, adición de clases/módulos o ajustes
-> de tecnologías), **se debe actualizar este archivo en el mismo commit** para mantener
-> la verdad central del proyecto bien documentada.
+> ⚠️ **Directiva de mantenimiento:** cada cambio significativo (funcionalidad,
+> arquitectura, tecnología, proceso o rol) se refleja aquí en el mismo commit.
 
 ---
 
@@ -18,128 +17,203 @@
 | **Nombre** | GPCICD PPE Detection |
 | **Descripción** | Detección de Equipos de Protección Personal (EPP) mediante visión por computador. Proyecto del curso GPCICD M2-M4. |
 | **Repositorio** | https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection |
-| **Autoría** | GuillermoZ — Guillermo.zabala@uao.edu.co |
-| **Licencia** | MIT |
+| **Licencia** | **AGPL-3.0-only** |
 | **Rama principal** | `main` |
-| **Estado** | En construcción 🚧 — fase de definición |
+| **Rama de integración** | `develop` |
+| **Módulo activo** | M2 (alineación) → M3 (implementación) |
+| **Estado** | En construcción 🚧 |
 
-## 1. Propósito y no-propósito
+## 1. Equipo y roles
+
+| Integrante | GitHub | Rol en el proyecto |
+|------------|--------|--------------------|
+| **Eliana Vanessa Cardona Burbano** | [@ElianaCardona](https://github.com/ElianaCardona) | Documento maestro, Capítulos 1–2, alcance e integración del PDF. |
+| **Hernán Darío Estrada Satizábal** | [@HestradaUAO](https://github.com/HestradaUAO) | Modelo, Model Card, datos, licencia, hardware, métricas, sesgos, Capítulo 4 y CRISP-DM. |
+| **Guillermo Alexander Zabala Fernández** | [@GuillermoZ-Code](https://github.com/GuillermoZ-Code) | Entorno, arquitectura y repositorio (`src/`, `pyproject.toml`, `uv`, Ruff, pytest, pre-commit, build, CI, Spec Kit), evidencias de comprobaciones y **Code Reviewer**. |
+| **Wilson Jesús Riveros Gómez** | [@jesusriverosUAO](https://github.com/jesusriverosUAO) | Planificación, Gantt, CPM, HU, AC, estimación (Capítulos 3 y 5) y tablero Kanban. |
+
+> Los responsables de las HU se definen en equipo al iniciar el M3. **No hay una tabla
+> de asignación de HU en este repositorio**; el tablero y las issues son la fuente
+> operativa.
+
+## 2. Propósito y no-propósito
 
 ### Propósito
 
-Desarrollar, con prácticas de ingeniería reproducibles y CI/CD, un sistema de visión por
-computador capaz de **detectar Equipos de Protección Personal (EPP)** en imágenes y video,
-y de reportar su presencia o ausencia de forma evaluable. Es el proyecto integrador del
-curso **GPCICD M2-M4**.
+Desarrollar un sistema de visión por computador que **detecte las seis categorías de
+EPP** del dataset seleccionado en imágenes estáticas y reporte su presencia con
+coordenadas y confianza, con un pipeline reproducible, pruebas automatizadas y
+despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 
 ### No-propósito
 
-No es un producto certificado de seguridad industrial ni sustituye la inspección humana,
-la normativa vigente o el criterio de un profesional de seguridad y salud en el trabajo.
-Tampoco incluye —por ahora— hardware, gestión de cámaras, despliegue en producción ni
-entrenamiento a gran escala.
+- No certifica cumplimiento de normas de seguridad ni sustituye la inspección humana.
+- No determina si un trabajador “cumple” o “incumple”: el dataset **no tiene clase
+  `person` ni clase `no-EPP`**.
+- No incorpora un LLM en el camino de inferencia.
+- No incluye captura por cámara, RTSP, alertas, hardware ni operación 24/7.
 
-## 2. Alcance
+## 3. Alcance
 
 ### Dentro del alcance
 
-- Ingesta y preparación de imágenes/video y sus anotaciones.
-- Entrenamiento o ajuste de un detector de EPP (modelo **por definir**).
-- Inferencia sobre imágenes/video con umbrales configurables.
-- Evaluación cuantitativa del detector (mAP, precisión, recall, F1) y generación de reportes.
-- Pruebas automatizadas y pipeline de integración continua.
+- Carga y validación de imágenes JPEG/PNG.
+- Preprocesamiento con contrato numérico documentado (resize/letterbox, normalización).
+- Detección con un detector especializado de nivel 3 (YOLO nano/small, por confirmar
+  variante exacta en SPI-01), ajustado con el dataset.
+- Postprocesamiento con NMS y umbrales configurables.
+- Visualización de detecciones y respuesta vacía cuando no hay EPP.
+- API REST con FastAPI, servicio gRPC y interfaz Streamlit.
+- Evaluación con mAP@0.5, mAP@0.5:0.95, precision, recall y F1 por clase.
+- Registro de experimentos en MLflow.
+- Docker CPU, CI/CD en GitHub Actions y despliegue en Droplet.
+- Pruebas deterministas sin GPU y verificación de calidad con Ruff, `ty` y `make check`.
 
 ### Fuera del alcance (por ahora)
 
-- Procesamiento en tiempo real sobre dispositivos edge o en producción.
-- Infraestructura de cámaras, alarmas o integración con sistemas de planta.
-- Certificación de cumplimiento normativo en seguridad industrial.
-- Entrenamiento multi-GPU o sobre datasets de escala industrial.
-- Aplicación web o interfaz gráfica de usuario.
+- Detección de personas, cascos mal puestos o EPP “incorrecto”.
+- Alertas, monitoreo continuo, cámaras IP/RTSP o integración con plantas.
+- Entrenamiento multi-GPU o modelos de frontera (LLM/VLM).
+- Aplicación móvil, autenticación multiusuario o SLA de producción.
+- Certificación normativa o uso como dispositivo de seguridad.
 
-## 3. Stack técnico
+## 4. Stack técnico
 
 | Categoría | Tecnología |
 |-----------|------------|
 | **Lenguaje** | Python 3.13+ |
 | **Gestor de paquetes y entorno** | [`uv`](https://docs.astral.sh/uv/) |
 | **Build backend** | `uv_build` (src-layout) |
-| **Paquete Python** | `ppe_detection` (distribución: `gpcicd-ppe-detection`) |
+| **Paquete Python** | `ppe_detection` (distribución `gpcicd-ppe-detection`) |
 | **Tipado estático** | [`ty`](https://github.com/astral-sh/ty) |
 | **Testing** | [`pytest`](https://docs.pytest.org/) |
 | **Linting / Formato** | [Ruff](https://docs.astral.sh/ruff/) |
 | **Pre-commit** | [pre-commit](https://pre-commit.com) |
-| **CI/CD** | [GitHub Actions](.github/workflows/ci.yml) |
-| **Dependencias automáticas** | [Dependabot](.github/dependabot.yml) |
-| **Visión por computador** | `EN EVALUACIÓN` — candidato: PyTorch + Ultralytics YOLO |
-| **Datos y anotaciones** | `PENDIENTE` — formato por definir (YOLO/COCO) |
-| **Experiment tracking** | `PENDIENTE` — no se adopta ninguna herramienta todavía |
+| **API REST** | FastAPI + Pydantic |
+| **RPC** | gRPC + Protocol Buffers |
+| **Interfaz** | Streamlit |
+| **Visión por computador** | Ultralytics YOLO (nano/small) + PyTorch CPU |
+| **Procesamiento de imagen** | OpenCV + NumPy |
+| **Experiment tracking** | MLflow (local) |
+| **Contenedor** | Docker CPU (sin CUDA) |
+| **CI/CD** | GitHub Actions + Droplet |
+| **Spec-Driven Development** | [GitHub Spec Kit](https://github.com/github/spec-kit) |
+| **Diagramas** | [Archify](https://github.com/tt-a1i/archify) |
+| **Dataset** | [`51ddhesh/PPE_Detection`](https://huggingface.co/datasets/51ddhesh/PPE_Detection) (CC-BY-4.0) |
+| **Licencia** | AGPL-3.0-only |
 
-> ⚠️ **Regla dura:** toda gestión de dependencias y entornos pasa por `uv`. Está
-> **prohibido** `pip` y `requirements.txt`.
+> ⚠️ **Regla dura:** toda gestión de dependencias pasa por `uv`. Está **prohibido**
+> `pip` y `requirements.txt`.
 
-## 4. Estructura del repositorio
+> La variante exacta de YOLO y la compatibilidad con Python 3.13 + torch CPU se
+> confirman en **SPI-01**; hasta entonces no se fija una versión.
+
+## 5. Estructura del repositorio
 
 ```text
 GPCICD_PPE_Detection/
-├── src/ppe_detection/       # código del paquete (src-layout)
-├── tests/                   # pruebas (pytest)
-├── docs/                    # documentación, ADRs e investigación
-├── .github/                 # gobernanza (PR/issue templates, CI, Dependabot, labels)
-├── .opencode/rules/         # reglas para agentes (tgrep)
-├── AGENTS.md                # contexto para agentes LLM
-├── CONSTITUTION.md          # este archivo — verdad central
-├── README.md                # puerta de entrada pública
-├── CONTRIBUTING.md          # guía de contribución
-├── CODE_OF_CONDUCT.md       # código de conducta
-├── Makefile                 # automatización de tareas
-├── pyproject.toml           # metadatos y dependencias (uv)
-├── uv.lock                  # lockfile determinista (versionado)
-├── .python-version          # versión de Python fijada
-└── .pre-commit-config.yaml  # hooks de calidad
+├── src/ppe_detection/       # paquete (src-layout)
+│   ├── contracts.py         # contrato ImageData / Detection / Detector (previsto)
+│   ├── io/                  # carga y validación (previsto)
+│   ├── preprocessing/       # contrato numérico (previsto)
+│   ├── detection/           # carga del modelo e inferencia (previsto)
+│   ├── postprocessing/      # NMS y umbrales (previsto)
+│   ├── api/                 # FastAPI (previsto)
+│   ├── grpc/                # gRPC (previsto)
+│   ├── ui/                  # Streamlit (previsto)
+│   └── evaluation/          # métricas y MLflow (previsto)
+├── tests/                   # pytest, patrón AAA
+├── docs/
+│   ├── adr/                 # ADR 0001–0005
+│   ├── architecture/        # diagrama Archify (JSON + HTML)
+│   └── curso/               # contexto, backlog y checklists por módulo
+├── specs/                   # specs de Spec Kit
+├── .specify/                # Spec Kit v1.2.5 (integrado; no editar a mano)
+├── .github/                 # PR/issue templates, CI, labels, Dependabot
+├── AGENTS.md                # contexto para agentes
+├── CONSTITUTION.md          # este archivo
+├── README.md
+├── CONTRIBUTING.md
+├── Makefile
+├── pyproject.toml
+├── uv.lock
+└── LICENSE                  # AGPL-3.0
 ```
 
-## 5. Convenciones de código
+Las carpetas marcadas como “previsto” se crean en la HU o TA correspondiente; no se
+crean vacías por adelantado.
 
-- **Estilo:** [PEP 8](https://peps.python.org/pep-0008/) y [PEP 257](https://peps.python.org/pep-0257/),
-  impuesto por **Ruff** (`line-length = 100`, comillas dobles).
+## 6. Convenciones de código
+
+- **Estilo:** PEP 8 y PEP 257, impuesto por Ruff (`line-length = 100`, comillas dobles).
 - **Tipado:** anotaciones en funciones y firmas públicas.
-- **Nomenclatura:** `snake_case` (funciones/variables), `PascalCase` (clases),
-  `UPPER_CASE` (constantes).
+- **Nomenclatura:** `snake_case`, `PascalCase` (clases), `UPPER_CASE` (constantes).
 - **Docstrings:** en módulos, clases y funciones públicas.
-- **Pruebas:** `pytest` con el patrón **AAA** (*Arrange · Act · Assert*).
-- **Idioma:** UI, comentarios, documentación y commits en español; identificadores de
+- **Pruebas:** pytest con patrón **AAA** (*Arrange · Act · Assert*).
+- **Idioma:** documentación, comentarios y commits en español; identificadores de
   código en inglés.
-- **Reglas propias del dominio:**
-  - Las rutas de datos, anotaciones y pesos se reciben por **configuración o CLI**; no se
-    codifican de forma fija en el código.
-  - Los datasets, videos y pesos de modelos **no se versionan** (ver `.gitignore`); se
-    documenta cómo obtenerlos o generarlos.
-  - Toda inferencia debe ser reproducible: registrar **semilla**, versión del modelo,
-    tamaño de imagen y umbrales utilizados.
-  - Las métricas se calculan con **código versionado**, nunca a mano ni en celdas de
-    notebook sin control de versiones.
-  - Las imágenes con personas solo se usan con permiso y no deben contener datos
-    personales innecesarios.
+- **Contratos:** `Detection` usa `bbox` en formato `xyxy`, `confidence` en `[0, 1]` y
+  `class_name` limitado a las seis clases del dataset.
+- **Rutas:** datos, artefactos y configuración se reciben por CLI o configuración; no
+  se codifican rutas absolutas.
+- **Datos y pesos:** nunca se versionan. Se documenta su origen, licencia y SHA256.
+- **Reproducibilidad:** semilla, versión del modelo, tamaño de imagen y umbrales se
+  registran en cada experimento o inferencia.
+- **Métricas:** se calculan con código versionado; no se reportan valores manuales.
+- **Uso responsable:** el sistema reporta EPP detectado, no cumplimiento normativo.
+- **Privacidad:** imágenes con personas solo con permiso; no se publican datos
+  personales innecesarios.
 
-## 6. Arquitectura y dominio
+## 7. Arquitectura y dominio
 
-Flujo objetivo del sistema (**todavía no implementado**):
+Flujo objetivo:
 
 ```text
-imagen/video → preprocesamiento → detector de EPP → post-procesamiento (NMS/umbrales)
-             → detecciones + reporte (visual y/o tabular)
+Imagen → validación → preprocesamiento → detector YOLO → postprocesamiento (NMS/umbrales)
+       → API REST / gRPC → Streamlit
+                                     ↘ MLflow (experimentos y métricas)
+Todo en Docker CPU; CI/CD → Droplet
 ```
 
-Hechos no negociables:
+- Diagrama interactivo: [`docs/architecture/arquitectura.html`](docs/architecture/arquitectura.html)
+- Fuente versionada: [`docs/architecture/arquitectura.json`](docs/architecture/arquitectura.json)
 
-- El sistema es **asistivo**: señala posibles ausencias de EPP, no certifica seguridad.
-- Un falso negativo (no detectar un EPP presente) y un falso positivo tienen costos
-  distintos; la elección de umbrales debe justificarse y documentarse.
-- El detector y el formato de anotación se eligen **antes** de implementar el pipeline;
-  hasta entonces permanecen como `EN EVALUACIÓN` en §3.
+### Contract-first
 
-## 7. Calidad y automatización
+Antes de implementar el detector real se define el contrato:
+
+```text
+ImageData → Detector.detect() → list[Detection]
+```
+
+Con un `FakeDetector` determinista, las HU de API (HU-006), interfaz (HU-007) y gRPC
+(HU-010) avanzan en paralelo con la HU del modelo (HU-002), reduciendo la ruta crítica.
+
+### Jerarquía de modelo (3 niveles)
+
+| Nivel | Enfoque | Por qué no se elige |
+|-------|---------|---------------------|
+| 1 — Frontera | LLM/VLM general | Latencia y costo altos; no requiere razonamiento abierto. |
+| 2 — Gama media | Detector mediano | Más latencia en CPU; sobredimensionado para 6 clases. |
+| 3 — Especializado | YOLO nano/small | **Elegido:** local, CPU, <100 ms objetivo, AGPL compatible. |
+
+No hay LLM en inferencia: la tarea es detección de objetos acotada, con clases fijas,
+requisito de CPU y necesidad de reproducibilidad.
+
+### Dataset: hechos y límites
+
+- 6 clases: **Helmet, Vest, Gloves, Goggles, Mask, Safety Shoe**.
+- **16.014 objetos anotados**; el número de imágenes no está publicado.
+- Un solo `PPE.zip` de **668 MB**; estructura YOLO (`train/valid/test`, `data.yaml`).
+- Licencia declarada: **CC-BY-4.0** (requiere atribución).
+- La tarjeta **no declara la fuente original**, conserva el placeholder
+  `<your-username>/ppe-detection` y no menciona consentimiento de rostros.
+- **No hay clase `person` ni `no-EPP`**.
+
+Consecuencia: el sistema reporta **qué EPP aparecen**, no qué trabajador incumple. Los
+falsos positivos/negativos y la ausencia de detecciones no son prueba de incumplimiento.
+
+## 8. Calidad y automatización
 
 | Herramienta | Rol | Comando |
 |-------------|-----|---------|
@@ -148,76 +222,114 @@ Hechos no negociables:
 | `ty` | Verificación de tipos | `make typecheck` |
 | `pytest` | Pruebas | `make test` |
 | `pre-commit` | Hooks antes de cada commit | `make pre-commit` |
-| GitHub Actions | CI (pre-commit + tipos + pruebas) | `.github/workflows/ci.yml` |
+| GitHub Actions | CI en `develop` y `main` | `.github/workflows/ci.yml` |
+| `uv build` | Construcción del paquete | `uv build` |
 
-- Ningún commit se salta los hooks (`--no-verify` está prohibido salvo causa justificada y documentada).
-- La **CI debe estar en verde** antes de fusionar un Pull Request.
-- Toda dependencia nueva entra con `uv add` / `uv add --dev` (nunca editando `uv.lock` a mano).
-- En Windows, `make` usa **Git Bash** (ver la detección de `SHELL` en el `Makefile`); en
-  Linux/CI usa `/bin/bash`.
+- `make check` debe estar en verde antes de abrir una PR.
+- La CI debe estar en verde antes de fusionar.
+- No se usa `--no-verify` salvo causa documentada.
+- Las pruebas unitarias no dependen de GPU, dataset completo ni red.
+- Toda dependencia nueva entra con `uv add` / `uv add --dev`.
 
-## 8. Repositorio y Git
+## 9. Repositorio y Git
 
-- **Remoto (HTTPS):** `https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection.git`
-- **Remoto (SSH):** `git@github.com:GuillermoZ-Code/GPCICD_PPE_Detection.git`
-- **Rama principal:** `main`
-- **Estrategia de ramas:** `feat/...`, `fix/...`, `docs/...`, `refactor/...`, `test/...`,
-  `chore/...`; integración vía Pull Request.
-- **Commits:** [Conventional Commits](https://www.conventionalcommits.org/) —
-  `feat:`, `fix:`, `docs:`, `refactor:`, `style:`, `test:`, `chore:`.
-- **Identidad git:** se configura localmente en cada máquina; **no se versiona** (ver §12).
+- **Remoto HTTPS:** `https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection.git`
+- **Remoto SSH:** `git@github.com:GuillermoZ-Code/GPCICD_PPE_Detection.git`
+- **Ramas:** `main` (entregas), `develop` (integración), `feature/*`, `fix/*`,
+  `docs/*`, `refactor/*`, `test/*`, `chore/*`.
+- **Ramas de Spec Kit:** `feature/{number}-{slug}`; el slug incluye el ID
+  (`hu-001-...`, `ta-11-...`). Ejemplo: `feature/001-hu-001-carga-imagen` desde
+  `develop`.
+- **Commits:** Conventional Commits, imperativo, ≤72 caracteres, con scope cuando
+  aporte (`feat(api): ...`, `fix(detector): ...`).
+- **PR:** siempre a `develop`; `develop → main` solo en la entrega del módulo.
+- **Plantilla:** `.github/PULL_REQUEST_TEMPLATE.md` (UAO).
+- **Assignee:** quien hizo el trabajo.
+- **Reviewers:** otros integrantes; el autor **nunca** se aprueba a sí mismo;
+  mínimo **1 aprobación**.
+- **Code Reviewer designado:** Guillermo. Si él es autor, revisa otro integrante.
+- **Merge:**
+  - PR a `develop`: **Squash** por defecto para PR de un solo propósito; **Create a
+    merge commit** cuando trae commits atómicos que vale la pena conservar.
+  - Release `develop → main`: **siempre merge commit**, nunca squash.
+  - Nunca push directo a `main` ni a `develop`.
+- **Protección de ramas:** es una **regla escrita** de este documento y de
+  `CONTRIBUTING.md`; no se configura protección técnica en GitHub (decisión del
+  equipo).
+- **Dependabot:** target `develop`, ejecución mensual, actualizaciones agrupadas por
+  ecosistema y labels `chore` + `infra`.
 
-## 9. Flujo diario (commit + push)
+## 10. Spec-Driven Development (Spec Kit)
 
-```bash
-# 1. Ver cambios
-git status
+Spec Kit es el flujo **obligatorio** para las HU:
 
-# 2. Verificación completa (lint + formato + tipos + pruebas)
-make check
-
-# 3. Agregar y commitear (los hooks se ejecutan solos)
-git add -A
-git commit -m "tipo: mensaje descriptivo"
-
-# 4. Subir a GitHub
-git push
+```text
+issue → /speckit.specify → /speckit.clarify → /speckit.plan
+      → /speckit.tasks → /speckit.analyze → /speckit.implement
+      → make check → PR a develop con plantilla UAO
 ```
 
-## 10. Historial de decisiones técnicas
+- Una spec por HU: `specs/<NNN>-hu-xxx-slug/spec.md`, `plan.md`, `tasks.md`.
+- Los AC de la issue se copian a `spec.md`; issue y spec se enlazan mutuamente.
+- `CONSTITUTION.md` es la fuente de verdad. `.specify/memory/constitution.md` es un
+  **derivado** con los principios no negociables (uv, src-layout, AAA, Ruff, sin pesos
+  ni datos versionados, reproducibilidad, contract-first, AGPL) y un encabezado que lo
+  indique; se sincroniza en el mismo commit.
+- Spec Kit **v1.2.5** está inicializado en `.specify/` (integración `opencode`,
+  scripts `sh` y comandos `speckit.git.*`). Los comandos viven en
+  `.opencode/commands/`.
+- La rama se crea con `branch_template: "feature/{number}-{slug}"`; el slug incluye
+  el ID (`hu-001-...`, `ta-11-...`).
+- Hoy se deja **solo** la spec de la TA de contract-first como ejemplo, sin
+  implementar.
+
+## 11. Historial de decisiones técnicas
 
 | Fecha | Decisión | Motivo |
 |-------|----------|--------|
-| 2026-10-31 | Adoptar `uv` como gestor único de entornos y dependencias | Reproducibilidad; prohibido `pip`/`requirements.txt` |
-| 2026-10-31 | Fijar Python 3.13 | Compatibilidad con el ecosistema de visión/ML; `uv` gestiona la versión |
-| 2026-10-31 | Usar src-layout con paquete `ppe_detection` y `uv_build` | Separar código importable de scripts; distribución instalable |
-| 2026-10-31 | Adoptar Ruff (lint + formato) y pre-commit | Calidad automatizada antes de cada commit |
-| 2026-10-31 | Adoptar Conventional Commits | Historial legible y automatizable |
-| 2026-10-31 | Adoptar licencia MIT y `CONSTITUTION.md` como fuente única de verdad | Claridad legal y operativa |
-| 2026-10-31 | `Makefile` multiplataforma (Git Bash en Windows) | Mantener `make` como interfaz también en el entorno local |
-| 2026-10-31 | No fijar aún el framework de detección | Evitar dependencias pesadas y decisiones prematuras antes de definir dataset y requisitos |
+| 2026-10-31 | Adoptar `uv` como gestor único | Reproducibilidad; prohibido `pip`/`requirements.txt` |
+| 2026-10-31 | Fijar Python 3.13 | Compatibilidad con el ecosistema de visión/ML |
+| 2026-10-31 | src-layout con paquete `ppe_detection` | Separar código importable de scripts |
+| 2026-10-31 | Ruff + pre-commit | Calidad automatizada antes de cada commit |
+| 2026-10-31 | Conventional Commits | Historial legible y automatizable |
+| 2026-10-31 | Gitflow `develop`/`main` | Integración continua y releases por módulo |
+| 2026-10-31 | Licencia **AGPL-3.0-only** | Ultralytics YOLO es AGPL y el sistema se expone como servicio en red |
+| 2026-10-31 | Dataset `51ddhesh/PPE_Detection` | 6 clases EPP, formato YOLO, CC-BY-4.0 |
+| 2026-10-31 | Detector especializado nivel 3 (YOLO nano/small) | <100 ms en CPU; sin LLM en inferencia |
+| 2026-10-31 | Dependabot mensual y agrupado en `develop` | Menos ruido y control de actualizaciones |
+| 2026-10-31 | Contract-first con `FakeDetector` | Desbloquea API/UI/gRPC en paralelo con el modelo |
+| 2026-10-31 | Spec Kit como flujo obligatorio | Especificaciones ejecutables y trazabilidad |
+| 2026-10-31 | Merge commit para releases; squash por defecto en PR simples | Conservar historial en releases sin ruido diario |
+| 2026-10-31 | Protección de ramas como regla escrita, no configuración de GitHub | Decisión del equipo |
+| 2026-10-31 | Roles por módulo (Eliana, Hernán, Guillermo, Jesús) | Responsabilidades claras para el M2–M4 |
 
-## 11. Notas y tareas pendientes
+## 12. Roadmap M3–M4
 
-- [ ] Definir requisitos funcionales del proyecto (M2) y las clases de EPP a detectar.
-- [ ] Seleccionar y documentar el dataset, su licencia y el formato de anotación.
-- [ ] Elegir el modelo/framework de detección y su versión.
-- [ ] Implementar el pipeline de carga y preprocesamiento de datos.
-- [ ] Entrenar un baseline y registrar métricas reproducibles.
-- [ ] Implementar la inferencia por CLI sobre imágenes y video.
-- [ ] Añadir pruebas de datos, post-procesamiento y una prueba de humo de inferencia.
-- [ ] Adaptar la CI para pruebas sin GPU (mocks o datos sintéticos).
-- [ ] Configurar el remoto, proteger `main` y verificar la CI en GitHub.
-- [ ] (Opcional) Generar el diagrama de arquitectura con Archify.
+### M3 — 31/10/2026 a 14/11/2026
 
-**Siguiente paso inmediato:** definir los requisitos y el dataset del módulo M2.
+- Clases: **05/11 FastAPI/REST**, **07/11 MLflow + Streamlit**.
+- Sustentación: **sábado 14/11/2026**.
+- **M3-S1 (31/10–07/11): HU-001 a HU-007 — 28 SP.**
+- **M3-S2 (08/11–14/11): HU-008 a HU-013 — 26 SP.**
 
-## 12. Configuración local (no versionar)
+### M4 — 19/11/2026 a 28/11/2026
 
-> Configuración específica de la máquina. **NO incluir en commits.**
+- MLOps/despliegue, CI/CD y credenciales.
+- Sustentación: **sábado 28/11/2026**.
+- **M4-S3 (15/11–28/11): HU-014 y HU-015 — 13 SP.**
 
-- La identidad Git (`user.name`, `user.email`) y las llaves SSH se configuran **fuera del
-  repositorio**, en la configuración local de Git.
-- No se versionan `.env`, `.venv/`, datasets, videos, pesos de modelos ni credenciales.
-- Si el proyecto necesita variables de entorno, se documentarán en un `.env.example` sin
-  valores reales.
+**Total backlog oficial:** 67 SP. Las TA/SPI propuestas (25 SP) están **pendientes de
+validación por Jesús**; no se suman al total hasta que él defina el criterio. Ver
+`docs/curso/backlog.md`.
+
+## 13. Configuración local y sincronía documental
+
+- No se versionan `.env`, `.venv/`, datasets, videos, pesos, credenciales ni llaves.
+- La identidad Git y las llaves SSH se configuran fuera del repositorio.
+- El **PDF de cada módulo se redacta fuera del repo** (responsable: Eliana).
+- `docs/curso/backlog.md` es el espejo de las issues y la fuente para el Capítulo 5.
+  Debe coincidir 1:1 con las issues, el tablero y `specs/`. Si alguien cambia título,
+  AC o SP en uno, actualiza los demás en el mismo cambio.
+- Ante una diferencia entre PDF, backlog, issues o specs, **el agente avisa al usuario
+  antes de continuar**.
+- Engram y GGA se habilitan en la **Fase 3**; no reemplazan este documento ni los ADR.
