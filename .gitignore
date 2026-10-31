@@ -24,8 +24,7 @@ coverage.xml
 *.key
 
 # Artefactos pesados / datos (revisar caso a caso)
-data/raw/
-data/processed/
+data/
 artifacts/
 *.h5
 *.pt
@@ -34,6 +33,12 @@ artifacts/
 *.safetensors
 *.sqlite
 *.db
+
+# MLflow / Ultralytics (salidas locales)
+mlruns/
+mlartifacts/
+mlflow.db
+runs/
 
 # Sistema operativo / IDE
 .DS_Store
@@ -49,3 +54,13 @@ node_modules/
 
 # Índice de tgrep
 .tgrep/
+
+# Archify: recibos y evidencias de regeneración (el fuente es arquitectura.json)
+docs/architecture/*.finalize*.json
+docs/architecture/*.browser-check.json
+docs/architecture/*.delivery.json
+docs/architecture/review-*/
+
+# Spec Kit: caché local de extensiones
+.specify/extensions/.cache/
+.specify/extensions/.registry

@@ -6,10 +6,11 @@
 1. Esta plantilla se carga automáticamente en cada Pull Request del repositorio.
 2. Una PR = UN solo propósito (una funcionalidad, una corrección o un refactor
    pequeño). Si mezclas varias historias, la revisión se rechaza.
-3. La PR NO se fusiona sin al menos UNA revisión aprobada de otro integrante.
-4. Proyecto: detección de Equipos de Protección Personal (EPP) con visión por
+3. La PR va a `develop`; `develop → main` solo en la entrega del módulo.
+4. La PR NO se fusiona sin al menos UNA revisión aprobada de otro integrante.
+5. Proyecto: detección de Equipos de Protección Personal (EPP) con visión por
    computador, curso GPCICD M2-M4.
-5. La automatización y gestión del repositorio desde el asistente se realiza
+6. La automatización y gestión del repositorio desde el asistente se realiza
    con el MCP de GitHub y la cuenta UAO (`GuillermoZ-Code`).
 -->
 
@@ -20,11 +21,12 @@
 | **Equipo / Grupo** | Grupo 4 |
 | **Integrantes que participaron** | *(nombres de quienes escribieron código en esta PR)* |
 | **Proyecto** | GPCICD PPE Detection — Detección de EPP (M2-M4) |
-| **Rama origen ➔ destino** | `feat/…` ➔ `main` |
-| **Issue / Ticket asociado** | `#__` *(tablero de GitHub Projects)* |
+| **Rama origen ➔ destino** | `feature/…` ➔ `develop` *(o `develop` ➔ `main` en release)* |
+| **Issue / Ticket asociado** | `Closes #__` *(tablero de GitHub Projects)* |
+| **Spec asociada** | `specs/__-hu-___/spec.md` *(si aplica)* |
+| **Milestone** | `M3-S1` / `M3-S2` / `M4-S3` |
 | **Módulo / Entrega** | *(M2 · M3 · M4 — semana correspondiente)* |
 | **Cuenta UAO para el MCP** | `GuillermoZ-Code` |
-| **Herramienta de gestión** | GitHub MCP — cuenta UAO |
 
 ---
 
@@ -62,7 +64,7 @@ El título **debe** comenzar con un prefijo, escribirse en imperativo y tener **
 Marca las capas que toca esta PR (ajusta los nombres a los módulos reales del proyecto):
 
 - [ ] **Datos / ingesta** — lectura de imágenes o video, dataset y anotaciones
-      (`src/ppe_detection/data/`, `read_*.py`, `dataset.py`)
+      (`src/ppe_detection/io/`, `dataset.py`)
 - [ ] **Preprocesamiento** — resize, normalización, aumentos y validación
       (`preprocess.py`, `transforms.py`)
 - [ ] **Modelo / detector** — carga del modelo, inferencia y configuración
@@ -71,10 +73,10 @@ Marca las capas que toca esta PR (ajusta los nombres a los módulos reales del p
       (`postprocess.py`)
 - [ ] **Evaluación / métricas** — mAP, precision, recall, F1 y reportes
       (`evaluate.py`, `metrics.py`)
-- [ ] **CLI / reporte** — punto de entrada y salida para el usuario
-      (`cli.py`, `report.py`)
+- [ ] **API / RPC / UI** — FastAPI, gRPC o Streamlit
+      (`api/`, `grpc/`, `ui/`)
 - [ ] **Pruebas** (`tests/test_*.py`)
-- [ ] **Infraestructura** (`pyproject.toml`, `uv.lock`, `Makefile`, `.github/workflows/`)
+- [ ] **Infraestructura** (`Dockerfile`, `pyproject.toml`, `uv.lock`, `Makefile`, `.github/workflows/`)
 - [ ] **Documentación y licencia** (`README.md`, `docs/**`, `CONSTITUTION.md`, `LICENSE`)
 
 ---
@@ -111,8 +113,9 @@ uv run pytest -v
 uv run ruff check src/ tests/
 uv run ty check
 
-# Verificación completa del proyecto
+# Verificación completa del proyecto y del paquete
 make check
+uv build
 ```
 
 | Métrica | Valor |
@@ -123,8 +126,22 @@ make check
 | **Métrica del detector** | mAP@0.5: __ · Precision: __ · Recall: __ *(si aplica)* |
 
 - [ ] Adjunté la **salida de `pytest`** o una captura de pantalla con el resultado.
+- [ ] `make check` y `uv build` están en verde.
 - [ ] El pipeline de **GitHub Actions** quedó en verde.
 - [ ] Si la PR toca inferencia, adjunté un **ejemplo de entrada/salida** o la métrica correspondiente.
+- [ ] La spec de Spec Kit está enlazada y sus AC están cubiertos.
+
+### AC → prueba
+
+| AC | Prueba pytest | ¿Pasa? |
+| :--- | :--- | :---: |
+| AC-01 | `tests/test_...py::test_...` | [ ] |
+| AC-02 | `tests/test_...py::test_...` | [ ] |
+| AC-03 | `tests/test_...py::test_...` | [ ] |
+
+> **Test-first:** las pruebas se escriben antes de la implementación. Excepciones:
+> SPI y specs de documentación. `/speckit.analyze` marca como error un AC sin prueba.
+> **Sin umbral de cobertura** por ahora; se decide en HU-012.
 
 ---
 
@@ -143,18 +160,21 @@ make check
 - [ ] Sin credenciales, tokens ni rutas personales en el código.
 
 **Estructura, datos y reproducibilidad**
-- [ ] Código en `src/`, pruebas en `tests/`, sin `.ipynb`, Colab ni Kaggle.
-- [ ] `.gitignore` cubre pesos (`*.pt`, `*.pth`, `*.onnx`, `*.h5`), `data/raw/`, `.venv/` y `.ipynb`.
+- [ ] Código en `src/`, pruebas en `tests/`, sin `.ipynb`; Colab/Kaggle solo como **cómputo GPU** ejecutando un script versionado con `uv`.
+- [ ] Cada AC de la spec tiene al menos una prueba pytest que lo referencia (test-first).
+- [ ] `.gitignore` cubre pesos (`*.pt`, `*.pth`, `*.onnx`, `*.h5`), `data/`, `runs/`, `mlruns/`, `.venv/` y `.ipynb`.
 - [ ] Verifiqué que **ningún archivo binario pesado** entró al commit (`git status`).
 - [ ] Los datasets y pesos **no se versionan**; documenté cómo obtenerlos o generarlos.
 - [ ] Registré **semilla, umbrales y versión del modelo** para que la inferencia sea reproducible.
 - [ ] Las imágenes con personas se usan con permiso y sin datos personales innecesarios.
+- [ ] No hay clase `person` ni `no-EPP`; el resultado no se presenta como cumplimiento normativo.
 
 **Git y proceso**
-- [ ] La PR es **pequeña y de un solo propósito**; la rama está actualizada desde `main`.
+- [ ] La PR es **pequeña y de un solo propósito**; la rama está actualizada desde `develop`.
 - [ ] Los commits usan *Conventional Commits* con mensajes descriptivos.
-- [ ] Asigné **revisor** (otro integrante) y etiquetas a la PR.
+- [ ] **Assignee = autor**; **reviewers = otros integrantes**; el autor no se aprueba.
 - [ ] La PR se creó o actualizó con el **MCP de GitHub** y la **cuenta UAO**.
+- [ ] La PR enlaza su issue (`Closes #N`) y su spec.
 
 ---
 
@@ -164,7 +184,7 @@ make check
 - **¿Rompe compatibilidad?** Sí / No — *si aplica, describe la migración*
 - **¿Afecta las métricas del detector?** Sí / No — *si aplica, adjunta el antes/después*
 - **¿Requiere GPU, datos o pesos externos para probarse?** *(idealmente no; indica cómo se probó en CPU)*
-- **Plan de reversión:** *(ej. `git revert` o restaurar desde `main`)*
+- **Plan de reversión:** *(ej. `git revert` o restaurar desde `develop`)*
 
 ---
 
@@ -178,7 +198,8 @@ make check
 - [ ] Ausencia de duplicación innecesaria; nombres claros.
 - [ ] Comentarios y docstrings explican **el porqué**, no el qué obvio.
 - [ ] La inferencia es reproducible (semilla, umbrales y versión del modelo registrados).
-- [ ] Aprobada por **al menos un integrante** antes de fusionar a `main`.
+- [ ] Se respetan los límites del dataset (sin `person`, sin `no-EPP`, sin juicio de cumplimiento).
+- [ ] Aprobada por **al menos un integrante** antes de fusionar a `develop`.
 
 ---
 
@@ -190,4 +211,7 @@ make check
 | | Revisor de código | [ ] Aprobado |
 | | Revisor de código | [ ] Aprobado |
 
-> 🔒 **Regla del curso:** la fusión a `main` la hace el autor **después** de la aprobación de un compañero. No se hace `push` directo a `main`; los hitos de entrega se integran por Pull Request.
+> 🔒 **Regla del curso:** la fusión a `develop` la hace el autor **después** de la
+> aprobación de un compañero. El release `develop → main` se hace **solo** en la
+> entrega del módulo y **siempre con merge commit**, nunca squash. No se hace `push`
+> directo a `main` ni a `develop`.
