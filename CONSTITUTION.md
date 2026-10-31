@@ -150,6 +150,13 @@ crean vacías por adelantado.
 - **Nomenclatura:** `snake_case`, `PascalCase` (clases), `UPPER_CASE` (constantes).
 - **Docstrings:** en módulos, clases y funciones públicas.
 - **Pruebas:** pytest con patrón **AAA** (*Arrange · Act · Assert*).
+- **Test-first:** cada AC de una spec tiene al menos una prueba pytest que lo
+  referencia (`AC-xx` en el nombre o docstring). Las pruebas se escriben antes de la
+  implementación y deben fallar primero. Excepciones: SPI y specs de documentación.
+  `/speckit.analyze` marca como error un AC sin prueba.
+- **Cómputo GPU:** el entrenamiento no se ejecuta en CPU local. Se permite
+  **Colab/Kaggle solo como cómputo GPU**, ejecutando un script versionado del repo con
+  `uv`; no se versionan `.ipynb` ni se usa la UI de notebooks como fuente de verdad.
 - **Idioma:** documentación, comentarios y commits en español; identificadores de
   código en inglés.
 - **Contratos:** `Detection` usa `bbox` en formato `xyxy`, `confidence` en `[0, 1]` y
@@ -229,6 +236,7 @@ falsos positivos/negativos y la ausencia de detecciones no son prueba de incumpl
 - La CI debe estar en verde antes de fusionar.
 - No se usa `--no-verify` salvo causa documentada.
 - Las pruebas unitarias no dependen de GPU, dataset completo ni red.
+- **Sin umbral de cobertura por ahora:** se decide en HU-012 con evidencia.
 - Toda dependencia nueva entra con `uv add` / `uv add --dev`.
 
 ## 9. Repositorio y Git
@@ -280,6 +288,10 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
   `.opencode/commands/`.
 - La rama se crea con `branch_template: "feature/{number}-{slug}"`; el slug incluye
   el ID (`hu-001-...`, `ta-11-...`).
+- **Test-first:** los AC se convierten en pruebas antes de la implementación;
+  `/speckit.analyze` marca error si un AC no tiene prueba. Excepciones: SPI y specs de
+  documentación.
+- **Sin umbral de cobertura** por ahora; se decide en HU-012.
 - Hoy se deja **solo** la spec de la TA de contract-first como ejemplo, sin
   implementar.
 
@@ -302,6 +314,9 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-10-31 | Merge commit para releases; squash por defecto en PR simples | Conservar historial en releases sin ruido diario |
 | 2026-10-31 | Protección de ramas como regla escrita, no configuración de GitHub | Decisión del equipo |
 | 2026-10-31 | Roles por módulo (Eliana, Hernán, Guillermo, Jesús) | Responsabilidades claras para el M2–M4 |
+| 2026-10-31 | Test-first con trazabilidad AC → prueba | Evitar AC sin verificación y regresiones |
+| 2026-10-31 | Colab/Kaggle solo como cómputo GPU, sin `.ipynb` | CPU local no es viable para entrenar |
+| 2026-10-31 | Sin umbral de cobertura hasta HU-012 | El equipo decide con evidencia |
 
 ## 12. Roadmap M3–M4
 
@@ -321,6 +336,17 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 **Total backlog oficial:** 67 SP. Las TA/SPI propuestas (25 SP) están **pendientes de
 validación por Jesús**; no se suman al total hasta que él defina el criterio. Ver
 `docs/curso/backlog.md`.
+
+### Riesgos y decisiones pendientes
+
+| Riesgo / decisión | Responsable sugerido por rol | Acción / fecha |
+|-------------------|------------------------------|----------------|
+| **Entrenamiento en CPU no es viable** | Hernán (modelo) | Colab/Kaggle **solo como cómputo GPU**, ejecutando un script versionado del repo con `uv`, sin `.ipynb`. Documentar la excepción en la Model Card antes de HU-002. |
+| **Python 3.13 + Ultralytics/torch CPU** | Guillermo (entorno/arquitectura) | Validar en **SPI-01, días 1–2 del M3**. Plan B: fijar **3.12** en `.python-version` y `pyproject.toml`. |
+| **EDA y descarga del dataset** | Jesús (planificación/backlog) valida; Hernán ejecuta | TA propuesta **“EDA del dataset”**: conteo de imágenes por split, objetos por clase, desbalance, imágenes sin etiquetas y cajas inválidas; descarga reproducible del ZIP con SHA256 y ruta configurable. Pendiente de validación de Jesús. |
+| **AGPL en el despliegue (M4)** | Guillermo (repo) + Eliana (documento) | La interfaz y la API deben enlazar el código fuente; el dataset CC-BY exige atribución visible. AC propuesto en HU-007 y HU-015, pendiente de validación de Jesús. |
+| **Droplet (M4)** | Guillermo (infra) + Jesús (planificación) | Definir dueño de la cuenta, costo y administración de los secrets de GitHub Actions **antes del 19/11**. |
+| **Repo privado vs. AGPL** | Guillermo + Eliana | Si el servicio se publica, el repo debe ser público o el código debe ofrecerse a los usuarios. Decidir antes del M4. |
 
 ## 13. Configuración local y sincronía documental
 

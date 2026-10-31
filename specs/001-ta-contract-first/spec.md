@@ -65,6 +65,17 @@ obtener `list[Detection]` sin instalar YOLO, sin dataset y sin GPU.
 - **Detector**: protocolo de inferencia.
 - **FakeDetector**: implementación determinista para pruebas y desarrollo paralelo.
 
+## Acceptance → Test
+
+| AC | Prueba pytest |
+|----|----------------|
+| AC-01 | `tests/test_contracts.py::test_fake_detector_returns_list` |
+| AC-02 | `tests/test_contracts.py::test_detection_validates_class_confidence_and_bbox` |
+| AC-03 | `tests/test_contracts.py::test_empty_detections_returns_empty_list` |
+| AC-04 | `tests/test_contracts.py::test_fake_detector_is_deterministic` |
+| AC-05 | `tests/test_contracts.py::test_invalid_confidence_and_class_are_rejected` |
+| AC-06 | `tests/test_contracts.py::test_contract_is_documented` |
+
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes

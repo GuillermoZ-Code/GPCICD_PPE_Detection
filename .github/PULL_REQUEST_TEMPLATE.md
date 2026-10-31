@@ -131,6 +131,18 @@ uv build
 - [ ] Si la PR toca inferencia, adjunté un **ejemplo de entrada/salida** o la métrica correspondiente.
 - [ ] La spec de Spec Kit está enlazada y sus AC están cubiertos.
 
+### AC → prueba
+
+| AC | Prueba pytest | ¿Pasa? |
+| :--- | :--- | :---: |
+| AC-01 | `tests/test_...py::test_...` | [ ] |
+| AC-02 | `tests/test_...py::test_...` | [ ] |
+| AC-03 | `tests/test_...py::test_...` | [ ] |
+
+> **Test-first:** las pruebas se escriben antes de la implementación. Excepciones:
+> SPI y specs de documentación. `/speckit.analyze` marca como error un AC sin prueba.
+> **Sin umbral de cobertura** por ahora; se decide en HU-012.
+
 ---
 
 ## 7. Checklist obligatorio pre-PR (Reglas de Juego UAO)
@@ -148,8 +160,9 @@ uv build
 - [ ] Sin credenciales, tokens ni rutas personales en el código.
 
 **Estructura, datos y reproducibilidad**
-- [ ] Código en `src/`, pruebas en `tests/`, sin `.ipynb`, Colab ni Kaggle.
-- [ ] `.gitignore` cubre pesos (`*.pt`, `*.pth`, `*.onnx`, `*.h5`), `data/raw/`, `.venv/` y `.ipynb`.
+- [ ] Código en `src/`, pruebas en `tests/`, sin `.ipynb`; Colab/Kaggle solo como **cómputo GPU** ejecutando un script versionado con `uv`.
+- [ ] Cada AC de la spec tiene al menos una prueba pytest que lo referencia (test-first).
+- [ ] `.gitignore` cubre pesos (`*.pt`, `*.pth`, `*.onnx`, `*.h5`), `data/`, `runs/`, `mlruns/`, `.venv/` y `.ipynb`.
 - [ ] Verifiqué que **ningún archivo binario pesado** entró al commit (`git status`).
 - [ ] Los datasets y pesos **no se versionan**; documenté cómo obtenerlos o generarlos.
 - [ ] Registré **semilla, umbrales y versión del modelo** para que la inferencia sea reproducible.

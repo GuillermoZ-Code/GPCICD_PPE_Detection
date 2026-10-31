@@ -8,9 +8,10 @@ description: "Task list for TA Contract-first"
 
 **Prerequisites**: `plan.md`, `spec.md`
 
-**Tests**: incluidas porque la TA exige pruebas de contrato.
+**Tests**: obligatorias y **antes** de la implementación (test-first). Cada AC tiene
+al menos una prueba que lo referencia.
 
-**Organization**: una sola historia (P1) con fase de setup, fundacional y polish.
+**Organization**: una sola historia (P1) con fase de tests, implementación y polish.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -19,51 +20,47 @@ description: "Task list for TA Contract-first"
 
 ## Phase 1: Setup
 
-- [ ] T001 Crear `src/ppe_detection/contracts.py` con el catálogo `CLASSES`.
-- [ ] T002 Crear `tests/test_contracts.py` con fixtures sintéticas.
+- [ ] T001 Crear `tests/test_contracts.py` con fixtures sintéticas y helpers.
+- [ ] T002 Crear `src/ppe_detection/contracts.py` solo con `CLASSES` (sin lógica).
 
-## Phase 2: Foundational
+## Phase 2: Tests first (deben fallar)
 
-- [ ] T003 Definir `ImageData` con `array`, `width`, `height`, `format`, `source`.
-- [ ] T004 Definir `Detection` con `class_id`, `class_name`, `confidence`, `bbox`,
-      `image_width`, `image_height`.
-- [ ] T005 Validar `confidence` finito en `[0,1]` y `bbox` con `x1 < x2`, `y1 < y2`.
-- [ ] T006 Validar `class_name` contra `CLASSES`.
+- [ ] T003 [P] [US1] `test_fake_detector_returns_list` → **AC-01**.
+- [ ] T004 [P] [US1] `test_detection_validates_class_confidence_and_bbox` → **AC-02**.
+- [ ] T005 [P] [US1] `test_empty_detections_returns_empty_list` → **AC-03**.
+- [ ] T006 [P] [US1] `test_fake_detector_is_deterministic` → **AC-04**.
+- [ ] T007 [P] [US1] `test_invalid_confidence_and_class_are_rejected` → **AC-05**.
+- [ ] T008 [P] [US1] `test_contract_is_documented` → **AC-06**.
+- [ ] T009 Ejecutar `uv run pytest tests/test_contracts.py` y confirmar que fallan.
 
-## Phase 3: User Story 1 - Contrato estable (P1)
+## Phase 3: Implementación (US1)
 
-**Goal**: permitir que API, UI y gRPC trabajen contra un contrato y un fake.
+- [ ] T010 Definir `ImageData` con `array`, `width`, `height`, `format`, `source`.
+- [ ] T011 Definir `Detection` con `class_id`, `class_name`, `confidence`, `bbox`,
+      `image_width`, `image_height`; validar confianza y bbox.
+- [ ] T012 Definir el protocolo `Detector.detect(image) -> list[Detection]`.
+- [ ] T013 Implementar `FakeDetector` vacío y con cajas fijas.
+- [ ] T014 Ejecutar `uv run pytest tests/test_contracts.py` y confirmar verde.
 
-**Independent Test**: `FakeDetector.detect(ImageData(...))` devuelve `list[Detection]`
-sin YOLO, dataset ni GPU.
+## Phase 4: Polish
 
-- [ ] T007 Definir el protocolo `Detector.detect(image) -> list[Detection]`.
-- [ ] T008 Implementar `FakeDetector` vacío y con cajas fijas.
-- [ ] T009 Probar imagen válida con detecciones.
-- [ ] T010 Probar imagen sin detecciones (`[]`).
-- [ ] T011 Probar confianza negativa, >1 y `NaN`.
-- [ ] T012 Probar clase fuera del catálogo y `bbox` inválida.
-- [ ] T013 Probar determinismo con la misma entrada.
-
-## Phase N: Polish
-
-- [ ] T014 Documentar el contrato en `docs/architecture/contracts.md`.
-- [ ] T015 Enlazar el contrato desde HU-006, HU-007 y HU-010.
-- [ ] T016 Ejecutar `make check` y registrar evidencia.
+- [ ] T015 Documentar el contrato en `docs/architecture/contracts.md`.
+- [ ] T016 Enlazar el contrato desde HU-006, HU-007 y HU-010.
+- [ ] T017 Ejecutar `make check` y registrar evidencia.
 
 ## Dependencies & Execution Order
 
-- Setup → Foundational → US1 → Polish.
-- T003 y T004 pueden ir en paralelo.
-- T007 depende de T003 y T004.
-- T008 depende de T007.
-- T009–T013 dependen de T008.
-- T014–T016 dependen de T009–T013.
+- Setup → Tests first → Implementación → Polish.
+- T003–T008 pueden escribirse en paralelo.
+- T009 depende de T003–T008.
+- T010–T013 dependen de T009 (tests en rojo).
+- T014 depende de T010–T013.
+- T015–T017 dependen de T014.
 
 ## Implementation Strategy
 
-1. Completar Setup y Foundational.
-2. Implementar US1 y validar el contrato con el fake.
+1. Escribir las pruebas de los AC y verlas fallar.
+2. Implementar el contrato mínimo hasta ponerlas en verde.
 3. Documentar y ejecutar `make check`.
 4. **Detenerse**: no implementar el detector real ni el preprocesamiento.
 
@@ -72,3 +69,4 @@ sin YOLO, dataset ni GPU.
 - Sin GPU, dataset, pesos ni red.
 - El detector real (HU-002) debe cumplir este contrato.
 - Cualquier cambio de contrato se registra en ADR 0005.
+- Sin umbral de cobertura; se decide en HU-012.

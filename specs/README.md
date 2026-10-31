@@ -25,6 +25,10 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 - Carpeta: `specs/<NNN>-hu-xxx-slug/` o `specs/<NNN>-ta-xx-slug/`.
 - Archivos: `spec.md`, `plan.md`, `tasks.md`.
 - Los AC de la issue se copian a `spec.md`; issue y spec se enlazan.
+- **Test-first:** cada AC tiene al menos una prueba pytest que lo referencia; las
+  pruebas se escriben antes de la implementación. Excepciones: SPI y specs de
+  documentación. `/speckit.analyze` marca error si un AC no tiene prueba.
+- **Sin umbral de cobertura** por ahora; se decide en HU-012.
 - `CONSTITUTION.md` es la fuente; `.specify/memory/constitution.md` es un derivado con
   los principios no negociables y se sincroniza en el mismo commit.
 

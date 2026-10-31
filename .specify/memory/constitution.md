@@ -63,6 +63,22 @@
 - PR con plantilla UAO, mínimo 1 aprobación, autor nunca se autoaprueba.
 - Release `develop → main` siempre con merge commit.
 
+### IX. Test-first y trazabilidad AC → prueba
+
+- Cada AC de una spec tiene al menos una prueba pytest que lo referencia (`AC-xx` en
+  el nombre o docstring).
+- Las pruebas se escriben antes de la implementación; deben fallar primero.
+- Excepciones: SPI y specs de documentación.
+- `/speckit.analyze` marca como error un AC sin prueba.
+- Sin umbral de cobertura; se decide en HU-012.
+
+### X. Cómputo GPU
+
+- El entrenamiento no se ejecuta en CPU local.
+- Colab/Kaggle solo como cómputo GPU, ejecutando un script versionado del repo con
+  `uv`.
+- No se versionan `.ipynb` ni se usa la UI de notebooks como fuente de verdad.
+
 ## Sincronización
 
 Cualquier cambio en `CONSTITUTION.md` que afecte estos principios se replica aquí en

@@ -7,7 +7,8 @@ en [`CONSTITUTION.md`](./CONSTITUTION.md). Léela antes de tu primera contribuci
 
 - [Equipo y roles](#-equipo-y-roles)
 - [Requisitos previos](#-requisitos-previos)
-- [Configuración del entorno](#-configuración-del-entorno)
+- [Preparar tu equipo (Windows)](#-preparar-tu-equipo-windows)
+- [Sin make](#-sin-make)
 - [Gitflow](#-gitflow)
 - [Commits](#-commits)
 - [Pull Requests](#-pull-requests)
@@ -38,20 +39,123 @@ asignación en el repositorio.
 | [`uv`](https://docs.astral.sh/uv/) | Última estable | Entornos y dependencias |
 | [Git](https://git-scm.com/) | Última estable | Control de versiones |
 | [Git Bash](https://gitforwindows.org/) | — | Necesario para `make` en Windows |
+| [GNU Make](https://www.gnu.org/software/make/) | 4.x | Opcional si usas la tabla “sin make” |
+| [Node.js LTS](https://nodejs.org/) | 20+ | Necesario para Archify |
+| [Spec Kit](https://github.com/github/spec-kit) | v1.2.5 | Flujo SDD; ya está inicializado en `.specify/` |
 | [GitHub CLI](https://cli.github.com/) | Opcional | Issues y PRs |
 
 > ⚠️ Está **prohibido** usar `pip` o `requirements.txt`.
 
-## ⚙️ Configuración del entorno
+## 🪟 Preparar tu equipo (Windows)
 
-```bash
+> Comandos verificados con `winget search` y la documentación vigente de uv, OpenCode
+> y Spec Kit (31/10/2026). Ejecuta en PowerShell **como usuario normal**; algunos
+> instaladores piden confirmación.
+
+### 1. Git for Windows (incluye Git Bash)
+
+```powershell
+winget install --id Git.Git -e --source winget
+git --version
+Test-Path "C:\Program Files\Git\bin\bash.exe"
+```
+
+Git Bash es el shell que usa el `Makefile` en Windows.
+
+### 2. uv
+
+```powershell
+winget install --id=astral-sh.uv -e
+uv --version
+```
+
+Alternativa oficial si no usas winget:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### 3. GNU Make
+
+```powershell
+winget install --id ezwinports.make -e
+make --version
+```
+
+Si no puedes instalar `make`, usa la tabla [“Sin make”](#-sin-make) más abajo.
+
+### 4. Node.js LTS (para Archify)
+
+```powershell
+winget install --id OpenJS.NodeJS.LTS -e
+node --version
+```
+
+### 5. Spec Kit (solo si no está instalado)
+
+```powershell
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git@v1.2.5
+specify --version
+```
+
+> El repositorio ya trae `.specify/` y `.opencode/commands/`. **No ejecutes
+> `specify init` de nuevo** salvo que se acuerde en el equipo.
+
+### 6. Skills del equipo en OpenCode
+
+OpenCode descubre skills en `~/.agents/skills` y `~/.config/opencode/skills`.
+
+```powershell
+# Archify (diagramas)
+npx skills add tt-a1i/archify -g
+
+# jan-project-standard: verifica que exista
+Test-Path "$HOME\.agents\skills\jan-project-standard\SKILL.md"
+
+# Si el docente lo entrega como carpeta:
+Copy-Item -Recurse "C:\ruta\al\paquete\jan-project-standard" "$HOME\.agents\skills\jan-project-standard"
+```
+
+Si `jan-project-standard` está en un repositorio, instálalo con
+`npx skills add <repo> -g`. OpenCode descubre `~/.agents/skills` y
+`~/.config/opencode/skills`. Reinicia OpenCode y verifica que aparezcan `archify` y
+`jan-project-standard`.
+
+### 7. Clonar y verificar
+
+```powershell
 git clone https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection.git
 cd GPCICD_PPE_Detection
-
 uv sync
-uv run pre-commit install   # equivalente a: make dev
+uv run pre-commit install
 make check
 ```
+
+**Verificación final:** `make check` debe terminar en verde (Ruff, formato, `ty` y
+pytest).
+
+### 🚫 Sin make
+
+Si no puedes instalar GNU Make, ejecuta los equivalentes en Git Bash:
+
+| Target | Comando equivalente |
+|--------|---------------------|
+| `make install` | `uv sync` |
+| `make dev` | `uv sync && uv run pre-commit install` |
+| `make pre-commit` | `uv run pre-commit run --all-files` |
+| `make lint` | `uv run ruff check .` |
+| `make format` | `uv run ruff format .` |
+| `make format-check` | `uv run ruff format --check .` |
+| `make typecheck` | `uv run ty check` |
+| `make test` | `uv run pytest` |
+| `make check` | `uv run ruff check . && uv run ruff format --check . && uv run ty check && uv run pytest` |
+| `make build` | `uv build` |
+| `make arch` | `node "$HOME/.agents/skills/archify/bin/archify.mjs" finalize architecture docs/architecture/arquitectura.json docs/architecture/arquitectura.html --quality showcase` |
+| `make clean` | `rm -rf .pytest_cache .ruff_cache .mypy_cache dist build htmlcov .coverage && find . -type d -name __pycache__ -prune -exec rm -rf {} +` |
+| `make help` | No tiene equivalente directo; usa esta tabla. |
+
+> Los comandos con `&&` funcionan en Git Bash. En PowerShell ejecútalos por separado
+> y revisa `$LASTEXITCODE` después de cada uno.
 
 ## 🌿 Gitflow
 

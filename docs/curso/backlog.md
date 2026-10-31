@@ -229,8 +229,31 @@
 | TA-09 | Descarga, verificación y versionado del artefacto | 3 | M3-S1 | Habilita HU-002/HU-013 |
 | SPI-02 | Spike: baseline de fine-tuning y evaluación | 3 | M3-S1 | Habilita HU-002/HU-008 |
 | TA-10 | Dependencias C++ y Docker CPU | 5 | M3-S2 | Habilita HU-011/HU-014 |
+| TA-EDA | EDA del dataset | 3 | M3-S1 | Habilita HU-002/HU-008 |
 
-**Total propuesto:** 25 SP.
+**Total propuesto:** 28 SP (incluye TA-EDA; no sumados al total oficial hasta que
+Jesús decida).
+
+### TA-EDA — EDA del dataset (propuesta, no creada)
+
+- **Objetivo:** entender el dataset antes de entrenar y dejar la descarga reproducible.
+- **AC propuestos:**
+  - Conteo de imágenes por split (`train/valid/test`).
+  - Objetos por clase y desbalance entre las seis clases.
+  - Imágenes sin etiquetas y cajas inválidas/fuera de rango.
+  - Descarga reproducible del `PPE.zip` con **SHA256** y ruta configurable.
+  - Reporte en `docs/spikes/` o `docs/dataset/`; sin `.ipynb` versionado.
+- **SP:** 3 (propuesto).
+- **Validación:** Jesús (dueño del backlog).
+
+### AC propuestos para HU-007 y HU-015 (AGPL, sin modificar issues)
+
+- **HU-007 (interfaz):** la vista debe incluir un enlace visible a “Código fuente”
+  (repo o URL de descarga) y la atribución CC-BY-4.0 del dataset.
+- **HU-015 (sistema desplegado):** el healthcheck o la página de operación debe
+  exponer el enlace al código fuente de la versión desplegada y la atribución del
+  dataset.
+- **Validación:** Jesús; no se modifican las issues hasta su aprobación.
 
 ### Incoherencia de SP
 

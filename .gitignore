@@ -24,8 +24,7 @@ coverage.xml
 *.key
 
 # Artefactos pesados / datos (revisar caso a caso)
-data/raw/
-data/processed/
+data/
 artifacts/
 *.h5
 *.pt
@@ -34,6 +33,12 @@ artifacts/
 *.safetensors
 *.sqlite
 *.db
+
+# MLflow / Ultralytics (salidas locales)
+mlruns/
+mlartifacts/
+mlflow.db
+runs/
 
 # Sistema operativo / IDE
 .DS_Store

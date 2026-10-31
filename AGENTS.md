@@ -100,6 +100,10 @@ make arch       # regenera el diagrama Archify (si está instalado)
 - Dataset CC-BY-4.0; la tarjeta no declara fuente original ni consentimiento.
 - **No hay clase `person` ni `no-EPP`**: se reporta qué EPP aparecen, no cumplimiento.
 - Detector YOLO nivel 3 (nano/small), CPU, <100 ms objetivo; sin LLM en inferencia.
+- **Entrenamiento:** CPU local no es viable; Colab/Kaggle solo como cómputo GPU,
+  ejecutando un script versionado con `uv`, sin `.ipynb`.
+- **Test-first:** cada AC tiene una prueba pytest antes de la implementación; sin
+  umbral de cobertura hasta HU-012.
 - Pesos y dataset fuera de Git; artefacto con SHA256 y versión.
 - Toda inferencia registra semilla, versión del modelo, tamaño de imagen y umbrales.
 

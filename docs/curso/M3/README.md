@@ -54,3 +54,11 @@
   (SPI-01 + SPI-02 + TA-02 + TA-09) suman **14 SP**.
 
 Ver [`docs/curso/backlog.md`](../backlog.md) para el detalle.
+
+## 5. Riesgos y decisiones pendientes
+
+| Riesgo / decisión | Responsable sugerido por rol | Acción |
+|-------------------|------------------------------|--------|
+| **Entrenamiento en CPU no es viable** | Hernán (modelo) | Usar **Colab/Kaggle solo como cómputo GPU**, ejecutando un script versionado del repo con `uv`, sin `.ipynb`. Documentar la excepción en la Model Card. |
+| **Python 3.13 + Ultralytics/torch CPU** | Guillermo (entorno/arquitectura) | Validar en **SPI-01, días 1–2 del M3**. Plan B: fijar **3.12** en `.python-version` y `pyproject.toml`. |
+| **EDA y descarga del dataset** | Jesús valida; Hernán ejecuta | TA propuesta **“EDA del dataset”**: conteo por split, objetos por clase, desbalance, imágenes sin etiquetas, cajas inválidas; descarga reproducible del ZIP con SHA256 y ruta configurable. Pendiente de validación de Jesús. |

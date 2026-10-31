@@ -34,3 +34,11 @@
 - Criterio de SP de TA/SPI y su relación con HU-011/HU-014.
 
 Ver [`docs/curso/backlog.md`](../backlog.md).
+
+## 5. Riesgos y decisiones pendientes
+
+| Riesgo / decisión | Responsable sugerido por rol | Acción |
+|-------------------|------------------------------|--------|
+| **AGPL en el despliegue** | Guillermo (repo) + Eliana (documento) | La interfaz y la API deben enlazar el código fuente; el dataset CC-BY exige atribución visible. AC propuesto en HU-007 y HU-015, pendiente de validación de Jesús. |
+| **Droplet** | Guillermo (infra) + Jesús (planificación) | Definir dueño de la cuenta, costo y administración de los secrets de GitHub Actions **antes del 19/11**. |
+| **Repo privado vs. AGPL** | Guillermo + Eliana | Si el servicio se publica, el repo debe ser público o el código debe ofrecerse a los usuarios. Decidir antes del M4. |
