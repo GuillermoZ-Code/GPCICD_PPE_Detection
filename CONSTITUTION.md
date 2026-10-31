@@ -121,12 +121,15 @@ GPCICD_PPE_Detection/
 │   ├── api/                 # FastAPI (previsto)
 │   ├── grpc/                # gRPC (previsto)
 │   ├── ui/                  # Streamlit (previsto)
-│   └── evaluation/          # métricas y MLflow (previsto)
+│   ├── evaluation/          # métricas y MLflow (previsto)
+│   └── training/            # fine-tuning YOLO (script de Colab)
 ├── tests/                   # pytest, patrón AAA
 ├── docs/
 │   ├── adr/                 # ADR 0001–0005
 │   ├── architecture/        # diagrama Archify (JSON + HTML)
-│   └── curso/               # contexto, backlog y checklists por módulo
+│   ├── curso/               # contexto, backlog y checklists por módulo
+│   ├── dataset/             # EDA y auditoría del dataset
+│   └── spikes/              # SPI-01 y SPI-02
 ├── specs/                   # specs de Spec Kit
 ├── .specify/                # Spec Kit v1.2.5 (integrado; no editar a mano)
 ├── .github/                 # PR/issue templates, CI, labels, Dependabot

@@ -25,7 +25,12 @@ coverage.xml
 
 # Artefactos pesados / datos (revisar caso a caso)
 data/
+dataset_limpio/
+dataset_original/
+datasets/
+_original/
 artifacts/
+weights/
 *.h5
 *.pt
 *.pth
@@ -33,12 +38,16 @@ artifacts/
 *.safetensors
 *.sqlite
 *.db
+*.zip
+
+# Notebooks (el curso exige scripts versionados, no .ipynb)
+*.ipynb
 
 # MLflow / Ultralytics (salidas locales)
+runs/
 mlruns/
 mlartifacts/
 mlflow.db
-runs/
 
 # Sistema operativo / IDE
 .DS_Store
