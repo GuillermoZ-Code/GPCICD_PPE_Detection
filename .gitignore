@@ -49,3 +49,13 @@ node_modules/
 
 # Índice de tgrep
 .tgrep/
+
+# Archify: recibos y evidencias de regeneración (el fuente es arquitectura.json)
+docs/architecture/*.finalize*.json
+docs/architecture/*.browser-check.json
+docs/architecture/*.delivery.json
+docs/architecture/review-*/
+
+# Spec Kit: caché local de extensiones
+.specify/extensions/.cache/
+.specify/extensions/.registry
