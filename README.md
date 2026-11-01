@@ -230,6 +230,8 @@ Distribuido bajo **GNU Affero General Public License v3.0 only**
 ([AGPL-3.0-only](./LICENSE)). El uso del sistema como servicio en red obliga a poner
 a disposición el código fuente de la versión modificada.
 
+El aviso de copyright y las atribuciones de terceros están en [`NOTICE`](./NOTICE).
+
 ---
 
 <div align="center">

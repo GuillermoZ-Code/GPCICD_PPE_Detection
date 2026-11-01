@@ -1,0 +1,25 @@
+GPCICD PPE Detection
+Copyright (C) 2026 GuillermoZ-Code and contributors
+
+Este proyecto se distribuye bajo la GNU Affero General Public License v3.0 only
+(AGPL-3.0-only). El texto completo y vinculante esta en el archivo LICENSE, sin
+modificaciones sobre el original publicado por la Free Software Foundation.
+
+Uso como servicio en red
+------------------------
+La seccion 13 de la AGPL obliga a ofrecer a los usuarios que interactuan con el
+sistema a traves de una red el codigo fuente de la version modificada. Ver la
+decision registrada en docs/adr/0003-licencia-agpl.md.
+
+Atribuciones de terceros
+------------------------
+- Ultralytics YOLO: AGPL-3.0. Detector empleado en el pipeline.
+- Dataset 51ddhesh/PPE_Detection: CC-BY-4.0, requiere atribucion. La tarjeta
+  original no declara la fuente primaria de las imagenes.
+- El resto de dependencias conservan sus propias licencias y se documentan en la
+  Model Card y en uv.lock.
+
+Marcas y responsabilidad
+------------------------
+El sistema reporta que Equipos de Proteccion Personal aparecen en una imagen; no
+certifica cumplimiento normativo ni sustituye la inspeccion humana.

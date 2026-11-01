@@ -8,8 +8,8 @@
 
 | Evidencia | Estado | Dónde se verifica |
 |-----------|:------:|-------------------|
-| GitHub Projects compartido | ⏳ Jesús | Sin confirmar; no hay evidencia en el repositorio |
-| Tablero sincronizado con las 15 HU | ⏳ Jesús | Columnas To Do / In Progress / Review-PR / Done |
+| GitHub Projects compartido | ✅ | <https://github.com/users/GuillermoZ-Code/projects/1> — Project de la cuenta personal, público; usar la URL directa (no aparece en la pestaña *Projects* del repo) |
+| Tablero sincronizado con las 15 HU | ✅ | 15 items · Estimate 67 · columnas Backlog / Ready / In progress / In review / Done |
 | Fibonacci 1:1 coherente (1 SP ≈ 1 día) | ⏳ Jesús | `docs/curso/backlog.md` (§ pendiente de validación) |
 | Labels ML / Backend / Frontend / Testing | ✅ | GitHub Labels + `.github/labels.yml` |
 | Labels de épica y prioridad | ✅ | `ep-01`…`ep-05`, `must-have`, `should-have` |
@@ -17,7 +17,7 @@
 | src-layout + `pyproject.toml` | ✅ | `src/ppe_detection/`, `pyproject.toml` |
 | `uv` funcionando | ✅ | `uv sync`, `uv.lock` |
 | pytest, Ruff y `ty` en verde | ✅ | `make check` |
-| Licencia AGPL-3.0 | ✅ | `LICENSE`, `pyproject.toml`, badge del README |
+| Licencia AGPL-3.0 | ✅ | `LICENSE` canónico, `NOTICE`, `pyproject.toml`, badge del README |
 | Plantilla UAO de PR | ✅ | `.github/PULL_REQUEST_TEMPLATE.md` |
 | Gitflow `develop` / `main` | ✅ | `CONSTITUTION.md`, `CONTRIBUTING.md` |
 | CI en `develop` y `main` | ✅ | `.github/workflows/ci.yml` |
@@ -68,7 +68,6 @@ uv build
 
 | Pendiente | Dueño | Tipo | No bloquea porque |
 |-----------|-------|------|-------------------|
-| GitHub Projects / tablero Kanban | Jesús | Entregable | Es artefacto de planificación, fuera del repositorio |
 | Fibonacci 1:1 y SP de HU-002 | Jesús | Decisión | `docs/curso/backlog.md` ya lo documenta como propuesta |
 | Issues TA-04, TA-11, SPI-01, TA-02, TA-09, SPI-02, TA-10, TA-EDA | Jesús | Alcance M3 | Son alcance del M3, no criterio de cierre del M2 |
 | AC de AGPL para HU-007 y HU-015 | Jesús + Eliana | Decisión | Propuesta, sin modificar las issues |
