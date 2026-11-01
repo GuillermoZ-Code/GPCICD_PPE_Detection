@@ -24,9 +24,13 @@ coverage.xml
 *.key
 
 # Artefactos pesados / datos (revisar caso a caso)
-data/raw/
-data/processed/
+data/
+dataset_limpio/
+dataset_original/
+datasets/
+_original/
 artifacts/
+weights/
 *.h5
 *.pt
 *.pth
@@ -34,6 +38,16 @@ artifacts/
 *.safetensors
 *.sqlite
 *.db
+*.zip
+
+# Notebooks (el curso exige scripts versionados, no .ipynb)
+*.ipynb
+
+# MLflow / Ultralytics (salidas locales)
+runs/
+mlruns/
+mlartifacts/
+mlflow.db
 
 # Sistema operativo / IDE
 .DS_Store
@@ -49,3 +63,13 @@ node_modules/
 
 # Índice de tgrep
 .tgrep/
+
+# Archify: recibos y evidencias de regeneración (el fuente es arquitectura.json)
+docs/architecture/*.finalize*.json
+docs/architecture/*.browser-check.json
+docs/architecture/*.delivery.json
+docs/architecture/review-*/
+
+# Spec Kit: caché local de extensiones
+.specify/extensions/.cache/
+.specify/extensions/.registry

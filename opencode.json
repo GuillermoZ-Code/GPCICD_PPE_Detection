@@ -1,0 +1,12 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "CONSTITUTION.md",
+    "docs/curso/CONTEXTO_CURSO.md",
+    "docs/curso/backlog.md",
+    "docs/curso/M2/README.md",
+    "docs/curso/M3/README.md",
+    "docs/curso/M4/README.md",
+    "docs/adr/*.md"
+  ]
+}

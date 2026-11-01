@@ -5,7 +5,7 @@
 **Detección de Equipos de Protección Personal (EPP) mediante visión por computador.**
 Proyecto del curso GPCICD M2-M4.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.13+](https://img.shields.io/badge/python-3.13%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/actions/workflows/ci.yml/badge.svg)](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/actions/workflows/ci.yml)
 [![Managed with uv](https://img.shields.io/badge/managed%20with-uv-de5fe9.svg)](https://github.com/astral-sh/uv)
@@ -20,44 +20,60 @@ Proyecto del curso GPCICD M2-M4.
 
 ## 📖 Descripción general
 
-Este repositorio aloja el proyecto integrador del curso **GPCICD M2-M4**: un sistema de
-visión por computador que detecta **Equipos de Protección Personal (EPP)** —por ejemplo,
-casco, chaleco, guantes o gafas— en imágenes y video, y reporta su presencia o ausencia de
-forma evaluable.
+Sistema de visión por computador que detecta **seis categorías de EPP** —Helmet,
+Vest, Gloves, Goggles, Mask y Safety Shoe— en imágenes estáticas, y reporta su
+ubicación y confianza. Es el proyecto integrador del curso **GPCICD M2-M4**.
 
-El proyecto se construye con un enfoque de ingeniería reproducible: entorno gestionado con
-`uv`, calidad automatizada (Ruff, `ty`, `pytest`, pre-commit) y CI en GitHub Actions. La
-funcionalidad de detección se implementará de forma incremental durante los módulos del
-curso.
+El repositorio se construye con un enfoque de ingeniería reproducible: `uv`, Ruff,
+`ty`, pytest, pre-commit, CI en GitHub Actions, Spec Kit para el flujo por HU y
+Docker CPU para la ejecución. La entrega del M2 consolida la alineación del
+repositorio, el backlog y la arquitectura; la implementación del detector se
+desarrolla en M3–M4.
 
-> 📘 La verdad técnica central —propósito, stack, decisiones, convenciones y flujo— vive en
+> 📘 La verdad técnica central —equipo, propósito, stack, decisiones y flujo— vive en
 > [`CONSTITUTION.md`](./CONSTITUTION.md). Es de lectura obligatoria antes de contribuir.
 
 ## 📑 Tabla de contenidos
 
 - [Descripción general](#-descripción-general)
 - [Estado del proyecto](#-estado-del-proyecto)
+- [Equipo y roles](#-equipo-y-roles)
 - [Stack tecnológico](#-stack-tecnológico)
 - [Primeros pasos](#-primeros-pasos)
+- [Arquitectura](#-arquitectura)
 - [Calidad y automatización](#-calidad-y-automatización)
 - [Estructura del repositorio](#-estructura-del-repositorio)
+- [Flujo de trabajo](#-flujo-de-trabajo)
 - [Roadmap](#-roadmap)
-- [Flujo de trabajo y contribución](#-flujo-de-trabajo-y-contribución)
-- [Licencia](#-licencia)
+- [Datos, licencia y límites](#-datos-licencia-y-límites)
+- [Licencia del código](#-licencia-del-código)
 
 ## 🚧 Estado del proyecto
 
 | Área | Estado |
 |------|:------:|
 | Estructura del repositorio y entorno (`uv`) | ✅ |
-| Constitución técnica y gobernanza | ✅ |
-| CI configurada en GitHub Actions | ✅ |
-| Requisitos y dataset del curso | ⏳ |
-| Pipeline de detección de EPP | ⏳ |
-| Pruebas de dominio | ⏳ |
+| Constitución, roles y gobernanza | ✅ |
+| Gitflow `develop`/`main` y plantilla UAO | ✅ |
+| Dataset seleccionado y documentado | ✅ |
+| Arquitectura objetivo (Archify) | ✅ |
+| Spec Kit inicializado | ✅ v1.2.5 | `.specify/`, `.opencode/commands/` |
+| Detector YOLO y contrato de inferencia | ⏳ M3 |
+| API REST, gRPC y Streamlit | ⏳ M3 |
+| MLflow, Docker CPU y CI/CD | ⏳ M3–M4 |
+| Sistema desplegado en Droplet | ⏳ M4 |
 
-> **Hoy el repositorio es un esqueleto de ingeniería.** Todavía no contiene un modelo
-> entrenado ni un pipeline de inferencia; esos son los siguientes hitos del roadmap.
+## 👥 Equipo y roles
+
+| Integrante | GitHub | Rol |
+|------------|--------|-----|
+| Eliana Cardona | [@ElianaCardona](https://github.com/ElianaCardona) | Documento maestro, Caps. 1–2, alcance, integración del PDF |
+| Hernán Estrada | [@HestradaUAO](https://github.com/HestradaUAO) | Modelo, Model Card, datos, licencia, hardware, métricas, sesgos, Cap. 4 y CRISP-DM |
+| Guillermo Zabala | [@GuillermoZ-Code](https://github.com/GuillermoZ-Code) | Entorno, arquitectura y repositorio, evidencias y **Code Reviewer** |
+| Jesús Riveros | [@jesusriverosUAO](https://github.com/jesusriverosUAO) | Planificación, Gantt, CPM, HU, AC, estimación, Cap. 3 y 5, tablero Kanban |
+
+> Los responsables de las HU se definen al iniciar el M3; no hay una tabla de
+> asignación de HU en el repositorio.
 
 ## 🛠️ Stack tecnológico
 
@@ -70,8 +86,16 @@ curso.
 | **Testing** | [`pytest`](https://docs.pytest.org/) |
 | **Linting / Formato** | [Ruff](https://docs.astral.sh/ruff/) |
 | **Pre-commit** | [pre-commit](https://pre-commit.com) |
-| **CI/CD** | [GitHub Actions](.github/workflows/ci.yml) |
-| **Visión por computador** | `EN EVALUACIÓN` — candidato: PyTorch + Ultralytics YOLO |
+| **API REST** | FastAPI + Pydantic |
+| **RPC** | gRPC + Protocol Buffers |
+| **Interfaz** | Streamlit |
+| **Visión** | Ultralytics YOLO (nano/small) + PyTorch CPU |
+| **Experiment tracking** | MLflow |
+| **Contenedor** | Docker CPU |
+| **CI/CD** | GitHub Actions + Droplet |
+| **Spec-Driven Development** | [GitHub Spec Kit](https://github.com/github/spec-kit) |
+| **Dataset** | [`51ddhesh/PPE_Detection`](https://huggingface.co/datasets/51ddhesh/PPE_Detection) |
+| **Licencia** | AGPL-3.0-only |
 
 ## 🚀 Primeros pasos
 
@@ -96,72 +120,118 @@ uv run pre-commit install   # equivalente a: make dev
 
 ```bash
 make check   # lint + formato + tipos + pruebas
+uv build     # construye sdist + wheel
 ```
 
 > ⚠️ **Regla del proyecto:** toda gestión de dependencias y entornos pasa por `uv`.
 > Está **prohibido** `pip` y `requirements.txt`.
 
+## 🗺️ Arquitectura
+
+```text
+Imagen → validación → preprocesamiento → detector YOLO → postprocesamiento (NMS/umbrales)
+       → API REST / gRPC → Streamlit
+                                     ↘ MLflow (experimentos y métricas)
+Todo en Docker CPU; CI/CD → Droplet
+```
+
+- [Diagrama interactivo](docs/architecture/arquitectura.html)
+- [Fuente versionada](docs/architecture/arquitectura.json)
+- [ADRs](docs/adr/)
+- [Constitución](CONSTITUTION.md)
+
+El contrato `ImageData → list[Detection]` se define antes del detector real, con un
+`FakeDetector` determinista, para que API, interfaz y gRPC avancen en paralelo.
+
 ## ✅ Calidad y automatización
 
 | Herramienta | Rol |
 |-------------|-----|
-| [`uv`](https://docs.astral.sh/uv/) | Entornos, dependencias y lockfile determinista. |
-| [Ruff](https://docs.astral.sh/ruff/) | Lint y formato. |
-| [`ty`](https://github.com/astral-sh/ty) | Verificación estática de tipos. |
-| [pre-commit](https://pre-commit.com) | Hooks antes de cada commit. |
-| [pytest](https://docs.pytest.org/) | Pruebas unitarias. |
+| [`uv`](https://docs.astral.sh/uv/) | Entornos, dependencias y lockfile |
+| [Ruff](https://docs.astral.sh/ruff/) | Lint y formato |
+| [`ty`](https://github.com/astral-sh/ty) | Verificación estática de tipos |
+| [pre-commit](https://pre-commit.com) | Hooks antes de cada commit |
+| [pytest](https://docs.pytest.org/) | Pruebas unitarias (AAA) |
+| GitHub Actions | CI en `develop` y `main` |
 
 | Comando | Descripción |
 |---------|-------------|
-| `make help` | Lista los objetivos disponibles. |
-| `make dev` | `uv sync` + instala los hooks de pre-commit. |
-| `make check` | Verificación completa (lint + formato + tipos + pruebas). |
-| `make lint` / `make format` | Ruff. |
-| `make test` | `pytest`. |
-| `make build` | Construye el paquete (sdist + wheel). |
+| `make help` | Lista los objetivos |
+| `make dev` | `uv sync` + hooks |
+| `make check` | Lint + formato + tipos + pruebas |
+| `make lint` / `make format` | Ruff |
+| `make test` | pytest |
+| `make arch` | Regenera el diagrama Archify (si está instalado) |
+| `make build` | `uv build` |
 
 ## 📂 Estructura del repositorio
 
 ```text
 GPCICD_PPE_Detection/
-├── src/ppe_detection/       # código del paquete (src-layout)
-├── tests/                   # pruebas
-├── docs/                    # documentación
-├── CONSTITUTION.md          # verdad central del proyecto
+├── src/ppe_detection/       # paquete (src-layout)
+├── tests/                   # pytest
+├── docs/
+│   ├── adr/                 # ADR 0001–0005
+│   ├── architecture/        # diagrama Archify
+│   └── curso/               # contexto, backlog y checklists M2–M4
+├── specs/                   # specs de Spec Kit
+├── .specify/                # Spec Kit v1.2.5 (integrado)
+├── CONSTITUTION.md          # verdad central
 ├── README.md                # este archivo
 ├── CONTRIBUTING.md          # guía de contribución
-├── Makefile                 # automatización de tareas
-├── pyproject.toml           # metadatos y dependencias (uv)
-└── uv.lock                  # lockfile determinista
+├── AGENTS.md                # contexto para agentes
+├── Makefile
+├── pyproject.toml
+├── uv.lock
+└── LICENSE                  # AGPL-3.0
 ```
 
-## 🗺️ Roadmap
+## 🔄 Flujo de trabajo
 
-- [ ] Definir requisitos y dataset (M2).
-- [ ] Elegir el modelo/framework de detección.
-- [ ] Implementar el pipeline de datos y el baseline.
-- [ ] Implementar inferencia y evaluación.
-- [ ] Ampliar la suite de pruebas (datos, post-procesamiento, inferencia).
-- [ ] Verificar la CI en GitHub y proteger `main`.
+- **Gitflow:** `feature/*` → `develop`; `develop → main` solo en entregas de módulo.
+- **Commits:** Conventional Commits, imperativo, ≤72 caracteres.
+- **PR:** plantilla UAO, `Closes #N`, spec enlazada, assignee = autor, reviewers =
+  otros integrantes, mínimo 1 aprobación. El autor nunca se autoaprueba.
+- **Merge:** squash por defecto en PR simples; merge commit cuando hay commits
+  atómicos que conservar; release `develop → main` siempre con merge commit.
+- **Spec Kit:** issue → specify → clarify → plan → tasks → analyze → implement →
+  `make check` → PR.
+- **Sin push directo** a `main` ni a `develop`.
 
-El detalle vive en [`CONSTITUTION.md` §11](./CONSTITUTION.md#11-notas-y-tareas-pendientes).
+Ver [`CONTRIBUTING.md`](./CONTRIBUTING.md) para el detalle.
 
-## 🤝 Flujo de trabajo y contribución
+## 🗓️ Roadmap
 
-> 📘 La guía completa está en [`CONTRIBUTING.md`](./CONTRIBUTING.md). Resumen:
+| Sprint | Fechas | HUs | SP |
+|--------|--------|-----|----|
+| **M3-S1** | 31/10–07/11 | HU-001 a HU-007 | 28 |
+| **M3-S2** | 08/11–14/11 | HU-008 a HU-013 | 26 |
+| **M4-S3** | 15/11–28/11 | HU-014 y HU-015 | 13 |
+| **Total** | | | **67** |
 
-1. Crea una rama: `git checkout -b feat/nombre-corto`.
-2. Desarrolla y verifica: `make check`.
-3. Commitea con [Conventional Commits](https://www.conventionalcommits.org/): `git commit -m "feat: ..."`.
-4. Abre un Pull Request con la plantilla oficial.
-5. Mantén `CONSTITUTION.md` actualizado ante cambios arquitectónicos o tecnológicos.
+Sustentaciones: **M3 14/11/2026** y **M4 28/11/2026**. El detalle vive en
+[`docs/curso/backlog.md`](docs/curso/backlog.md).
 
-## 📄 Licencia
+## 📊 Datos, licencia y límites
 
-Distribuido bajo la [Licencia MIT](./LICENSE).
+- Dataset: [`51ddhesh/PPE_Detection`](https://huggingface.co/datasets/51ddhesh/PPE_Detection),
+  **CC-BY-4.0**, 6 clases, **16.014 objetos anotados**, formato YOLO.
+- El número de imágenes no está publicado; la tarjeta no declara la fuente original,
+  conserva el placeholder `<your-username>/ppe-detection` y no menciona consentimiento.
+- **No hay clase `person` ni `no-EPP`**: el sistema reporta qué EPP aparecen, no si un
+  trabajador cumple o incumple.
+- Los datasets y pesos **no se versionan**; el artefacto se identifica por versión y
+  SHA256.
+- El sistema es **asistivo** y no sustituye la inspección humana ni la normativa.
+
+## 📄 Licencia del código
+
+Distribuido bajo **GNU Affero General Public License v3.0 only**
+([AGPL-3.0-only](./LICENSE)). El uso del sistema como servicio en red obliga a poner
+a disposición el código fuente de la versión modificada.
 
 ---
 
 <div align="center">
-<sub>Hecho con ❤️ por GuillermoZ</sub>
+<sub>Hecho con ❤️ por el Grupo 4 — GPCICD M2-M4</sub>
 </div>

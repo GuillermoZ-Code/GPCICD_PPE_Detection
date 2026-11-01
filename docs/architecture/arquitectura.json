@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "GPCICD PPE Detection — arquitectura objetivo",
+    "locale": "es",
+    "output": "docs/architecture/arquitectura.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "Usuario",
+      "sublabel": "Imagen JPG/PNG",
+      "pos": [40, 280],
+      "size": [110, 64]
+    },
+    {
+      "id": "ui",
+      "type": "frontend",
+      "label": "Streamlit",
+      "sublabel": "Interfaz",
+      "pos": [190, 280],
+      "size": [110, 64]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "FastAPI + gRPC",
+      "sublabel": "Contrato Image → Detection",
+      "pos": [340, 280],
+      "size": [140, 64]
+    },
+    {
+      "id": "validate",
+      "type": "backend",
+      "label": "Validación",
+      "sublabel": "Formato / tamaño",
+      "pos": [520, 280],
+      "size": [110, 64]
+    },
+    {
+      "id": "preprocess",
+      "type": "backend",
+      "label": "Preprocesamiento",
+      "sublabel": "Resize / normalización",
+      "pos": [670, 280],
+      "size": [120, 64]
+    },
+    {
+      "id": "detector",
+      "type": "backend",
+      "label": "YOLO detector",
+      "sublabel": "nano/small · CPU",
+      "pos": [830, 280],
+      "size": [120, 64]
+    },
+    {
+      "id": "postprocess",
+      "type": "backend",
+      "label": "Postprocesamiento",
+      "sublabel": "NMS / umbrales",
+      "pos": [1030, 280],
+      "size": [130, 64]
+    },
+    {
+      "id": "artifacts",
+      "type": "database",
+      "label": "Artefacto YOLO",
+      "sublabel": "versión + SHA256",
+      "pos": [830, 130],
+      "size": [120, 60]
+    },
+    {
+      "id": "mlflow",
+      "type": "database",
+      "label": "MLflow",
+      "sublabel": "runs / métricas",
+      "pos": [1030, 130],
+      "size": [120, 60]
+    },
+    {
+      "id": "repo",
+      "type": "external",
+      "label": "Repositorio Git",
+      "sublabel": "develop / main",
+      "pos": [40, 470],
+      "size": [110, 60]
+    },
+    {
+      "id": "ci",
+      "type": "cloud",
+      "label": "GitHub Actions",
+      "sublabel": "CI/CD",
+      "pos": [190, 470],
+      "size": [110, 60]
+    },
+    {
+      "id": "droplet",
+      "type": "cloud",
+      "label": "Droplet",
+      "sublabel": "host CPU",
+      "pos": [340, 470],
+      "size": [120, 60]
+    },
+    {
+      "id": "logs",
+      "type": "database",
+      "label": "Health / logs",
+      "sublabel": "sin secretos",
+      "pos": [500, 470],
+      "size": [120, 60]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Docker CPU en Droplet",
+      "wraps": ["api", "validate", "preprocess", "detector", "postprocess", "artifacts", "mlflow"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "user-to-ui",
+      "from": "user",
+      "to": "ui",
+      "label": "imagen"
+    },
+    {
+      "id": "ui-to-api",
+      "from": "ui",
+      "to": "api",
+      "label": "HTTP"
+    },
+    {
+      "id": "api-to-validate",
+      "from": "api",
+      "to": "validate",
+      "label": "ImageData"
+    },
+    {
+      "id": "validate-to-preprocess",
+      "from": "validate",
+      "to": "preprocess",
+      "label": "válida"
+    },
+    {
+      "id": "preprocess-to-detector",
+      "from": "preprocess",
+      "to": "detector",
+      "label": "tensor"
+    },
+    {
+      "id": "detector-to-postprocess",
+      "from": "detector",
+      "to": "postprocess",
+      "label": "detecciones",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "postprocess-to-api",
+      "from": "postprocess",
+      "to": "api",
+      "label": "list[Detection]",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [[1095, 390], [410, 390]]
+    },
+    {
+      "id": "artifacts-to-detector",
+      "from": "artifacts",
+      "to": "detector",
+      "label": "carga pesos"
+    },
+    {
+      "id": "postprocess-to-mlflow",
+      "from": "postprocess",
+      "to": "mlflow",
+      "label": "métricas"
+    },
+    {
+      "id": "repo-to-ci",
+      "from": "repo",
+      "to": "ci",
+      "label": "push / PR"
+    },
+    {
+      "id": "ci-to-droplet",
+      "from": "ci",
+      "to": "droplet",
+      "label": "deploy"
+    },
+    {
+      "id": "droplet-to-api",
+      "from": "droplet",
+      "to": "api",
+      "label": "Docker CPU"
+    },
+    {
+      "id": "droplet-to-logs",
+      "from": "droplet",
+      "to": "logs",
+      "label": "health / logs"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Entrada y contrato",
+      "items": [
+        "JPEG/PNG validado antes de inferir",
+        "ImageData → list[Detection]",
+        "6 clases y confianza en [0,1]"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Modelo",
+      "items": [
+        "YOLO nivel 3, nano/small",
+        "CPU, objetivo <100 ms",
+        "AGPL-3.0; pesos fuera de Git"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Operación",
+      "items": [
+        "Docker CPU en Droplet",
+        "CI/CD con compuertas",
+        "MLflow para experimentos",
+        "Healthcheck y logs sin secretos"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Límites",
+      "items": [
+        "Sin clase person ni no-EPP",
+        "Reporta EPP, no cumplimiento",
+        "Dataset CC-BY-4.0 con fuente no declarada"
+      ]
+    }
+  ]
+}

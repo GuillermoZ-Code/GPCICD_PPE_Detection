@@ -2,8 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [develop, main]
   pull_request:
+    branches: [develop, main]
 
 permissions:
   contents: read
@@ -37,3 +38,6 @@ jobs:
 
       - name: Pruebas
         run: uv run pytest
+
+      - name: Construir paquete
+        run: uv build

@@ -10,7 +10,14 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build arch clean
+
+# Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
+ifeq ($(OS),Windows_NT)
+ARCHIFY_BIN ?= $(shell cygpath -m "$(USERPROFILE)")/.agents/skills/archify/bin/archify.mjs
+else
+ARCHIFY_BIN ?= $(HOME)/.agents/skills/archify/bin/archify.mjs
+endif
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -45,6 +52,9 @@ check: lint format-check typecheck test ## Verificación completa (lint + format
 
 build: ## Construye el paquete (sdist + wheel)
 	uv build
+
+arch: ## Regenera el diagrama de arquitectura con Archify
+	node "$(ARCHIFY_BIN)" finalize architecture docs/architecture/arquitectura.json docs/architecture/arquitectura.html --quality showcase
 
 clean: ## Limpia cachés y artefactos
 	rm -rf .pytest_cache .ruff_cache .mypy_cache dist build htmlcov .coverage
