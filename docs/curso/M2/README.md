@@ -59,7 +59,8 @@ uv build
 - [ ] PR de alineación revisado y fusionado a `develop`.
       *Fusionado (PR #20), pero **sin aprobación registrada**: 0 revisiones.*
 - [x] Release `develop → main` con merge commit y tag `m2-entrega`.
-- [ ] Documento PDF integrado por Eliana con la misma información del backlog.
+- [x] Documento PDF integrado por Eliana con la misma información del backlog
+      *(entregado por la plataforma de la UAO)*.
 
 ## 5. Pendientes declarados al cierre
 
