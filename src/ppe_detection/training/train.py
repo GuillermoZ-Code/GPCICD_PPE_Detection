@@ -21,6 +21,7 @@ import importlib
 import importlib.metadata
 import importlib.util
 import json
+import os
 import platform
 import random
 import shutil
@@ -30,6 +31,11 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+# Colab/IPython exporta MPLBACKEND=module://matplotlib_inline; en un subproceso
+# sin matplotlib_inline eso rompe matplotlib. Agg es seguro para entrenamiento.
+if os.environ.get("MPLBACKEND", "").startswith("module://matplotlib_inline"):
+    os.environ["MPLBACKEND"] = "Agg"
 
 SPLITS = ("train", "valid", "test")
 DEFAULT_MODEL = "yolov8n.pt"
