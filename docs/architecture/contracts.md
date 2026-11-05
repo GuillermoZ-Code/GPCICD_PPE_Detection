@@ -94,3 +94,33 @@ image = load_image_bytes(data, source="upload")
 
 La carga decodifica a RGB, conserva las dimensiones originales y **no ejecuta
 inferencia**.
+
+## Detector real (HU-002)
+
+`YoloDetector` adapta un artefacto Ultralytics al protocolo `Detector`:
+
+- Carga perezosa de `ultralytics`: las pruebas unitarias no requieren torch.
+- `conf`, `iou`, `imgsz` y `device` configurables; la CLI los registra.
+- Convierte la entrada RGB a BGR antes de `predict` (Ultralytics asume BGR en arrays
+  NumPy).
+- Exige que el catálogo del modelo sea exactamente `CLASSES`; un modelo COCO u otro
+  catálogo de EPP se rechaza.
+- Recorta las cajas a la imagen y descarta cajas degeneradas antes de construir
+  `Detection`.
+- Sin resultados devuelve `[]`.
+
+Instalación del extra:
+
+```bash
+uv sync --extra inference
+```
+
+Uso:
+
+```python
+from ppe_detection.detection import YoloDetector
+from ppe_detection.io import load_image
+
+detector = YoloDetector("artifacts/models/yolo11s_clean/weights/best.pt")
+detections = detector.detect(load_image("foto.jpg"))
+```
