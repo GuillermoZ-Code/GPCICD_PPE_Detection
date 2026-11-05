@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -19,9 +20,12 @@ DEFAULT_DEVICE = "cpu"
 class ModelProtocol(Protocol):
     """Forma mínima que se espera de un modelo Ultralytics o de un fake."""
 
-    names: Any
+    @property
+    def names(self) -> Any:
+        """Catálogo de clases del modelo."""
+        ...
 
-    def predict(self, source: Any, **kwargs: Any) -> list[Any]: ...
+    def predict(self, source: Any, **kwargs: Any) -> Iterable[Any]: ...
 
 
 def _load_model(model_path: Path) -> ModelProtocol:
@@ -88,13 +92,15 @@ class YoloDetector:
     def detect(self, image: ImageData) -> list[Detection]:
         """Ejecuta inferencia y devuelve detecciones validadas."""
         bgr = cv2.cvtColor(image.array, cv2.COLOR_RGB2BGR)
-        results = self._model.predict(
-            source=bgr,
-            conf=self.conf,
-            iou=self.iou,
-            imgsz=self.imgsz,
-            device=self.device,
-            verbose=False,
+        results = list(
+            self._model.predict(
+                source=bgr,
+                conf=self.conf,
+                iou=self.iou,
+                imgsz=self.imgsz,
+                device=self.device,
+                verbose=False,
+            )
         )
         if not results:
             return []
