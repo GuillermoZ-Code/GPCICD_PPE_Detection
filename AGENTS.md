@@ -19,8 +19,8 @@ con visión por computador. Curso **GPCICD M2-M4**. Licencia **AGPL-3.0-only**.
 | Guillermo Zabala | `GuillermoZ-Code` | Entorno, arquitectura y repositorio, evidencias y **Code Reviewer** |
 | Jesús Riveros | `jesusriverosUAO` | Planificación, Gantt, CPM, HU, AC, estimación, Cap. 3 y 5, tablero Kanban |
 
-> Los responsables de las HU se definen al iniciar el M3. No hay tabla de asignación
-> de HU en el repo.
+> Los responsables de las HU se definen al iniciar el M3; la tabla vigente está en
+> [`docs/curso/backlog.md`](./docs/curso/backlog.md#responsables).
 
 ## Flujo de trabajo
 

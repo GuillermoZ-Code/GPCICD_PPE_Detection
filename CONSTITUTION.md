@@ -32,9 +32,9 @@
 | **Guillermo Alexander Zabala Fernández** | [@GuillermoZ-Code](https://github.com/GuillermoZ-Code) | Entorno, arquitectura y repositorio (`src/`, `pyproject.toml`, `uv`, Ruff, pytest, pre-commit, build, CI, Spec Kit), evidencias de comprobaciones y **Code Reviewer**. |
 | **Wilson Jesús Riveros Gómez** | [@jesusriverosUAO](https://github.com/jesusriverosUAO) | Planificación, Gantt, CPM, HU, AC, estimación (Capítulos 3 y 5) y tablero Kanban. |
 
-> Los responsables de las HU se definen en equipo al iniciar el M3. **No hay una tabla
-> de asignación de HU en este repositorio**; el tablero y las issues son la fuente
-> operativa.
+> Los responsables de las HU se definen en equipo al iniciar el M3. La tabla vigente
+> vive en [`docs/curso/backlog.md`](./docs/curso/backlog.md#responsables); el tablero y
+> las issues son la fuente operativa.
 
 ## 2. Propósito y no-propósito
 
@@ -320,6 +320,8 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-10-31 | Test-first con trazabilidad AC → prueba | Evitar AC sin verificación y regresiones |
 | 2026-10-31 | Colab/Kaggle solo como cómputo GPU, sin `.ipynb` | CPU local no es viable para entrenar |
 | 2026-10-31 | Sin umbral de cobertura hasta HU-012 | El equipo decide con evidencia |
+| 2026-11-04 | Reestimar el backlog de 67 a 22 SP (HU-001 a HU-015) | Alinear con el documento del M2; las TA/SPI se absorben en la preparación P1–P4 |
+| 2026-11-04 | HU-002 pasa temporalmente de Jesús a Hernán | Jesús no disponible; HU-002 tiene holgura cero y bloquea la ruta crítica |
 
 ## 12. Roadmap M3–M4
 
@@ -327,17 +329,19 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 
 - Clases: **05/11 FastAPI/REST**, **07/11 MLflow + Streamlit**.
 - Sustentación: **sábado 14/11/2026**.
-- **M3-S1 (31/10–07/11): HU-001 a HU-007 — 28 SP.**
-- **M3-S2 (08/11–14/11): HU-008 a HU-013 — 26 SP.**
+- **M3-S1 (31/10–07/11): HU-001 a HU-007 — 11 SP.**
+- **M3-S2 (08/11–14/11): HU-008 a HU-013 — 8 SP.**
 
 ### M4 — 19/11/2026 a 28/11/2026
 
 - MLOps/despliegue, CI/CD y credenciales.
 - Sustentación: **sábado 28/11/2026**.
-- **M4-S3 (15/11–28/11): HU-014 y HU-015 — 13 SP.**
+- **M4-S3 (15/11–28/11): HU-014 y HU-015 — 3 SP.**
 
-**Total backlog oficial:** 67 SP. Las TA/SPI propuestas (25 SP) están **pendientes de
-validación por Jesús**; no se suman al total hasta que él defina el criterio. Ver
+**Total backlog oficial:** 22 SP (reestimación del 04/11/2026 sobre la planificación del
+documento del M2, aprobada por Jesús). Las actividades de preparación del M3 (P1–P4)
+suman 12 SP y no son issues, por lo que no entran en el total del tablero. Las TA/SPI
+propuestas (25 SP) están **pendientes de validación por Jesús** y no se suman. Ver
 `docs/curso/backlog.md`.
 
 ### Riesgos y decisiones pendientes

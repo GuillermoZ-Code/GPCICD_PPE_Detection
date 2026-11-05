@@ -12,28 +12,28 @@
 
 ## 2. Sprints
 
-### M3-S1 — 31/10 a 07/11 (28 SP)
+### M3-S1 — 31/10 a 07/11 (11 SP)
 
-| HU | Título | SP | Dependencias |
-|----|--------|----|--------------|
-| HU-001 | Cargar una imagen para su análisis | 3 | TA-04 |
-| HU-002 | Detectar las seis categorías de EPP | 8 | SPI-01, SPI-02, TA-02, TA-09 |
-| HU-003 | Visualizar las detecciones sobre la imagen | 3 | HU-002 |
-| HU-004 | Informar cuando no se detectan EPP | 2 | HU-002 |
-| HU-005 | Validar las imágenes recibidas | 2 | HU-001 |
-| HU-006 | API REST con FastAPI | 5 | HU-002, HU-005 |
-| HU-007 | Interfaz gráfica del detector | 5 | HU-001, 003, 004, 005, 006 |
+| HU | Título | SP | Responsable | Dependencias |
+|----|--------|----|-------------|--------------|
+| HU-001 | Cargar una imagen para su análisis | 1 | Hernán | TA-04 |
+| HU-002 | Detectar las seis categorías de EPP | 3 | Hernán | SPI-01, SPI-02, TA-02, TA-09 |
+| HU-003 | Visualizar las detecciones sobre la imagen | 1 | Guillermo | HU-002 |
+| HU-004 | Informar cuando no se detectan EPP | 1 | Eliana | HU-002 |
+| HU-005 | Validar las imágenes recibidas | 1 | Hernán | HU-001 |
+| HU-006 | API REST con FastAPI | 2 | Hernán | HU-002, HU-005 |
+| HU-007 | Interfaz gráfica del detector | 2 | Guillermo | HU-001, 003, 004, 005, 006 |
 
-### M3-S2 — 08/11 a 14/11 (26 SP)
+### M3-S2 — 08/11 a 14/11 (8 SP)
 
-| HU | Título | SP | Dependencias |
-|----|--------|----|--------------|
-| HU-008 | Evaluar el desempeño del modelo | 5 | HU-002, TA-02 |
-| HU-009 | Consultar y comparar experimentos en MLflow | 3 | HU-008 |
-| HU-010 | Consumir inferencias mediante gRPC | 5 | HU-006 |
-| HU-011 | Ejecutar el sistema en Docker CPU | 5 | HU-006, HU-007, HU-010 |
-| HU-012 | Verificaciones automatizadas de calidad | 5 | Contratos de HU-006/007/010 |
-| HU-013 | Consultar la versión del modelo | 3 | HU-002, HU-009 |
+| HU | Título | SP | Responsable | Dependencias |
+|----|--------|----|-------------|--------------|
+| HU-008 | Evaluar el desempeño del modelo | 2 | Jesús | HU-002, TA-02 |
+| HU-009 | Consultar y comparar experimentos en MLflow | 1 | Jesús | HU-008 |
+| HU-010 | Consumir inferencias mediante gRPC | 1 | Eliana | HU-006 |
+| HU-011 | Ejecutar el sistema en Docker CPU | 2 | Eliana | HU-006, HU-007, HU-010 |
+| HU-012 | Verificaciones automatizadas de calidad | 1 | Hernán | Contratos de HU-006/007/010 |
+| HU-013 | Consultar la versión del modelo | 1 | Jesús | HU-002, HU-009 |
 
 ## 3. Entregables del M3
 
@@ -50,8 +50,10 @@
 
 - Creación de TA-04, TA-11, SPI-01, TA-02, TA-09, SPI-02 y TA-10.
 - Criterio de SP para TA/SPI: desglose dentro de la HU padre o alcance adicional.
-- Incoherencia detectada: **HU-002 = 8 SP**, pero sus dependencias
-  (SPI-01 + SPI-02 + TA-02 + TA-09) suman **14 SP**.
+
+**Resuelto el 04/11/2026:** la reestimación fijó HU-002 en **3 SP** y absorbió el
+trabajo de las TA/SPI en las actividades de preparación P1–P4 (12 SP). La incoherencia
+entre HU-002 (8 SP) y sus dependencias (14 SP) queda cerrada.
 
 Ver [`docs/curso/backlog.md`](../backlog.md) para el detalle.
 
@@ -60,5 +62,6 @@ Ver [`docs/curso/backlog.md`](../backlog.md) para el detalle.
 | Riesgo / decisión | Responsable sugerido por rol | Acción |
 |-------------------|------------------------------|--------|
 | **Entrenamiento en CPU no es viable** | Hernán (modelo) | Usar **Colab/Kaggle solo como cómputo GPU**, ejecutando un script versionado del repo con `uv`, sin `.ipynb`. Documentar la excepción en la Model Card. |
-| **Python 3.13 + Ultralytics/torch CPU** | Guillermo (entorno/arquitectura) | Validar en **SPI-01, días 1–2 del M3**. Plan B: fijar **3.12** en `.python-version` y `pyproject.toml`. |
-| **EDA y descarga del dataset** | Jesús valida; Hernán ejecuta | TA propuesta **“EDA del dataset”**: conteo por split, objetos por clase, desbalance, imágenes sin etiquetas, cajas inválidas; descarga reproducible del ZIP con SHA256 y ruta configurable. Pendiente de validación de Jesús. |
+| **Python 3.13 + Ultralytics/torch CPU** | Guillermo (entorno/arquitectura) | **Cerrado en SPI-01:** Ultralytics 8.4.195 + torch 2.15.0+cpu cargan e infieren en Python 3.13.7. Ver [`docs/spikes/SPI-01`](../../spikes/SPI-01-compatibilidad-yolo.md). |
+| **EDA y descarga del dataset** | Hernán | **Completado:** 12.078 imágenes, 10.941 tras limpieza, SHA256 del ZIP registrado. Ver [`docs/dataset/EDA.md`](../../dataset/EDA.md). |
+| **Latencia en CPU** | Hernán (modelo) + Guillermo (entorno) | SPI-01 midió **136–158 ms** a 640 px en un i5-1235U: no cumple el objetivo de <100 ms. Decidir si se acepta el tradeoff o se reduce resolución/ONNX antes de HU-011. |
