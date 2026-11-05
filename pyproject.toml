@@ -16,7 +16,10 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Typing :: Typed",
 ]
-dependencies = []
+dependencies = [
+    "numpy>=2.5.4",
+    "opencv-python-headless>=5.0.0.93",
+]
 
 [project.urls]
 Homepage = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection"
