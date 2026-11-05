@@ -72,8 +72,8 @@ desarrolla en M3–M4.
 | Guillermo Zabala | [@GuillermoZ-Code](https://github.com/GuillermoZ-Code) | Entorno, arquitectura y repositorio, evidencias y **Code Reviewer** |
 | Jesús Riveros | [@jesusriverosUAO](https://github.com/jesusriverosUAO) | Planificación, Gantt, CPM, HU, AC, estimación, Cap. 3 y 5, tablero Kanban |
 
-> Los responsables de las HU se definen al iniciar el M3; no hay una tabla de
-> asignación de HU en el repositorio.
+> Los responsables de las HU se definen al iniciar el M3; la tabla vigente está en
+> [`docs/curso/backlog.md`](./docs/curso/backlog.md#responsables).
 
 ## 🛠️ Stack tecnológico
 
@@ -204,10 +204,10 @@ Ver [`CONTRIBUTING.md`](./CONTRIBUTING.md) para el detalle.
 
 | Sprint | Fechas | HUs | SP |
 |--------|--------|-----|----|
-| **M3-S1** | 31/10–07/11 | HU-001 a HU-007 | 28 |
-| **M3-S2** | 08/11–14/11 | HU-008 a HU-013 | 26 |
-| **M4-S3** | 15/11–28/11 | HU-014 y HU-015 | 13 |
-| **Total** | | | **67** |
+| **M3-S1** | 31/10–07/11 | HU-001 a HU-007 | 11 |
+| **M3-S2** | 08/11–14/11 | HU-008 a HU-013 | 8 |
+| **M4-S3** | 15/11–28/11 | HU-014 y HU-015 | 3 |
+| **Total** | | | **22** |
 
 Sustentaciones: **M3 14/11/2026** y **M4 28/11/2026**. El detalle vive en
 [`docs/curso/backlog.md`](docs/curso/backlog.md).

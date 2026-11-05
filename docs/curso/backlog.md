@@ -11,18 +11,45 @@
 
 | Sprint | Fechas | HUs | SP |
 |--------|--------|-----|----|
-| M3-S1 | 31/10–07/11/2026 | HU-001 a HU-007 | 28 |
-| M3-S2 | 08/11–14/11/2026 | HU-008 a HU-013 | 26 |
-| M4-S3 | 15/11–28/11/2026 | HU-014 y HU-015 | 13 |
-| **Total** | | **15 HU** | **67** |
+| M3-S1 | 31/10–07/11/2026 | HU-001 a HU-007 | 11 |
+| M3-S2 | 08/11–14/11/2026 | HU-008 a HU-013 | 8 |
+| M4-S3 | 15/11–28/11/2026 | HU-014 y HU-015 | 3 |
+| **Total** | | **15 HU** | **22** |
 
-## M3-S1 — 31/10 a 07/11 (28 SP)
+> **Reestimación del M3 (04/11/2026).** Los SP de las 15 HU pasaron de 67 a 22 para
+> alinearse con la planificación del documento del M2 (`Doc_Mod2_EPP.pdf`, §3.3),
+> aprobada por Jesús. El tablero de GitHub Projects ya refleja el total de 22.
+>
+> La **preparación del M3** (P1–P4) suma 12 SP adicionales y no está registrada como
+> issues, igual que en el documento: el plan completo son **34 SP**, de los cuales el
+> tablero solo puede medir 22.
+
+## Responsables
+
+Asignación vigente en GitHub, tomada del documento del M2. Único cambio respecto al
+PDF: **HU-002 pasa de Jesús a Hernán** (transferencia temporal desde el 04/11/2026),
+porque Jesús no estaba disponible esa semana y HU-002 tiene holgura cero en la ruta
+crítica.
+
+| Persona | GitHub | HU | SP HU | Preparación | SP prep |
+|---------|--------|----|------:|-------------|--------:|
+| Hernán Estrada | `HestradaUAO` | HU-001, HU-002, HU-005, HU-006, HU-012 | 8 | P4 entorno y contratos | 3 |
+| Eliana Cardona | `ElianaCardona` | HU-004, HU-010, HU-011, HU-014 | 6 | P3 artefacto y versión | 3 |
+| Guillermo Zabala | `GuillermoZ-Code` | HU-003, HU-007, HU-015 | 4 | P1 alcance y licencias | 3 |
+| Jesús Riveros | `jesusriverosUAO` | HU-008, HU-009, HU-013 | 4 | P2 datos y particiones | 3 |
+| **Total** | | **15 HU** | **22** | **4 actividades** | **12** |
+
+Las actividades de preparación no son issues; su alcance y evidencia viven en
+[`M3/README.md`](M3/README.md). La ruta crítica del plan es
+`P → HU-002 → HU-006 → HU-007 → HU-011 → HU-014 → HU-015`.
+
+## M3-S1 — 31/10 a 07/11 (11 SP)
 
 ### HU-001 — Cargar una imagen para su análisis
 
 - **Como** usuario del sistema de detección de EPP, **quiero** proporcionar una imagen
   digital, **para** que pueda ser analizada por el modelo.
-- **SP:** 3 · **Labels:** `ep-01` `must-have` `Backend` `Testing` · **Milestone:** M3-S1.
+- **SP:** 1 · **Labels:** `ep-01` `must-have` `Backend` `Testing` · **Milestone:** M3-S1.
 - **Depende de:** TA-04 *(pendiente de creación/validación — Jesús)*.
 - **AC:**
   - Imagen válida decodificada y entregada al preprocesamiento.
@@ -34,7 +61,7 @@
 
 - **Como** usuario del sistema, **quiero** que el modelo identifique y localice EPP en
   una imagen, **para** conocer qué categorías fueron detectadas y dónde.
-- **SP:** 8 · **Labels:** `ep-02` `must-have` `ML` · **Milestone:** M3-S1.
+- **SP:** 3 · **Labels:** `ep-02` `must-have` `ML` · **Milestone:** M3-S1.
 - **Depende de:** SPI-01, SPI-02, TA-02, TA-09 *(pendientes de validación — Jesús)*.
 - **AC:**
   - Inferencia con modelo cargado; sin entrenamiento.
@@ -47,7 +74,7 @@
 
 - **Como** usuario, **quiero** visualizar la ubicación y categoría de los EPP
   detectados, **para** interpretar los resultados.
-- **SP:** 3 · **Labels:** `ep-02` `must-have` `Frontend` `ML` · **Milestone:** M3-S1.
+- **SP:** 1 · **Labels:** `ep-02` `must-have` `Frontend` `ML` · **Milestone:** M3-S1.
 - **Depende de:** #2.
 - **AC:**
   - Cada detección se dibuja con caja, categoría y confianza.
@@ -59,7 +86,7 @@
 
 - **Como** usuario, **quiero** recibir una indicación clara cuando el modelo no
   encuentre objetos, **para** distinguir una inferencia sin detecciones de un fallo.
-- **SP:** 2 · **Labels:** `ep-01` `must-have` `Backend` `Frontend` · **Milestone:** M3-S1.
+- **SP:** 1 · **Labels:** `ep-01` `must-have` `Backend` `Frontend` · **Milestone:** M3-S1.
 - **Depende de:** #2.
 - **AC:**
   - Colección vacía y mensaje “no se detectaron EPP”.
@@ -71,7 +98,7 @@
 
 - **Como** usuario, **quiero** recibir una notificación comprensible cuando una imagen
   no pueda procesarse, **para** corregir la entrada sin fallos.
-- **SP:** 2 · **Labels:** `ep-01` `must-have` `Backend` `Testing` · **Milestone:** M3-S1.
+- **SP:** 1 · **Labels:** `ep-01` `must-have` `Backend` `Testing` · **Milestone:** M3-S1.
 - **Depende de:** #1.
 - **AC:**
   - Archivo corrupto rechazado sin ejecutar el detector.
@@ -84,7 +111,7 @@
 - **Como** desarrollador que necesita integrar el detector, **quiero** enviar imágenes
   a una API HTTP y recibir resultados estructurados, **para** usar el modelo sin
   depender de la interfaz gráfica.
-- **SP:** 5 · **Labels:** `ep-03` `must-have` `Backend` · **Milestone:** M3-S1.
+- **SP:** 2 · **Labels:** `ep-03` `must-have` `Backend` · **Milestone:** M3-S1.
 - **Depende de:** #2, #5.
 - **AC:**
   - Inferencia HTTP exitosa conforme al esquema publicado.
@@ -97,7 +124,7 @@
 
 - **Como** usuario sin conocimientos de programación, **quiero** acceder al detector
   mediante una interfaz gráfica, **para** analizar una imagen y consultar resultados.
-- **SP:** 5 · **Labels:** `ep-03` `must-have` `Frontend` · **Milestone:** M3-S1.
+- **SP:** 2 · **Labels:** `ep-03` `must-have` `Frontend` · **Milestone:** M3-S1.
 - **Depende de:** #1, #3, #4, #5, #6.
 - **AC:**
   - Flujo completo: seleccionar imagen, inferir, mostrar resultado.
@@ -106,13 +133,13 @@
   - Archivo inválido: mensaje comprensible y la interfaz sigue disponible.
 - **Spec:** pendiente de crear con Spec Kit.
 
-## M3-S2 — 08/11 a 14/11 (26 SP)
+## M3-S2 — 08/11 a 14/11 (8 SP)
 
 ### HU-008 — Evaluar el desempeño del modelo de detección
 
 - **Como** evaluador del modelo, **quiero** medir su desempeño con métricas apropiadas,
   **para** conocer su capacidad y documentar limitaciones.
-- **SP:** 5 · **Labels:** `ep-04` `must-have` `ML` `Testing` · **Milestone:** M3-S2.
+- **SP:** 2 · **Labels:** `ep-04` `must-have` `ML` `Testing` · **Milestone:** M3-S2.
 - **Depende de:** #2, TA-02 *(pendiente de validación — Jesús)*.
 - **AC:**
   - Informe reproducible con versión del modelo, partición y configuración.
@@ -125,7 +152,7 @@
 
 - **Como** integrante del equipo ML, **quiero** consultar parámetros y resultados de
   las ejecuciones, **para** comparar experimentos y conservar trazabilidad.
-- **SP:** 3 · **Labels:** `ep-04` `must-have` `ML` · **Milestone:** M3-S2.
+- **SP:** 1 · **Labels:** `ep-04` `must-have` `ML` · **Milestone:** M3-S2.
 - **Depende de:** #8.
 - **AC:**
   - Run identificable con parámetros, métricas y referencia al modelo.
@@ -137,7 +164,7 @@
 
 - **Como** desarrollador integrador, **quiero** consumir la inferencia mediante gRPC,
   **para** disponer de un segundo mecanismo de integración.
-- **SP:** 5 · **Labels:** `ep-03` `must-have` `Backend` · **Milestone:** M3-S2.
+- **SP:** 1 · **Labels:** `ep-03` `must-have` `Backend` · **Milestone:** M3-S2.
 - **Depende de:** #6.
 - **AC:**
   - Solicitud gRPC válida devuelve respuesta estructurada con las 6 clases.
@@ -150,7 +177,7 @@
 - **Como** responsable de integración técnica, **quiero** ejecutar el sistema con sus
   dependencias y un modelo versionado en Docker, **para** reproducir la aplicación sin
   reconstruir el entorno.
-- **SP:** 5 · **Labels:** `ep-04` `must-have` `Backend` `Testing` · **Milestone:** M3-S2.
+- **SP:** 2 · **Labels:** `ep-04` `must-have` `Backend` `Testing` · **Milestone:** M3-S2.
 - **Depende de:** #6, #7, #10.
 - **AC:**
   - Build reproducible desde un entorno limpio.
@@ -163,7 +190,7 @@
 
 - **Como** integrante del equipo, **quiero** ejecutar una suite automatizada de
   verificaciones, **para** detectar regresiones y validar contratos antes de integrar.
-- **SP:** 5 · **Labels:** `ep-04` `must-have` `Testing` · **Milestone:** M3-S2.
+- **SP:** 1 · **Labels:** `ep-04` `must-have` `Testing` · **Milestone:** M3-S2.
 - **Depende de:** contratos de #6, #7 y #10.
 - **AC:**
   - pytest finaliza satisfactoriamente e informa el resultado.
@@ -176,7 +203,7 @@
 
 - **Como** evaluador técnico, **quiero** identificar la versión del modelo que generó
   una inferencia, **para** relacionar resultados con configuración y desempeño.
-- **SP:** 3 · **Labels:** `ep-04` `should-have` `ML` `Backend` · **Milestone:** M3-S2.
+- **SP:** 1 · **Labels:** `ep-04` `should-have` `ML` `Backend` · **Milestone:** M3-S2.
 - **Depende de:** #2, #9.
 - **AC:**
   - Referencia verificable de la versión usada en la inferencia.
@@ -184,13 +211,13 @@
   - Artefacto identificable fuera de Git.
 - **Spec:** pendiente de crear con Spec Kit.
 
-## M4-S3 — 15/11 a 28/11 (13 SP)
+## M4-S3 — 15/11 a 28/11 (3 SP)
 
 ### HU-014 — Publicar versiones mediante un pipeline CI/CD con compuertas de calidad
 
 - **Como** responsable del despliegue, **quiero** publicar versiones solo después de
   verificaciones automáticas, **para** reducir el riesgo de cambios defectuosos.
-- **SP:** 8 · **Labels:** `ep-05` `must-have` `Backend` `Testing` · **Milestone:** M4-S3.
+- **SP:** 2 · **Labels:** `ep-05` `must-have` `Backend` `Testing` · **Milestone:** M4-S3.
 - **Depende de:** #11, #12, TA-10 *(pendiente de validación — Jesús)*.
 - **AC:**
   - Build, deploy y smoke exitosos con cambios autorizados.
@@ -204,7 +231,7 @@
 - **Como** responsable técnico de la aplicación desplegada, **quiero** consultar su
   estado y eventos técnicos, **para** comprobar si el servicio funciona y diagnosticar
   errores.
-- **SP:** 5 · **Labels:** `ep-05` `must-have` `Backend` `Testing` · **Milestone:** M4-S3.
+- **SP:** 1 · **Labels:** `ep-05` `must-have` `Backend` `Testing` · **Milestone:** M4-S3.
 - **Depende de:** #14.
 - **AC:**
   - Healthcheck responde con el estado del componente y el contrato publicado.
@@ -234,6 +261,10 @@
 **Total propuesto:** 28 SP (incluye TA-EDA; no sumados al total oficial hasta que
 Jesús decida).
 
+> **Actualización del 04/11/2026:** la reestimación absorbió este trabajo en las
+> actividades de preparación P1–P4 (12 SP), que no son issues. Estas TA/SPI no se
+> crean como tickets salvo que Jesús decida lo contrario.
+
 ### TA-EDA — EDA del dataset (propuesta, no creada)
 
 - **Objetivo:** entender el dataset antes de entrenar y dejar la descarga reproducible.
@@ -255,17 +286,14 @@ Jesús decida).
   dataset.
 - **Validación:** Jesús; no se modifican las issues hasta su aprobación.
 
-### Incoherencia de SP
+### Incoherencia de SP — resuelta
 
-- **HU-002 = 8 SP**, pero sus dependencias **SPI-01 (3) + SPI-02 (3) + TA-02 (5) +
-  TA-09 (3) = 14 SP**.
-- Opciones:
-  - **(a)** Re-estimar las HU padre para absorber el trabajo de TA/SPI.
-  - **(b)** Dejar las TA/SPI **sin SP propio** y anotarlas como “incluido en HU-xxx”.
-- **No se cambia ningún SP de HU sin aprobación de Jesús.**
+La reestimación del 04/11/2026 fijó **HU-002 en 3 SP** y absorbió el trabajo de las
+TA/SPI en las actividades de preparación P1–P4 (12 SP), que no son issues. Con eso
+desaparece la diferencia entre HU-002 (antes 8 SP) y sus dependencias (antes 14 SP).
 
 ### Tablero
 
-- El tablero Kanban es entregable de Jesús. No se crea desde el repo.
-- Si ya existe un GitHub Project del grupo, solo falta enlazar las 15 issues y las
-  TA/SPI aprobadas.
+- El tablero es <https://github.com/users/GuillermoZ-Code/projects/1>; las 15 issues
+  están enlazadas y el campo `Estimate` suma 22.
+- Las TA/SPI no se crean como issues mientras no lo decida Jesús.
