@@ -95,7 +95,7 @@ make arch       # regenera el diagrama Archify (si está instalado)
 
 ## Dominio y límites
 
-- 6 clases: Helmet, Vest, Gloves, Goggles, Mask, Safety Shoe.
+- 6 clases en el orden del `data.yaml`: Gloves, Vest, goggles, helmet, mask, safety_shoe.
 - 16.014 objetos anotados; el número de imágenes no está publicado.
 - Dataset CC-BY-4.0; la tarjeta no declara fuente original ni consentimiento.
 - **No hay clase `person` ni `no-EPP`**: se reporta qué EPP aparecen, no cumplimiento.
