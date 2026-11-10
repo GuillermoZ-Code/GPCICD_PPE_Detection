@@ -57,9 +57,12 @@ desarrolla en M3–M4.
 | Gitflow `develop`/`main` y plantilla UAO | ✅ |
 | Dataset seleccionado y documentado | ✅ |
 | Arquitectura objetivo (Archify) | ✅ |
-| Spec Kit inicializado | ✅ v1.2.5 | `.specify/`, `.opencode/commands/` |
-| Detector YOLO y contrato de inferencia | ⏳ M3 |
-| API REST, gRPC y SPA React | ⏳ M3 |
+| Spec Kit inicializado | ✅ v1.2.5 |
+| Contrato de inferencia y carga de imágenes | ✅ HU-001 |
+| Detector YOLO (inferencia CPU) | ✅ HU-002 |
+| Visualización de detecciones | ✅ HU-003 |
+| SPA React con Vite y TypeScript | 🚧 HU-007 en revisión (#35) |
+| API REST y gRPC | ⏳ M3 |
 | MLflow, Docker CPU y CI/CD | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 

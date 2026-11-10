@@ -175,7 +175,7 @@ uv build
 - [ ] **Assignee = autor**; **reviewers = otros integrantes**; el autor no se aprueba.
 - [ ] La PR se creó o actualizó con el **MCP de GitHub** y la **cuenta UAO**.
 - [ ] La PR enlaza su issue (`Closes #N`) y su spec.
-- [ ] Actualicé `docs/curso/ESTADO.md` (`make estado-write` + entrada de bitácora).
+- [ ] Actualicé `docs/curso/ESTADO.md` y `AGENTS.md` §0 (`make estado-write` + bitácora); si cambió el stack o el estado, también `README.md` y `CONSTITUTION.md`.
 
 ---
 

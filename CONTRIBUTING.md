@@ -244,7 +244,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 - Spec Kit **v1.2.5** está inicializado en `.specify/`; los comandos viven en
   `.opencode/commands/` y la rama se crea con `branch_template:
   "feature/{number}-{slug}"`.
-- Hoy solo existe la spec de la TA de contract-first como ejemplo; no se implementa.
+- Specs `001`–`005` en `specs/`; las HU se implementan con el flujo anterior.
 
 ## 🧹 Estándares de código
 

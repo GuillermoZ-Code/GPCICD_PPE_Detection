@@ -9,11 +9,16 @@
 > **Este bloque caduca.** Si tiene más de 3 días o no coincide con `git log`, ignóralo
 > y reconstruye el estado con `make estado`.
 
-- **Actualizado:** 2026-11-09.
-- **Sprint:** M3-S2 (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
-- **Fusionado en `develop`:** HU-001 (#28) y HU-002 (#30); issues #1 y #2 cerradas.
-- **En vuelo:** ninguna PR de código abierta. Pendiente el PR de contexto para agentes.
-- **Siguiente acción:** abrir HU-003 (depende de #2, ya cerrada) con Spec Kit.
+Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
+
+<!-- estado:inicio -->
+**Actualizado:** 2026-11-10 03:11 UTC
+- **Rama:** `feature/005-hu-007-interfaz` · +4/-0 vs `origin/develop`
+- **Issues abiertas:** 12 · 17 SP
+- **En vuelo:** #35 feat(web): interfaz React con cliente de inferencia y pruebas (PR, revisión: —); #34 feat(results): contrato y mensaje de resultado vacío de EPP (HU-004) (PR, revisión: —)
+- **Siguiente:** #5 HU-005 — Validar las imágenes recibidas
+<!-- estado:fin -->
+
 - **Detalle:** [`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md).
 
 ### 0.1 Protocolo de arranque (obligatorio para OpenCode y Codex)
@@ -26,10 +31,12 @@
 
 ### 0.2 Protocolo de cierre (obligatorio)
 
-1. `make estado-write` regenera el bloque de `ESTADO.md`.
-2. Añade una entrada a la bitácora con: **hecho**, **en vuelo**, **siguiente**.
-3. Commit: `docs(estado): registrar cierre de sesion`.
-4. Si no puedes commitear, deja el archivo modificado y dilo explícitamente.
+1. `make estado-write` regenera `docs/curso/ESTADO.md` y el bloque del §0.
+2. Si cambió el stack, una decisión o el estado del proyecto, actualiza también
+   `CONSTITUTION.md`, `README.md` y el ADR correspondiente en el mismo PR.
+3. Añade una entrada a la bitácora con: **hecho**, **en vuelo**, **siguiente**.
+4. Commit: `docs(estado): registrar cierre de sesion`.
+5. Si no puedes commitear, deja el archivo modificado y dilo explícitamente.
 
 ### 0.3 Precedencia de fuentes
 
@@ -101,7 +108,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
   con los principios no negociables y se sincroniza en el mismo commit.
 - Spec Kit **v1.2.5** está inicializado en `.specify/`; los comandos viven en
   `.opencode/commands/` y `branch_template` es `feature/{number}-{slug}`.
-- Hoy solo existe la spec de la TA de contract-first como ejemplo; no se implementa.
+- Specs `001`–`005` en `specs/`; las HU se implementan con el flujo anterior.
 
 ## Comandos
 
