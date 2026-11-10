@@ -131,7 +131,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Categoría y ubicación visibles para cada detección.
   - Sin detecciones: mensaje claro, sin error ficticio.
   - Archivo inválido: mensaje comprensible y la interfaz sigue disponible.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/005-hu-007-interfaz`](../../specs/005-hu-007-interfaz/spec.md).
 
 ## M3-S2 — 08/11 a 14/11 (8 SP)
 

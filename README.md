@@ -59,7 +59,7 @@ desarrolla en M3–M4.
 | Arquitectura objetivo (Archify) | ✅ |
 | Spec Kit inicializado | ✅ v1.2.5 | `.specify/`, `.opencode/commands/` |
 | Detector YOLO y contrato de inferencia | ⏳ M3 |
-| API REST, gRPC y Streamlit | ⏳ M3 |
+| API REST, gRPC y SPA React | ⏳ M3 |
 | MLflow, Docker CPU y CI/CD | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 
@@ -88,7 +88,7 @@ desarrolla en M3–M4.
 | **Pre-commit** | [pre-commit](https://pre-commit.com) |
 | **API REST** | FastAPI + Pydantic |
 | **RPC** | gRPC + Protocol Buffers |
-| **Interfaz** | Streamlit |
+| **Interfaz** | React 19 + Vite + TypeScript (`frontend/`) |
 | **Visión** | Ultralytics YOLO (nano/small) + PyTorch CPU |
 | **Experiment tracking** | MLflow |
 | **Contenedor** | Docker CPU |
@@ -130,7 +130,7 @@ uv build     # construye sdist + wheel
 
 ```text
 Imagen → validación → preprocesamiento → detector YOLO → postprocesamiento (NMS/umbrales)
-       → API REST / gRPC → Streamlit
+       → API REST / gRPC → SPA React
                                      ↘ MLflow (experimentos y métricas)
 Todo en Docker CPU; CI/CD → Droplet
 ```

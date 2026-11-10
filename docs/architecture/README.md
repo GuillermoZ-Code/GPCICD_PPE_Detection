@@ -22,7 +22,7 @@ El diagrama muestra el flujo objetivo del M3–M4:
 
 ```text
 Imagen → validación → preprocesamiento → YOLO → postprocesamiento
-       → FastAPI / gRPC → Streamlit
+       → FastAPI / gRPC → SPA React
 ```
 
 Incluye el artefacto del modelo, MLflow, Docker CPU, CI/CD hacia Droplet y

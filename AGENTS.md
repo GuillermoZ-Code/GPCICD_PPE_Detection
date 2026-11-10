@@ -110,11 +110,12 @@ make check      # lint + formato + tipos + pruebas
 make lint       # Ruff
 make format     # Ruff format
 make test       # pytest
+make frontend-check  # ESLint + Vitest + build del frontend
 make arch       # regenera el diagrama Archify (si está instalado)
 ```
 
-> ⚠️ Toda dependencia entra con `uv add` / `uv add --dev`. Prohibido `pip` y
-> `requirements.txt`.
+> ⚠️ Toda dependencia de Python entra con `uv add` / `uv add --dev`. Prohibido `pip` y
+> `requirements.txt`. El frontend usa `npm` con `package-lock.json` (ADR 0006).
 
 ## Skills y MCP del equipo
 

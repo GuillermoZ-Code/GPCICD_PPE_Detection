@@ -41,3 +41,4 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `002-hu-001-carga-imagen` | Implementada en `feature/002-hu-001-carga-imagen` (PR #28) |
 | `003-hu-002-deteccion` | Implementada en `feature/003-hu-002-deteccion` (PR #30) |
 | `004-hu-003-visualizacion` | Implementada en `feature/004-hu-003-visualizacion` |
+| `005-hu-007-interfaz` | Implementada en `feature/005-hu-007-interfaz` |

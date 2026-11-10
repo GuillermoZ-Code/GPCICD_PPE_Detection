@@ -73,7 +73,7 @@ Marca las capas que toca esta PR (ajusta los nombres a los módulos reales del p
       (`postprocess.py`)
 - [ ] **Evaluación / métricas** — mAP, precision, recall, F1 y reportes
       (`evaluate.py`, `metrics.py`)
-- [ ] **API / RPC / UI** — FastAPI, gRPC o Streamlit
+- [ ] **API / RPC / UI** — FastAPI, gRPC o la SPA React (`frontend/`)
       (`api/`, `grpc/`, `ui/`)
 - [ ] **Pruebas** (`tests/test_*.py`)
 - [ ] **Infraestructura** (`Dockerfile`, `pyproject.toml`, `uv.lock`, `Makefile`, `.github/workflows/`)
