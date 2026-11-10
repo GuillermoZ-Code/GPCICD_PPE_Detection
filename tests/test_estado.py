@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from pathlib import Path
 
+import pytest
+
+from ppe_detection.tools import estado
 from ppe_detection.tools.estado import (
     GENERATED_END,
     GENERATED_START,
@@ -44,6 +48,22 @@ def _report() -> Report:
     )
 
 
+def _report_without_github() -> Report:
+    return Report(
+        generated_at=datetime(2026, 11, 9, 12, 0, tzinfo=UTC),
+        branch="develop",
+        dirty=0,
+        ahead=0,
+        behind=0,
+        develop="f975019 (2026-11-09)",
+        commits=(),
+        prs=(),
+        issues=(),
+        warnings=("`gh` no disponible o sin sesión: PRs e issues sin actualizar",),
+        github_ok=False,
+    )
+
+
 def test_parse_backlog_sp_reads_points_per_hu() -> None:
     # Arrange
     text = (
@@ -60,6 +80,38 @@ def test_parse_backlog_sp_reads_points_per_hu() -> None:
 
     # Assert
     assert points == {"HU-001": 1, "HU-002": 3}
+
+
+def test_parse_backlog_sp_ignores_sections_after_last_hu() -> None:
+    # Arrange: la tabla de TA-EDA repite un `**SP:** 3 (propuesto)` después de HU-015.
+    text = (
+        "### HU-015 — Comprobar el sistema\n"
+        "- **SP:** 1 · **Labels:** `ep-05`.\n"
+        "\n"
+        "## Pendiente de validación (Jesús)\n"
+        "\n"
+        "### TA-EDA — EDA del dataset (propuesta, no creada)\n"
+        "- **SP:** 3 (propuesto).\n"
+    )
+
+    # Act
+    points = parse_backlog_sp(text)
+
+    # Assert
+    assert points == {"HU-015": 1}
+
+
+def test_parse_backlog_sp_matches_real_backlog() -> None:
+    # Arrange
+    text = (estado.REPO_ROOT / "docs/curso/backlog.md").read_text(encoding="utf-8")
+
+    # Act
+    points = parse_backlog_sp(text)
+
+    # Assert
+    assert len(points) == 15
+    assert points["HU-015"] == 1
+    assert sum(points.values()) == 22
 
 
 def test_render_summarizes_prs_issues_and_next() -> None:
@@ -81,19 +133,7 @@ def test_render_summarizes_prs_issues_and_next() -> None:
 
 def test_render_reports_warnings() -> None:
     # Arrange
-    base = _report()
-    report = Report(
-        generated_at=base.generated_at,
-        branch=base.branch,
-        dirty=base.dirty,
-        ahead=base.ahead,
-        behind=base.behind,
-        develop=base.develop,
-        commits=base.commits,
-        prs=base.prs,
-        issues=base.issues,
-        warnings=("`gh` no disponible o sin sesión: PRs e issues sin actualizar",),
-    )
+    report = _report_without_github()
 
     # Act
     text = render(report)
@@ -101,6 +141,40 @@ def test_render_reports_warnings() -> None:
     # Assert
     assert "**Avisos:**" in text
     assert "`gh` no disponible" in text
+
+
+def test_write_refuses_without_github(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Arrange
+    target = tmp_path / "ESTADO.md"
+    target.write_text(f"{GENERATED_START}\ncontenido previo\n{GENERATED_END}\n", encoding="utf-8")
+    monkeypatch.setattr(estado, "ESTADO_PATH", target)
+    monkeypatch.setattr(estado, "collect", _report_without_github)
+
+    # Act
+    code = estado.main(["--write"])
+
+    # Assert
+    assert code == 1
+    assert "contenido previo" in target.read_text(encoding="utf-8")
+
+
+def test_write_updates_when_sources_are_available(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Arrange
+    target = tmp_path / "ESTADO.md"
+    target.write_text(f"{GENERATED_START}\ncontenido previo\n{GENERATED_END}\n", encoding="utf-8")
+    monkeypatch.setattr(estado, "ESTADO_PATH", target)
+    monkeypatch.setattr(estado, "collect", _report)
+
+    # Act
+    code = estado.main(["--write"])
+
+    # Assert
+    assert code == 0
+    content = target.read_text(encoding="utf-8")
+    assert "contenido previo" not in content
+    assert "Pull requests abiertas (1)" in content
 
 
 def test_replace_block_keeps_the_session_log() -> None:
