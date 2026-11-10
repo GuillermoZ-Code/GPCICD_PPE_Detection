@@ -3,7 +3,7 @@
 **Branch**: `feature/004-hu-004-informe-sin-detecciones` | **Date**: 2026-11-10 |
 **Spec**: [spec.md](spec.md)
 
-**Input**: Feature specification from `specs/004-hu-004-informe-sin-detecciones/spec.md`
+**Input**: Feature specification from `specs/006-hu-004-informe-sin-detecciones/spec.md`
 e issue #4.
 
 ## Summary
@@ -56,7 +56,7 @@ src/ppe_detection/
 tests/
 └── test_results.py     # nuevo: AC-004.1 . AC-004.3 + FR
 
-specs/004-hu-004-informe-sin-detecciones/
+specs/006-hu-004-informe-sin-detecciones/
 ├── spec.md · plan.md · tasks.md · checklists/requirements.md
 ```
 

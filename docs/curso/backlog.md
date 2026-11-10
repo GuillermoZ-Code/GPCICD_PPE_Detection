@@ -80,7 +80,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Cada detección se dibuja con caja, categoría y confianza.
   - Transformación espacial correcta según dimensiones originales.
   - Sin detecciones: no se dibujan cajas inexistentes.
-- **Spec:** [`specs/004-hu-003-visualizacion`](../../specs/004-hu-003-visualizacion/spec.md).
+- **Spec:** [`specs/004-hu-003-visualizacion`](../../specs/004-hu-003-visualizacion/spec.md) · PR #33.
 
 ### HU-004 — Informar cuando no se detectan elementos de protección personal
 
@@ -92,7 +92,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Colección vacía y mensaje "no se detectaron EPP".
   - No se clasifica como error de procesamiento.
   - No se afirma incumplimiento ni ausencia real de EPP.
-- **Spec:** [`specs/004-hu-004-informe-sin-detecciones`](../../specs/004-hu-004-informe-sin-detecciones/spec.md) · rama `feature/004-hu-004-informe-sin-detecciones`.
+- **Spec:** [`specs/006-hu-004-informe-sin-detecciones`](../../specs/006-hu-004-informe-sin-detecciones/spec.md) · PR #34.
 
 ### HU-005 — Validar las imágenes recibidas
 
@@ -131,7 +131,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Categoría y ubicación visibles para cada detección.
   - Sin detecciones: mensaje claro, sin error ficticio.
   - Archivo inválido: mensaje comprensible y la interfaz sigue disponible.
-- **Spec:** [`specs/005-hu-007-interfaz`](../../specs/005-hu-007-interfaz/spec.md).
+- **Spec:** [`specs/005-hu-007-interfaz`](../../specs/005-hu-007-interfaz/spec.md) · PR #35.
 
 ## M3-S2 — 08/11 a 14/11 (8 SP)
 

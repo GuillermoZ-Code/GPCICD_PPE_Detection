@@ -10,8 +10,7 @@ Este directorio contiene una spec por HU, creada con
 - **Comandos:** `.opencode/commands/speckit.*.md`.
 - **Rama:** `branch_template: "feature/{number}-{slug}"`; el slug incluye el ID
   (`feature/002-hu-001-carga-imagen`, `feature/003-hu-002-deteccion`).
-- **Specs en curso:** `004-hu-004-informe-sin-detecciones` (PR #34, rama
-  `feature/004-hu-004-...`, revisor: Guillermo).
+- **Estado:** todas las specs están fusionadas en `develop`; no hay ninguna en curso.
 
 ## Flujo por HU
 
@@ -38,7 +37,11 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | Spec | Estado |
 |------|--------|
 | `001-ta-contract-first` | Borrador; el contrato se implementó con la carga de HU-001 |
-| `002-hu-001-carga-imagen` | Implementada en `feature/002-hu-001-carga-imagen` (PR #28) |
-| `003-hu-002-deteccion` | Implementada en `feature/003-hu-002-deteccion` (PR #30) |
-| `004-hu-003-visualizacion` | Implementada en `feature/004-hu-003-visualizacion` |
-| `005-hu-007-interfaz` | Implementada en `feature/005-hu-007-interfaz` |
+| `002-hu-001-carga-imagen` | Fusionada (PR #28) |
+| `003-hu-002-deteccion` | Fusionada (PR #30) |
+| `004-hu-003-visualizacion` | Fusionada (PR #33) |
+| `005-hu-007-interfaz` | Fusionada (PR #35) |
+| `006-hu-004-informe-sin-detecciones` | Fusionada (PR #34) |
+
+> La numeración es secuencial por orden de creación, no por número de HU: `006`
+> corresponde a HU-004 porque su spec se creó después de `005`.

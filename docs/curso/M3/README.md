@@ -14,26 +14,26 @@
 
 ### M3-S1 — 31/10 a 07/11 (11 SP)
 
-| HU | Título | SP | Responsable | Dependencias |
-|----|--------|----|-------------|--------------|
-| HU-001 | Cargar una imagen para su análisis | 1 | Hernán | TA-04 |
-| HU-002 | Detectar las seis categorías de EPP | 3 | Hernán | SPI-01, SPI-02, TA-02, TA-09 |
-| HU-003 | Visualizar las detecciones sobre la imagen | 1 | Guillermo | HU-002 |
-| HU-004 | Informar cuando no se detectan EPP | 1 | Eliana | HU-002 |
-| HU-005 | Validar las imágenes recibidas | 1 | Hernán | HU-001 |
-| HU-006 | API REST con FastAPI | 2 | Hernán | HU-002, HU-005 |
-| HU-007 | Interfaz gráfica del detector | 2 | Guillermo | HU-001, 003, 004, 005, 006 |
+| HU | Título | SP | Responsable | Dependencias | Estado |
+|----|--------|----|-------------|--------------|--------|
+| HU-001 | Cargar una imagen para su análisis | 1 | Hernán | TA-04 | ✅ #28 |
+| HU-002 | Detectar las seis categorías de EPP | 3 | Hernán | SPI-01, SPI-02, TA-02, TA-09 | ✅ #30 |
+| HU-003 | Visualizar las detecciones sobre la imagen | 1 | Guillermo | HU-002 | ✅ #33 |
+| HU-004 | Informar cuando no se detectan EPP | 1 | Eliana | HU-002 | ✅ #34 |
+| HU-005 | Validar las imágenes recibidas | 1 | Hernán | HU-001 | ⏳ |
+| HU-006 | API REST con FastAPI | 2 | Hernán | HU-002, HU-005 | ⏳ |
+| HU-007 | Interfaz gráfica del detector | 2 | Guillermo | HU-001, 003, 004, 005, 006 | ✅ #35 |
 
 ### M3-S2 — 08/11 a 14/11 (8 SP)
 
-| HU | Título | SP | Responsable | Dependencias |
-|----|--------|----|-------------|--------------|
-| HU-008 | Evaluar el desempeño del modelo | 2 | Jesús | HU-002, TA-02 |
-| HU-009 | Consultar y comparar experimentos en MLflow | 1 | Jesús | HU-008 |
-| HU-010 | Consumir inferencias mediante gRPC | 1 | Eliana | HU-006 |
-| HU-011 | Ejecutar el sistema en Docker CPU | 2 | Eliana | HU-006, HU-007, HU-010 |
-| HU-012 | Verificaciones automatizadas de calidad | 1 | Hernán | Contratos de HU-006/007/010 |
-| HU-013 | Consultar la versión del modelo | 1 | Jesús | HU-002, HU-009 |
+| HU | Título | SP | Responsable | Dependencias | Estado |
+|----|--------|----|-------------|--------------|--------|
+| HU-008 | Evaluar el desempeño del modelo | 2 | Jesús | HU-002, TA-02 | ⏳ |
+| HU-009 | Consultar y comparar experimentos en MLflow | 1 | Jesús | HU-008 | ⏳ |
+| HU-010 | Consumir inferencias mediante gRPC | 1 | Eliana | HU-006 | ⏳ |
+| HU-011 | Ejecutar el sistema en Docker CPU | 2 | Eliana | HU-006, HU-007, HU-010 | ⏳ |
+| HU-012 | Verificaciones automatizadas de calidad | 1 | Hernán | Contratos de HU-006/007/010 | ⏳ |
+| HU-013 | Consultar la versión del modelo | 1 | Jesús | HU-002, HU-009 | ⏳ |
 
 ## 3. Entregables del M3
 
