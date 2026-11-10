@@ -104,7 +104,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Archivo corrupto rechazado sin ejecutar el detector.
   - Archivo vacío rechazado; el sistema sigue operativo.
   - Archivo compatible aceptado y enviado al preprocesamiento.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/007-hu-005-validacion-imagenes`](../../specs/007-hu-005-validacion-imagenes/spec.md) · rama `feature/007-hu-005-validacion-imagenes`.
 
 ### HU-006 — Consultar inferencias mediante una API REST con FastAPI
 
