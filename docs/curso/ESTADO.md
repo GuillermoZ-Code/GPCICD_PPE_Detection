@@ -72,3 +72,10 @@
   `006`; README, M3, specs y backlog sincronizados.
 - **En vuelo:** ninguna PR; rama `docs/estado-post-merge` pendiente de revisión.
 - **Siguiente:** HU-005 y HU-006 (Hernán); Guillermo pasa a HU-015 en el M4.
+
+### 2026-11-10 · Hernán (OpenCode) — HU-005
+
+- **Hecho:** validación de imágenes (JPEG/PNG, 10 MB, vacío/corrupto) con 7 pruebas;
+  spec 007 y contrato actualizado.
+- **En vuelo:** PR #39 (`feature/007-hu-005-validacion-imagenes`), pendiente de revisión.
+- **Siguiente:** HU-006 (API REST) tras el merge.

@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: Implementada (PR pendiente)
+**Status**: En revisión (PR #39)
 
 **Input**: Issue #5 — «Validar las imágenes recibidas». Asignada a Hernán
 (EP-01, Must Have, M3-S1). Depende de HU-001 (cerrada).
