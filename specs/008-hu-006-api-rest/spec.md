@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: En revisión (PR pendiente)
+**Status**: En revisión (PR #42)
 
 **Input**: Issue #6 — «Consultar inferencias mediante una API REST con FastAPI».
 Asignada a Hernán (EP-03, Must Have, M3-S1). Depende de HU-002 (cerrada) y HU-005

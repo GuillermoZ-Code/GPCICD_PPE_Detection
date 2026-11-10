@@ -80,3 +80,10 @@
   spec 007 y contrato actualizado.
 - **En vuelo:** PR #39 (`feature/007-hu-005-validacion-imagenes`), pendiente de revisión.
 - **Siguiente:** HU-006 (API REST) tras el merge.
+
+### 2026-11-10 · Hernán (OpenCode) — HU-006
+
+- **Hecho:** API FastAPI con `POST /predict`, validación de HU-005, detector
+  inyectable, CORS y OpenAPI; 9 pruebas y spec 008.
+- **En vuelo:** PR #42 (`feature/008-hu-006-api-rest`), pendiente de revisión.
+- **Siguiente:** HU-012 o integración del frontend con la API real.
