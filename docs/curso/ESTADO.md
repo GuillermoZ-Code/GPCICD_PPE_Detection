@@ -9,17 +9,17 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 02:05 UTC
+**Generado:** 2026-11-10 02:06 UTC
 
-**Rama:** `chore/contexto-agentes` · 2 archivo(s) sin commit · +1/-0 vs `origin/develop`
+**Rama:** `chore/contexto-agentes` · limpia · +2/-0 vs `origin/develop`
 **develop:** 8712be3 (2026-11-09)
 
 **Últimos commits:**
+- `3cb2bab docs(estado): registrar el merge de HU-001 y HU-002`
 - `02f90a2 chore(contexto): estado operativo y protocolo de sesion para agentes`
 - `8712be3 Merge pull request #30 from GuillermoZ-Code/feature/003-hu-002-deteccion`
 - `6c64414 docs(specs): cerrar tareas y trazabilidad AC de HU-002`
 - `72ab5a6 docs(detection): documentar el manifiesto run.json`
-- `974cdc4 chore(deps): acotar la version de ultralytics a la validada`
 
 **Pull requests abiertas (0):**
 - ninguna
