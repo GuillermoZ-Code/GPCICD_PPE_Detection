@@ -23,6 +23,7 @@ from ppe_detection.detection.yolo import (
     YoloDetector,
 )
 from ppe_detection.io import load_image
+from ppe_detection.results import NO_DETECTIONS_MESSAGE
 
 DEFAULT_OUTPUT = Path("artifacts/predictions/demo")
 DEFAULT_SEED = 42
@@ -178,13 +179,21 @@ def write_manifest(manifest: dict[str, Any], path: Path) -> None:
 
 
 def format_summary(rows: Sequence[dict[str, Any]]) -> str:
-    """Resumen legible por clase."""
+    """Resumen legible por clase.
+
+    Sin filas comunica el resultado vacío de HU-004: no es un error de
+    procesamiento (AC-004.2) y usa el mensaje del contrato de resultado
+    (`ppe_detection.results`), sin afirmar incumplimiento ni ausencia real
+    de EPP (AC-004.3).
+    """
     counts = Counter(str(row["class_name"]) for row in rows)
     images = len({str(row["image"]) for row in rows})
     lines = [
         f"Imágenes con detecciones: {images}",
         f"Total de detecciones: {len(rows)}",
     ]
+    if not rows:
+        lines.append(NO_DETECTIONS_MESSAGE)
     for name, count in sorted(counts.items()):
         lines.append(f"  {name}: {count}")
     return "\n".join(lines)

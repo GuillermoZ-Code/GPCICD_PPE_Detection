@@ -14,6 +14,8 @@ import pytest
 
 from ppe_detection.contracts import Detection, ImageData
 from ppe_detection.detection import predict
+from ppe_detection.io.images import InvalidImageError
+from ppe_detection.results import NO_DETECTIONS_MESSAGE
 
 
 def _write_image(path: Path, color: tuple[int, int, int] = (10, 20, 30)) -> Path:
@@ -41,6 +43,14 @@ class FakeDetector:
 
     def detect(self, image: ImageData) -> list[Detection]:
         return [_detection()]
+
+
+class EmptyFakeDetector:
+    def __init__(self, *_args: Any, **_kwargs: Any) -> None:
+        pass
+
+    def detect(self, image: ImageData) -> list[Detection]:
+        return []
 
 
 def test_parse_args_requires_model_and_source() -> None:
@@ -244,3 +254,60 @@ def test_run_rejects_empty_folder(tmp_path: Path) -> None:
     # Act / Assert
     with pytest.raises(FileNotFoundError):
         predict.run(args)
+
+
+def test_format_summary_empty_uses_contract_message() -> None:
+    """AC-004.1: un resumen sin filas comunica que no se detectaron objetos EPP."""
+    # Arrange / Act
+    summary = predict.format_summary([])
+
+    # Assert
+    assert "Total de detecciones: 0" in summary
+    assert NO_DETECTIONS_MESSAGE in summary
+
+
+def test_run_prints_empty_message_without_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """AC-004.1/AC-004.2: una corrida con cero detecciones termina exitosamente,
+    entrega un CSV vacío y comunica el mensaje del contrato, sin clasificarse
+    como error de procesamiento."""
+    # Arrange
+    image = _write_image(tmp_path / "a.png")
+    model = tmp_path / "best.pt"
+    model.write_bytes(b"pesos simulados")
+    output = tmp_path / "out"
+    monkeypatch.setattr(predict, "YoloDetector", EmptyFakeDetector)
+    args = predict.parse_args(
+        ["--model", str(model), "--source", str(image), "--output", str(output)]
+    )
+
+    # Act
+    predict.run(args)
+
+    # Assert
+    out = capsys.readouterr().out
+    assert NO_DETECTIONS_MESSAGE in out
+    with (output / "detections.csv").open(encoding="utf-8", newline="") as file:
+        assert list(csv.DictReader(file)) == []
+
+
+def test_run_raises_real_error_for_corrupt_image(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """AC-004.2: los fallos reales siguen siendo errores y no se mezclan con la
+    comunicación del resultado vacío."""
+    # Arrange
+    image = tmp_path / "corrupta.png"
+    image.write_bytes(b"esto no es una imagen")
+    model = tmp_path / "best.pt"
+    model.write_bytes(b"pesos simulados")
+    monkeypatch.setattr(predict, "YoloDetector", EmptyFakeDetector)
+    args = predict.parse_args(
+        ["--model", str(model), "--source", str(image), "--output", str(tmp_path / "out")]
+    )
+
+    # Act / Assert
+    with pytest.raises(InvalidImageError):
+        predict.run(args)
+    assert "Error de inferencia" not in capsys.readouterr().out
