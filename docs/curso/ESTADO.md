@@ -9,25 +9,25 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 02:06 UTC
+**Generado:** 2026-11-10 02:21 UTC
 
-**Rama:** `chore/contexto-agentes` · limpia · +2/-0 vs `origin/develop`
-**develop:** 8712be3 (2026-11-09)
+**Rama:** `fix/estado-parser-y-gh` · limpia · +1/-0 vs `origin/develop`
+**develop:** f975019 (2026-11-09)
 
 **Últimos commits:**
+- `685de75 fix(estado): corregir el parser de SP y evitar escrituras sin gh`
+- `f975019 Merge pull request #31 from GuillermoZ-Code/chore/contexto-agentes`
+- `d2eacae docs(pr): alinear la plantilla con make estado-write`
+- `277ca2b docs(estado): regenerar el bloque de estado`
 - `3cb2bab docs(estado): registrar el merge de HU-001 y HU-002`
-- `02f90a2 chore(contexto): estado operativo y protocolo de sesion para agentes`
-- `8712be3 Merge pull request #30 from GuillermoZ-Code/feature/003-hu-002-deteccion`
-- `6c64414 docs(specs): cerrar tareas y trazabilidad AC de HU-002`
-- `72ab5a6 docs(detection): documentar el manifiesto run.json`
 
 **Pull requests abiertas (0):**
 - ninguna
 
-**Issues abiertas: 13 · 20 SP**
+**Issues abiertas: 13 · 18 SP**
 - M3-S1 (7 SP): #3 #4 #5 #6 #7
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
-- M4-S3 (5 SP): #14 #15
+- M4-S3 (3 SP): #14 #15
 
 **En revisión:** ninguna
 **Siguiente por orden:** #3 HU-003 — Visualizar las detecciones sobre la imagen
@@ -44,3 +44,10 @@
   issues #1 y #2 cerradas.
 - **En vuelo:** ninguna PR de código abierta; queda este PR de contexto para agentes.
 - **Siguiente:** abrir HU-003 (depende de #2, ya cerrada) con Spec Kit.
+
+### 2026-11-10 · Guillermo (OpenCode)
+
+- **Hecho:** corregido el parser de SP (HU-015 daba 3), bloqueada la escritura sin `gh`,
+  arreglado el comando de la constitución y añadidas 4 pruebas.
+- **En vuelo:** `fix/estado-parser-y-gh`, pendiente de PR.
+- **Siguiente:** fusionar la corrección y abrir HU-003 con Spec Kit.

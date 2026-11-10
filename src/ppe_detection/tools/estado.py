@@ -24,6 +24,7 @@ GENERATED_START = "<!-- estado:inicio -->"
 GENERATED_END = "<!-- estado:fin -->"
 
 HU_HEADING = re.compile(r"^### (HU-\d{3})\b")
+ANY_HEADING = re.compile(r"^#{1,4} ")
 HU_IN_TITLE = re.compile(r"HU-(\d{3})")
 SP_VALUE = re.compile(r"\*\*SP:\*\*\s*(\d+)")
 LINKED_ISSUE = re.compile(r"closes\s+#(\d+)", re.IGNORECASE)
@@ -73,6 +74,8 @@ class Report:
     prs: tuple[PullRequest, ...]
     issues: tuple[Issue, ...]
     warnings: tuple[str, ...]
+    git_ok: bool = True
+    github_ok: bool = True
 
 
 def run(command: Sequence[str]) -> str | None:
@@ -94,15 +97,19 @@ def run(command: Sequence[str]) -> str | None:
 
 
 def parse_backlog_sp(text: str) -> dict[str, int]:
-    """Extrae los SP por HU del backlog espejo."""
+    """Extrae los SP por HU del backlog espejo.
+
+    Solo toma el primer ``**SP:**`` de cada sección ``### HU-xxx``. Cualquier otro
+    encabezado cierra la sección, para no confundir las tablas de TA/SPI con HUs.
+    """
     points: dict[str, int] = {}
     current: str | None = None
     for line in text.splitlines():
-        heading = HU_HEADING.match(line)
-        if heading:
-            current = heading.group(1)
+        if ANY_HEADING.match(line):
+            heading = HU_HEADING.match(line)
+            current = heading.group(1) if heading else None
             continue
-        if current is None or "**SP:**" not in line:
+        if current is None or current in points or "**SP:**" not in line:
             continue
         match = SP_VALUE.search(line)
         if match:
@@ -158,10 +165,11 @@ def _collect_git(warnings: list[str]) -> dict[str, Any]:
         "behind": behind,
         "develop": develop,
         "commits": commits,
+        "ok": counts is not None and develop != "?",
     }
 
 
-def _collect_prs(warnings: list[str]) -> tuple[PullRequest, ...]:
+def _collect_prs(warnings: list[str]) -> tuple[tuple[PullRequest, ...], bool]:
     raw = run(
         [
             "gh",
@@ -177,12 +185,12 @@ def _collect_prs(warnings: list[str]) -> tuple[PullRequest, ...]:
     )
     if raw is None:
         warnings.append("`gh` no disponible o sin sesión: PRs e issues sin actualizar")
-        return ()
+        return (), False
     try:
         items = json.loads(raw)
     except json.JSONDecodeError:
         warnings.append("`gh pr list` devolvió JSON inválido")
-        return ()
+        return (), False
     prs = []
     for item in items:
         if not isinstance(item, dict):
@@ -198,10 +206,10 @@ def _collect_prs(warnings: list[str]) -> tuple[PullRequest, ...]:
                 issue=int(linked.group(1)) if linked else None,
             )
         )
-    return tuple(prs)
+    return tuple(prs), True
 
 
-def _collect_issues(points: dict[str, int], warnings: list[str]) -> tuple[Issue, ...]:
+def _collect_issues(points: dict[str, int], warnings: list[str]) -> tuple[tuple[Issue, ...], bool]:
     raw = run(
         [
             "gh",
@@ -218,12 +226,12 @@ def _collect_issues(points: dict[str, int], warnings: list[str]) -> tuple[Issue,
     if raw is None:
         if not warnings:
             warnings.append("`gh` no disponible o sin sesión: issues sin actualizar")
-        return ()
+        return (), False
     try:
         items = json.loads(raw)
     except json.JSONDecodeError:
         warnings.append("`gh issue list` devolvió JSON inválido")
-        return ()
+        return (), False
     issues = []
     for item in items:
         if not isinstance(item, dict):
@@ -241,7 +249,7 @@ def _collect_issues(points: dict[str, int], warnings: list[str]) -> tuple[Issue,
                 sp=points.get(f"HU-{match.group(1)}", 0) if match else 0,
             )
         )
-    return tuple(sorted(issues, key=lambda issue: issue.number))
+    return tuple(sorted(issues, key=lambda issue: issue.number)), True
 
 
 def collect() -> Report:
@@ -253,8 +261,8 @@ def collect() -> Report:
     )
     if not points:
         warnings.append("no se pudieron leer los SP de `docs/curso/backlog.md`")
-    prs = _collect_prs(warnings)
-    issues = _collect_issues(points, warnings)
+    prs, prs_ok = _collect_prs(warnings)
+    issues, issues_ok = _collect_issues(points, warnings)
     return Report(
         generated_at=datetime.now(UTC),
         branch=str(git_state["branch"]),
@@ -266,6 +274,8 @@ def collect() -> Report:
         prs=prs,
         issues=issues,
         warnings=tuple(warnings),
+        git_ok=bool(git_state["ok"]),
+        github_ok=prs_ok and issues_ok,
     )
 
 
@@ -341,6 +351,14 @@ def replace_block(document: str, block: str) -> str:
     return f"{header}\n{block}\n{footer}"
 
 
+def _display(path: Path) -> str:
+    """Muestra la ruta relativa al repo cuando sea posible."""
+    try:
+        return str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Punto de entrada del comando de estado."""
     parser = argparse.ArgumentParser(
@@ -359,12 +377,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not args.write:
         print(text)
         return 0
+    if not report.git_ok or not report.github_ok:
+        missing = "git" if not report.git_ok else "GitHub (`gh`)"
+        print(f"No se actualizó ESTADO.md: faltan datos de {missing}.")
+        print("El bloque se escribiría incompleto. Instala y autentica `gh`, ejecuta")
+        print("`git fetch` o regenera el archivo en una máquina con acceso.")
+        return 1
     if not ESTADO_PATH.exists():
-        print(f"No existe {ESTADO_PATH.relative_to(REPO_ROOT)}")
+        print(f"No existe {_display(ESTADO_PATH)}")
         return 1
     document = ESTADO_PATH.read_text(encoding="utf-8")
     ESTADO_PATH.write_text(replace_block(document, text), encoding="utf-8", newline="\n")
-    print(f"Actualizado {ESTADO_PATH.relative_to(REPO_ROOT)}")
+    print(f"Actualizado {_display(ESTADO_PATH)}")
     return 0
 
 
