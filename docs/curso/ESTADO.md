@@ -9,17 +9,17 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 02:21 UTC
+**Generado:** 2026-11-10 02:35 UTC
 
-**Rama:** `fix/estado-parser-y-gh` · limpia · +1/-0 vs `origin/develop`
-**develop:** f975019 (2026-11-09)
+**Rama:** `feature/004-hu-003-visualizacion` · limpia · +1/-0 vs `origin/develop`
+**develop:** b9d3af6 (2026-11-09)
 
 **Últimos commits:**
+- `f2e1d13 feat(viz): dibujar detecciones y guardar imagenes anotadas`
+- `b9d3af6 Merge pull request #32 from GuillermoZ-Code/fix/estado-parser-y-gh`
+- `8f7f958 docs(estado): registrar la correccion y regenerar el bloque`
 - `685de75 fix(estado): corregir el parser de SP y evitar escrituras sin gh`
 - `f975019 Merge pull request #31 from GuillermoZ-Code/chore/contexto-agentes`
-- `d2eacae docs(pr): alinear la plantilla con make estado-write`
-- `277ca2b docs(estado): regenerar el bloque de estado`
-- `3cb2bab docs(estado): registrar el merge de HU-001 y HU-002`
 
 **Pull requests abiertas (0):**
 - ninguna
@@ -51,3 +51,10 @@
   arreglado el comando de la constitución y añadidas 4 pruebas.
 - **En vuelo:** `fix/estado-parser-y-gh`, pendiente de PR.
 - **Siguiente:** fusionar la corrección y abrir HU-003 con Spec Kit.
+
+### 2026-11-10 · Guillermo (OpenCode)
+
+- **Hecho:** HU-003 implementada: `draw_detections`, etiquetas en español, escalado
+  proporcional, flag `--annotated` y 13 pruebas nuevas (95 passed + 1 skipped).
+- **En vuelo:** `feature/004-hu-003-visualizacion`, pendiente de PR.
+- **Siguiente:** PR de HU-003 y, tras el merge, HU-004 o HU-007.
