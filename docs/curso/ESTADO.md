@@ -53,7 +53,7 @@
 - **En vuelo:** `fix/estado-parser-y-gh`, pendiente de PR.
 - **Siguiente:** fusionar la corrección y abrir HU-003 con Spec Kit.
 
-### 2026-11-10 · Guillermo (OpenCode)
+### 2026-11-10 · Guillermo (OpenCode) — HU-003
 
 - **Hecho:** HU-003 implementada: `draw_detections`, etiquetas en español, escalado
   proporcional, flag `--annotated` y 13 pruebas nuevas (95 passed + 1 skipped).

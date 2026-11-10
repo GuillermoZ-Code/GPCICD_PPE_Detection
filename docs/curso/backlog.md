@@ -89,10 +89,10 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
 - **SP:** 1 · **Labels:** `ep-01` `must-have` `Backend` `Frontend` · **Milestone:** M3-S1.
 - **Depende de:** #2.
 - **AC:**
-  - Colección vacía y mensaje “no se detectaron EPP”.
+  - Colección vacía y mensaje "no se detectaron EPP".
   - No se clasifica como error de procesamiento.
   - No se afirma incumplimiento ni ausencia real de EPP.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/004-hu-004-informe-sin-detecciones`](../../specs/004-hu-004-informe-sin-detecciones/spec.md) · rama `feature/004-hu-004-informe-sin-detecciones`.
 
 ### HU-005 — Validar las imágenes recibidas
 

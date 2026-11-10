@@ -10,8 +10,8 @@ Este directorio contiene una spec por HU, creada con
 - **Comandos:** `.opencode/commands/speckit.*.md`.
 - **Rama:** `branch_template: "feature/{number}-{slug}"`; el slug incluye el ID
   (`feature/002-hu-001-carga-imagen`, `feature/003-hu-002-deteccion`).
-- **Specs en curso:** `002-hu-001-carga-imagen` (PR #28) y `003-hu-002-deteccion`
-  (PR #30).
+- **Specs en curso:** `004-hu-004-informe-sin-detecciones` (PR #34, rama
+  `feature/004-hu-004-...`, revisor: Guillermo).
 
 ## Flujo por HU
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -18,6 +19,7 @@ from ppe_detection.tools.estado import (
     render,
     render_summary,
     replace_block,
+    run,
 )
 
 
@@ -222,3 +224,14 @@ def test_replace_block_keeps_the_session_log() -> None:
     assert "contenido viejo" not in result
     assert "## Bitácora de sesiones" in result
     assert "revisión de #28" in result
+
+
+def test_run_decodes_utf8_output() -> None:
+    # Arrange
+    code = "import sys; sys.stdout.buffer.write('\\u2014'.encode('utf-8'))"
+
+    # Act
+    output = run([sys.executable, "-c", code])
+
+    # Assert
+    assert output == "\u2014"
