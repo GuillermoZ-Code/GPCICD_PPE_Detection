@@ -113,7 +113,7 @@ def test_invalid_file_does_not_invoke_detector() -> None:
         def __init__(self) -> None:
             self.called = False
 
-        def detect(self, image: ImageData) -> list[Detection]:
+        def detect(self, image: ImageData, *, conf: float | None = None) -> list[Detection]:
             self.called = True
             return []
 
@@ -190,6 +190,46 @@ def test_lifespan_preloads_model(monkeypatch: pytest.MonkeyPatch) -> None:
     # Assert
     assert response.status_code == 200
     assert application.state.detector is fake
+
+
+def test_predict_passes_conf_override() -> None:
+    """El umbral de confianza se puede fijar por petición."""
+
+    # Arrange
+    class RecordingDetector:
+        def __init__(self) -> None:
+            self.conf: float | None = None
+
+        def detect(self, image: ImageData, *, conf: float | None = None) -> list[Detection]:
+            self.conf = conf
+            return []
+
+    detector = RecordingDetector()
+    client = TestClient(create_app(detector=detector, model_version="test-1.0"))
+
+    # Act
+    response = client.post(
+        "/predict",
+        files={"file": ("image.png", _png_bytes(), "image/png")},
+        data={"conf": "0.5"},
+    )
+
+    # Assert
+    assert response.status_code == 200
+    assert detector.conf == 0.5
+
+
+def test_predict_rejects_out_of_range_conf() -> None:
+    """Un conf fuera de [0.01, 0.99] devuelve 422, no 500."""
+    # Act
+    response = _client().post(
+        "/predict",
+        files={"file": ("image.png", _png_bytes(), "image/png")},
+        data={"conf": "1.5"},
+    )
+
+    # Assert
+    assert response.status_code == 422
 
 
 def test_cors_allows_frontend_origin() -> None:

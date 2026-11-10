@@ -9,7 +9,7 @@ from pathlib import Path
 from time import perf_counter
 from typing import Annotated, cast
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -126,6 +126,7 @@ def create_app(detector: Detector | None = None, model_version: str | None = Non
     @application.post("/predict", response_model=PredictResponse)
     async def predict(
         file: Annotated[UploadFile, File(description="Imagen JPEG o PNG")],
+        conf: Annotated[float | None, Form(ge=0.01, le=0.99)] = None,
     ) -> PredictResponse:
         """Valida la imagen y devuelve las detecciones del modelo configurado."""
         data = await file.read()
@@ -135,7 +136,7 @@ def create_app(detector: Detector | None = None, model_version: str | None = Non
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         started = perf_counter()
-        detections: list[Detection] = get_detector().detect(image)
+        detections: list[Detection] = get_detector().detect(image, conf=conf)
         elapsed_ms = (perf_counter() - started) * 1000
         return PredictResponse(
             detections=[
