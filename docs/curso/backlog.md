@@ -170,7 +170,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Solicitud gRPC válida devuelve respuesta estructurada con las 6 clases.
   - REST y gRPC comparten semántica y no duplican el detector.
   - Solicitud inválida devuelve error definido y el servidor sigue disponible.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/009-hu-010-consumo-grpc`](../../specs/009-hu-010-consumo-grpc/spec.md) · rama `feature/009-hu-010-consumo-grpc`.
 
 ### HU-011 — Ejecutar el sistema en un contenedor Docker CPU
 
