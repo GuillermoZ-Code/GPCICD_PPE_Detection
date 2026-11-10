@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: En curso (rama activa)
+**Status**: En revisión (PR #46)
 
 **Input**: Issue #10 — «HU-010 — Consumir inferencias mediante gRPC».
 Asignada a ElianaCardona (EP-03, Must Have, M3-S2). Depende de HU-006 (PR #42,

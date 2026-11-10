@@ -44,7 +44,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `006-hu-004-informe-sin-detecciones` | Fusionada (PR #34) |
 | `007-hu-005-validacion-imagenes` | En revisión (PR #39) |
 | `008-hu-006-api-rest` | Fusionada (PR #42) |
-| `009-hu-010-consumo-grpc` | En curso (rama `feature/009-hu-010-consumo-grpc`) |
+| `009-hu-010-consumo-grpc` | En revisión (PR #46) |
 
 > La numeración es secuencial por orden de creación, no por número de HU: `006`
 > corresponde a HU-004 porque su spec se creó después de `005`.

@@ -9,27 +9,28 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 04:27 UTC
+**Generado:** 2026-11-10 04:34 UTC
 
-**Rama:** `feature/009-hu-010-consumo-grpc` · limpia · +6/-0 vs `origin/develop`
+**Rama:** `feature/009-hu-010-consumo-grpc` · 5 archivo(s) sin commit · +7/-0 vs `origin/develop`
 **develop:** a60d579 (2026-11-09)
 
 **Últimos commits:**
+- `695a23a docs(estado): registrar cierre de sesion`
 - `69d6d03 docs(grpc): documentar generación, arranque y consumo`
 - `5bb6728 Merge remote-tracking branch 'origin/develop' into feature/009-hu-010-consumo-grpc`
 - `8d4fe02 feat(grpc): servicio gRPC reutilizando el pipeline compartido (HU-010)`
 - `1f85456 test(grpc): verificar los AC de HU-010 antes de implementar`
-- `a60d579 Merge pull request #43 from GuillermoZ-Code/fix/inventario-pruebas-146`
 
-**Pull requests abiertas (2):**
-- #45 docs(hu-008): agregar spec e informe de evaluacion → `develop` · revisión: — · CI: —
+**Pull requests abiertas (3):**
+- #46 feat(grpc): consumir inferencia mediante gRPC (HU-010) → `develop` · revisión: — · CI: ok
+- #45 docs(hu-008): agregar spec e informe de evaluacion → `develop` · revisión: — · CI: ok
 - #44 docs(operacion): runbook de demo local API + frontend → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 8 · 11 SP**
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** ninguna
+**En revisión:** #10 (PR #46)
 **Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
@@ -95,7 +96,7 @@
   `build_inference_result` (HU-004); configuración compartida extraída a
   `detector_config` (también usa REST); 9 pruebas nuevas (135 passed + 1
   skipped) y demo e2e verificada con `FakeDetector`.
-- **En vuelo:** rama `feature/009-hu-010-consumo-grpc` (+6 commits), PR por
-  crear y revisión de Guillermo.
-- **Siguiente:** crear la PR a `develop`; tras el merge, HU-011 gana su
-  dependencia.
+- **En vuelo:** PR #46 (`feature/009-hu-010-consumo-grpc`), revisión pendiente de
+  Guillermo.
+- **Siguiente:** revisión de Guillermo; tras el merge, HU-011 gana su
+  dependencia gRPC.
