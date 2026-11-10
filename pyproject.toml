@@ -17,8 +17,11 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
+    "fastapi>=0.162.2",
     "numpy>=2.5.4",
     "opencv-python-headless>=5.0.0.93",
+    "python-multipart>=0.0.33",
+    "uvicorn>=0.54.0",
 ]
 
 [project.urls]
@@ -40,6 +43,7 @@ module-name = "ppe_detection"
 
 [dependency-groups]
 dev = [
+    "httpx2>=2.16.0",
     "pre-commit>=3.7",
     "pytest>=8.0",
     "ruff>=0.6",

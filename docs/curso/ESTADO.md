@@ -9,29 +9,29 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 03:36 UTC
+**Generado:** 2026-11-10 03:47 UTC
 
-**Rama:** `feature/007-hu-005-validacion-imagenes` · limpia · +2/-0 vs `origin/develop`
-**develop:** 13b97e7 (2026-11-09)
+**Rama:** `feature/008-hu-006-api-rest` · limpia · +2/-0 vs `origin/develop`
+**develop:** 7f69f87 (2026-11-09)
 
 **Últimos commits:**
-- `de8bee5 docs(specs): registrar la PR #39 de HU-005`
-- `a57d0cb feat(io): validar imagenes de entrada (HU-005)`
-- `13b97e7 Merge pull request #37 from GuillermoZ-Code/docs/estado-post-merge`
-- `f9a34b2 docs(estado): sincronizar el estado tras HU-004 y HU-007`
-- `976437d Merge pull request #35 from GuillermoZ-Code/feature/005-hu-007-interfaz`
+- `fb38037 docs(specs): registrar la PR #42 de HU-006`
+- `912fa45 feat(api): exponer inferencia REST (HU-006)`
+- `7f69f87 Merge pull request #40 from GuillermoZ-Code/docs/estado-sincronizacion-pr`
+- `b4ff23a docs(m3): cerrar documentacion de TA/SPI y specs 001/002`
+- `2816f83 Merge pull request #39 from GuillermoZ-Code/feature/007-hu-005-validacion-imagenes`
 
 **Pull requests abiertas (2):**
-- #40 docs(estado): sincronizar estado y regla de actualizacion por PR → `develop` · revisión: — · CI: —
-- #39 feat(io): validar imagenes de entrada (HU-005) → `develop` · revisión: — · CI: ok
+- #42 feat(api): exponer inferencia REST (HU-006) → `develop` · revisión: — · CI: ok
+- #41 docs(curso): documentar el inventario de pruebas y la brecha de 400 → `develop` · revisión: — · CI: —
 
-**Issues abiertas: 10 · 14 SP**
-- M3-S1 (3 SP): #5 #6
+**Issues abiertas: 9 · 13 SP**
+- M3-S1 (2 SP): #6
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #5 (PR #39)
-**Siguiente por orden:** #6 HU-006 — Consultar inferencias mediante una API REST con FastAPI
+**En revisión:** #6 (PR #42)
+**Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -80,3 +80,10 @@
   spec 007 y contrato actualizado.
 - **En vuelo:** PR #39 (`feature/007-hu-005-validacion-imagenes`), pendiente de revisión.
 - **Siguiente:** HU-006 (API REST) tras el merge.
+
+### 2026-11-10 · Hernán (OpenCode) — HU-006
+
+- **Hecho:** API FastAPI con `POST /predict`, validación de HU-005, detector
+  inyectable, CORS y OpenAPI; 9 pruebas y spec 008.
+- **En vuelo:** PR #42 (`feature/008-hu-006-api-rest`), pendiente de revisión.
+- **Siguiente:** HU-012 o integración del frontend con la API real.

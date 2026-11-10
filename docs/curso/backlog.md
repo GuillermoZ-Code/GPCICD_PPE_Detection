@@ -118,7 +118,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Archivo inválido devuelve error de cliente; el servidor sigue disponible.
   - OpenAPI documenta operación, entrada y resultados.
   - Usa el artefacto cargado; no entrena.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/008-hu-006-api-rest`](../../specs/008-hu-006-api-rest/spec.md) · rama `feature/008-hu-006-api-rest`.
 
 ### HU-007 — Utilizar el detector desde una interfaz gráfica
 

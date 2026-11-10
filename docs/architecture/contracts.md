@@ -214,3 +214,51 @@ result.is_empty, result.message
 ```
 
 Pruebas: `tests/test_results.py` (AC-004.1..AC-004.3, refs de issue #4).
+
+## API REST (HU-006)
+
+La API expone `POST /predict` con `multipart/form-data` y el campo `file`. El
+detector se inyecta en pruebas (`FakeDetector`) o se carga de forma perezosa desde
+`PPE_MODEL_PATH`.
+
+```text
+POST /predict
+Content-Type: multipart/form-data
+
+file: imagen JPEG o PNG (máximo 10 MB)
+
+200:
+{
+  "detections": [
+    {
+      "class_id": 3,
+      "class_name": "helmet",
+      "confidence": 0.92,
+      "bbox": [60, 80, 220, 260],
+      "image_width": 640,
+      "image_height": 480
+    }
+  ],
+  "image_width": 640,
+  "image_height": 480,
+  "model_version": "yolo11s-clean",
+  "elapsed_ms": 123.4
+}
+```
+
+- Imagen vacía, corrupta o de formato no admitido → `400` con el detalle de
+  `InvalidImageError`.
+- Sin `PPE_MODEL_PATH` → `503`.
+- OpenAPI: `/docs` y `/openapi.json`.
+- CORS: `PPE_CORS_ORIGINS` (por defecto `http://localhost:5173`).
+
+```bash
+uv run uvicorn ppe_detection.api.app:app --host 0.0.0.0 --port 8000
+# o
+uv run python -m ppe_detection.api
+```
+
+Variables: `PPE_MODEL_PATH`, `PPE_MODEL_VERSION`, `PPE_CONF`, `PPE_IOU`,
+`PPE_IMGSZ`, `PPE_DEVICE`, `PPE_CORS_ORIGINS`, `PPE_API_HOST`, `PPE_API_PORT`.
+
+Pruebas: `tests/test_api.py` (AC-006.1..AC-006.4, refs de issue #6).
