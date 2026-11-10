@@ -8,14 +8,14 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend Python | pytest | 9 | **111** | `make test` |
+| Backend Python | pytest | 10 | **118** | `make test` |
 | Frontend | Vitest | 5 | **19** | `make frontend-test` |
-| **Total** | | **14** | **130** | `make check` + `make frontend-check` |
+| **Total** | | **15** | **137** | `make check` + `make frontend-check` |
 
 Una prueba del backend se omite cuando no hay artefactos locales
-(`test_real_weights_smoke`), por eso la corrida muestra **110 passed + 1 skipped**.
+(`test_real_weights_smoke`), por eso la corrida muestra **117 passed + 1 skipped**.
 
-> Con la PR #39 (HU-005) se suman 7 pruebas de validación de imágenes: **137**.
+> La PR #39 (HU-005) ya está fusionada y aportó 7 pruebas de validación de imágenes.
 
 ## 2. Desglose del backend
 
@@ -27,10 +27,11 @@ Una prueba del backend se omite cuando no hay artefactos locales
 | `tests/test_yolo_detector.py` | 15 |
 | `tests/test_estado.py` | 10 |
 | `tests/test_results.py` | 10 |
+| `tests/test_image_validation.py` | 7 |
 | `tests/test_overlay.py` | 7 |
 | `tests/test_training.py` | 7 |
 | `tests/test_smoke.py` | 1 |
-| **Total** | **111** |
+| **Total** | **118** |
 
 ## 3. Desglose del frontend
 
@@ -62,14 +63,14 @@ correr sin ellas.
 | Concepto | Valor |
 |----------|------:|
 | Requisito | **> 400** |
-| Actual | **130** (137 con #39) |
+| Actual | **137** |
 | Brecha | **~263** |
 
 ## 6. Ruta propuesta para llegar a 400
 
 | Frente | Pruebas objetivo | Enfoque |
 |--------|-----------------:|---------|
-| HU-005 (#39) | 7 | Validación de imágenes |
+| HU-005 (#39) | 7 | ✅ aplicado: validación de imágenes |
 | HU-006 API REST | 60 | Endpoints, esquemas, errores, OpenAPI |
 | HU-008 evaluación | 45 | IoU, mAP, matrices y métricas por clase |
 | HU-009 MLflow | 25 | Runs, parámetros, métricas y artefactos |
