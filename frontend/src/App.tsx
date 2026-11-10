@@ -2,9 +2,21 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { createClient, type DetectorClient } from './api/client'
 import { AnnotatedCanvas } from './components/AnnotatedCanvas'
+import { Background } from './components/Background'
 import { DetectionTable } from './components/DetectionTable'
+import { SettingsDrawer } from './components/SettingsDrawer'
 import { StatusBanner } from './components/StatusBanner'
 import { UploadPanel } from './components/UploadPanel'
+import {
+  applySettings,
+  DEFAULT_SETTINGS,
+  loadSettings,
+  resolveTheme,
+  saveSettings,
+  type Settings,
+} from './config'
+import { detectionsToCsv, downloadBlob, downloadText } from './download'
+import { filterDetections } from './filter'
 import type { PredictResponse } from './types'
 import { validateFile } from './validate'
 
@@ -21,8 +33,26 @@ interface AppProps {
 
 export function App({ client }: AppProps) {
   const detector = useMemo(() => client ?? createClient(), [client])
+  const [settings, setSettings] = useState<Settings>(loadSettings)
   const [analysis, setAnalysis] = useState<Analysis>({ status: 'idle' })
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const imageUrlRef = useRef<string | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    applySettings(settings)
+    saveSettings(settings)
+  }, [settings])
+
+  useEffect(() => {
+    if (settings.theme !== 'system' || typeof window.matchMedia !== 'function') {
+      return
+    }
+    const media = window.matchMedia('(prefers-color-scheme: light)')
+    const handler = () => applySettings(settings)
+    media.addEventListener?.('change', handler)
+    return () => media.removeEventListener?.('change', handler)
+  }, [settings])
 
   useEffect(() => {
     return () => {
@@ -32,9 +62,46 @@ export function App({ client }: AppProps) {
     }
   }, [])
 
+  useEffect(() => {
+    if (!drawerOpen) {
+      return
+    }
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setDrawerOpen(false)
+      }
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [drawerOpen])
+
   const file = 'file' in analysis ? analysis.file : undefined
   const imageUrl = 'imageUrl' in analysis ? analysis.imageUrl : undefined
   const busy = analysis.status === 'loading'
+  const visible =
+    analysis.status === 'ready'
+      ? filterDetections(analysis.response.detections, settings)
+      : []
+
+  function updateSettings(patch: Partial<Settings>) {
+    setSettings((current) => ({ ...current, ...patch }))
+  }
+
+  async function analyze(target: File, url: string) {
+    setAnalysis({ status: 'loading', file: target, imageUrl: url })
+    try {
+      const response = await detector.detect(target, settings.modelConfidence)
+      setAnalysis({ status: 'ready', file: target, imageUrl: url, response })
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : ''
+      setAnalysis({
+        status: 'error',
+        message: `No se pudo completar el análisis. ${detail}`.trim(),
+        file: target,
+        imageUrl: url,
+      })
+    }
+  }
 
   function handleSelect(nextFile: File) {
     const problem = validateFile(nextFile)
@@ -48,35 +115,91 @@ export function App({ client }: AppProps) {
     const nextUrl = URL.createObjectURL(nextFile)
     imageUrlRef.current = nextUrl
     setAnalysis({ status: 'selected', file: nextFile, imageUrl: nextUrl })
+    if (settings.autoAnalyze) {
+      void analyze(nextFile, nextUrl)
+    }
   }
 
-  async function handleAnalyze() {
-    if (!file || !imageUrl) {
-      return
-    }
-    setAnalysis({ status: 'loading', file, imageUrl })
-    try {
-      const response = await detector.detect(file)
-      setAnalysis({ status: 'ready', file, imageUrl, response })
-    } catch (error) {
-      const detail = error instanceof Error ? error.message : ''
-      setAnalysis({
-        status: 'error',
-        message: `No se pudo completar el análisis. ${detail}`.trim(),
-        file,
-        imageUrl,
-      })
+  function handleAnalyze() {
+    if (file && imageUrl) {
+      void analyze(file, imageUrl)
     }
   }
+
+  function handleDownload(kind: 'json' | 'csv' | 'png') {
+    if (analysis.status !== 'ready') {
+      return
+    }
+    const base = analysis.file.name.replace(/\.[^.]+$/, '')
+    const visible = filterDetections(analysis.response.detections, settings)
+    if (kind === 'json') {
+      const payload = {
+        file: analysis.file.name,
+        model_version: analysis.response.model_version,
+        elapsed_ms: analysis.response.elapsed_ms,
+        image_width: analysis.response.image_width,
+        image_height: analysis.response.image_height,
+        filters: {
+          visual_confidence: settings.visualConfidence / 100,
+          classes: settings.classes,
+        },
+        detections: visible,
+      }
+      downloadText(
+        `${base}-detecciones.json`,
+        JSON.stringify(payload, null, 2),
+        'application/json',
+      )
+      return
+    }
+    if (kind === 'csv') {
+      downloadText(
+        `${base}-detecciones.csv`,
+        detectionsToCsv(analysis.file.name, visible),
+        'text/csv',
+      )
+      return
+    }
+    canvasRef.current?.toBlob((blob) => {
+      if (blob) {
+        downloadBlob(blob, `${base}-anotada.png`)
+      }
+    }, 'image/png')
+  }
+
+  const resolvedTheme = resolveTheme(settings.theme)
+  const canDownload = analysis.status === 'ready'
 
   return (
     <div className="app">
+      <Background />
+
       <header className="topbar">
         <div className="brand">
           <span className="brand__mark">EPP</span>
           <span className="brand__name">Vision</span>
         </div>
-        <span className="badge">GPCICD · M3</span>
+        <div className="topbar__actions">
+          <span className="badge">GPCICD · M3</span>
+          <button
+            className="icon-button"
+            type="button"
+            aria-label="Cambiar tema"
+            title="Cambiar tema"
+            onClick={() => updateSettings({ theme: resolvedTheme === 'dark' ? 'light' : 'dark' })}
+          >
+            {resolvedTheme === 'dark' ? '☀' : '☾'}
+          </button>
+          <button
+            className="icon-button"
+            type="button"
+            aria-label="Abrir configuración"
+            title="Configuración"
+            onClick={() => setDrawerOpen(true)}
+          >
+            ⚙
+          </button>
+        </div>
       </header>
 
       <main className="main">
@@ -133,7 +256,10 @@ export function App({ client }: AppProps) {
                 <span className="spinner spinner--lg" aria-hidden="true" />
                 <div>
                   <strong>Analizando imagen…</strong>
-                  <p className="muted">El modelo está procesando los píxeles.</p>
+                  <p className="muted">
+                    Validando, enviando y detectando con umbral{' '}
+                    {Math.round(settings.modelConfidence * 100)} %.
+                  </p>
                 </div>
                 <div className="skeleton" aria-hidden="true">
                   <span />
@@ -152,7 +278,7 @@ export function App({ client }: AppProps) {
                 <div className="stats">
                   <div className="stat">
                     <span>Detecciones</span>
-                    <strong>{analysis.response.detections.length}</strong>
+                    <strong>{visible.length}</strong>
                   </div>
                   <div className="stat">
                     <span>Tiempo</span>
@@ -168,17 +294,30 @@ export function App({ client }: AppProps) {
                   src={analysis.imageUrl}
                   width={analysis.response.image_width}
                   height={analysis.response.image_height}
-                  detections={analysis.response.detections}
+                  detections={visible}
+                  thickness={settings.thickness}
+                  showLabels={settings.labels}
+                  canvasRef={canvasRef}
                   alt={`Imagen analizada: ${analysis.file.name}`}
                 />
 
-                {analysis.response.detections.length === 0 ? (
+                {analysis.response.detections.length === 0 && (
                   <StatusBanner tone="warning">
                     No se detectaron EPP en la imagen. La inferencia terminó sin errores; la
                     ausencia de detecciones no implica que no haya EPP.
                   </StatusBanner>
-                ) : (
-                  <DetectionTable detections={analysis.response.detections} />
+                )}
+
+                {analysis.response.detections.length > 0 &&
+                  visible.length === 0 && (
+                    <StatusBanner tone="warning">
+                      Hay detecciones, pero ninguna pasa los filtros actuales de confianza o
+                      clase.
+                    </StatusBanner>
+                  )}
+
+                {visible.length > 0 && (
+                  <DetectionTable detections={visible} />
                 )}
               </div>
             )}
@@ -201,6 +340,16 @@ export function App({ client }: AppProps) {
           con licencia CC-BY-4.0.
         </p>
       </footer>
+
+      <SettingsDrawer
+        open={drawerOpen}
+        settings={settings}
+        canDownload={canDownload}
+        onChange={updateSettings}
+        onClose={() => setDrawerOpen(false)}
+        onReset={() => setSettings({ ...DEFAULT_SETTINGS })}
+        onDownload={handleDownload}
+      />
     </div>
   )
 }
