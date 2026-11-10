@@ -13,34 +13,34 @@ al menos una prueba que lo referencia.
 
 ## Phase 1: Setup
 
-- [ ] T001 Agregar `numpy` y `opencv-python-headless` con `uv add`.
-- [ ] T002 Crear `tests/test_contracts.py` con fixtures sintéticas del contrato.
+- [x] T001 Agregar `numpy` y `opencv-python-headless` con `uv add`.
+- [x] T002 Crear `tests/test_contracts.py` con fixtures sintéticas del contrato.
 
 ## Phase 2: Tests first (deben fallar)
 
-- [ ] T003 [P] `test_load_png_returns_rgb_image_data` → AC-01.
-- [ ] T004 [P] `test_load_jpeg_returns_rgb_image_data` → AC-01.
-- [ ] T005 [P] `test_preserves_original_dimensions` → AC-02.
-- [ ] T006 [P] `test_loading_does_not_invoke_detector` → AC-03.
-- [ ] T007 [P] `test_empty_file_is_rejected` → FR-004.
-- [ ] T008 [P] `test_corrupt_file_is_rejected` → FR-004.
-- [ ] T009 [P] `test_unsupported_format_is_rejected` → FR-004.
-- [ ] T010 [P] `test_load_bytes_uses_source_label` → FR-001.
-- [ ] T011 `uv run pytest tests/test_contracts.py tests/test_image_loader.py` en rojo.
+- [x] T003 [P] `test_load_png_returns_rgb_image_data` → AC-01.
+- [x] T004 [P] `test_load_jpeg_returns_rgb_image_data` → AC-01.
+- [x] T005 [P] `test_preserves_original_dimensions` → AC-02.
+- [x] T006 [P] `test_loading_does_not_invoke_detector` → AC-03.
+- [x] T007 [P] `test_empty_file_is_rejected` → FR-004.
+- [x] T008 [P] `test_corrupt_file_is_rejected` → FR-004.
+- [x] T009 [P] `test_unsupported_format_is_rejected` → FR-004.
+- [x] T010 [P] `test_load_bytes_uses_source_label` → FR-001.
+- [x] T011 `uv run pytest tests/test_contracts.py tests/test_image_loader.py` en rojo.
 
 ## Phase 3: Implementación
 
-- [ ] T012 `contracts.py`: `CLASSES`, `ImageData` con validación.
-- [ ] T013 `io/images.py`: `InvalidImageError`, `load_image`, `load_image_bytes`.
-- [ ] T014 `io/__init__.py` con la API pública.
-- [ ] T015 `uv run pytest` en verde.
+- [x] T012 `contracts.py`: `CLASSES`, `ImageData` con validación.
+- [x] T013 `io/images.py`: `InvalidImageError`, `load_image`, `load_image_bytes`.
+- [x] T014 `io/__init__.py` con la API pública.
+- [x] T015 `uv run pytest` en verde.
 
 ## Phase 4: Polish
 
-- [ ] T016 Documentar el contrato en `docs/architecture/contracts.md`.
-- [ ] T017 Corregir los nombres canónicos de clase en `CONSTITUTION.md` y
+- [x] T016 Documentar el contrato en `docs/architecture/contracts.md`.
+- [x] T017 Corregir los nombres canónicos de clase en `CONSTITUTION.md` y
       `specs/001-ta-contract-first/spec.md` (data.yaml manda).
-- [ ] T018 `make check` y registrar evidencia en el PR.
+- [x] T018 `make check` y registrar evidencia en el PR.
 
 ## Dependencies & Execution Order
 

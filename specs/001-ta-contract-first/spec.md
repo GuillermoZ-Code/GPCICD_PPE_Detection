@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-31
 
-**Status**: Draft — pendiente de validación de planificación (Jesús)
+**Status**: Absorbida en P4; contrato implementado con HU-001 (PR #28). Quedan los enlaces desde API/UI/gRPC cuando existan.
 
 **Input**: TA propuesta para definir el contrato de inferencia y un detector simulado,
 de modo que API, interfaz y gRPC avancen en paralelo con el modelo real.

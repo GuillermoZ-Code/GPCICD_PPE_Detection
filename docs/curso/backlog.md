@@ -50,7 +50,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
 - **Como** usuario del sistema de detección de EPP, **quiero** proporcionar una imagen
   digital, **para** que pueda ser analizada por el modelo.
 - **SP:** 1 · **Labels:** `ep-01` `must-have` `Backend` `Testing` · **Milestone:** M3-S1.
-- **Depende de:** TA-04 *(pendiente de creación/validación — Jesús)*.
+- **Depende de:** TA-04 *(absorbida en P4; el contrato se implementó con HU-001)*.
 - **AC:**
   - Imagen válida decodificada y entregada al preprocesamiento.
   - Dimensiones originales conservadas como metadatos.
@@ -62,7 +62,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
 - **Como** usuario del sistema, **quiero** que el modelo identifique y localice EPP en
   una imagen, **para** conocer qué categorías fueron detectadas y dónde.
 - **SP:** 3 · **Labels:** `ep-02` `must-have` `ML` · **Milestone:** M3-S1.
-- **Depende de:** SPI-01, SPI-02, TA-02, TA-09 *(pendientes de validación — Jesús)*.
+- **Depende de:** SPI-01, SPI-02, TA-02, TA-09 *(absorbidas en P1–P4; SPI-01/SPI-02 cerrados)*.
 - **AC:**
   - Inferencia con modelo cargado; sin entrenamiento.
   - Catálogo de 6 clases: Helmet, Vest, Gloves, Goggles, Mask, Safety Shoe.
@@ -140,7 +140,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
 - **Como** evaluador del modelo, **quiero** medir su desempeño con métricas apropiadas,
   **para** conocer su capacidad y documentar limitaciones.
 - **SP:** 2 · **Labels:** `ep-04` `must-have` `ML` `Testing` · **Milestone:** M3-S2.
-- **Depende de:** #2, TA-02 *(pendiente de validación — Jesús)*.
+- **Depende de:** #2 (cerrada), TA-02 *(absorbida en P4)*.
 - **AC:**
   - Informe reproducible con versión del modelo, partición y configuración.
   - Métricas globales y por clase (precision, recall, mAP).
@@ -218,7 +218,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
 - **Como** responsable del despliegue, **quiero** publicar versiones solo después de
   verificaciones automáticas, **para** reducir el riesgo de cambios defectuosos.
 - **SP:** 2 · **Labels:** `ep-05` `must-have` `Backend` `Testing` · **Milestone:** M4-S3.
-- **Depende de:** #11, #12, TA-10 *(pendiente de validación — Jesús)*.
+- **Depende de:** #11, #12, TA-10 *(absorbida en P4)*.
 - **AC:**
   - Build, deploy y smoke exitosos con cambios autorizados.
   - Una compuerta fallida bloquea la publicación.
@@ -240,12 +240,12 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Evidencia de estado, inferencia y operación para la demostración.
 - **Spec:** pendiente de crear con Spec Kit.
 
-## Pendiente de validación (Jesús)
+## Decisiones de planificación
 
-> Esta sección **no modifica** los títulos, AC ni SP de las issues. Es una propuesta
-> para que el dueño del backlog decida.
+> Esta sección **no modifica** los títulos, AC ni SP de las issues. Recoge las
+> decisiones de planificación y los pendientes reales del dueño del backlog.
 
-### TA/SPI propuestas (no creadas todavía)
+### TA/SPI absorbidas en P1–P4 (referencia histórica)
 
 | ID | Título | SP | Sprint | Motivo |
 |----|--------|----|--------|--------|
@@ -258,14 +258,14 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
 | TA-10 | Dependencias C++ y Docker CPU | 5 | M3-S2 | Habilita HU-011/HU-014 |
 | TA-EDA | EDA del dataset | 3 | M3-S1 | Habilita HU-002/HU-008 |
 
-**Total propuesto:** 28 SP (incluye TA-EDA; no sumados al total oficial hasta que
-Jesús decida).
+**Total de referencia:** 28 SP con TA-EDA (25 SP sin TA-EDA). No se suman al total
+oficial: la reestimación las absorbió en P1–P4.
 
 > **Actualización del 04/11/2026:** la reestimación absorbió este trabajo en las
 > actividades de preparación P1–P4 (12 SP), que no son issues. Estas TA/SPI no se
 > crean como tickets salvo que Jesús decida lo contrario.
 
-### TA-EDA — EDA del dataset (propuesta, no creada)
+### TA-EDA — EDA del dataset (absorbida en P4; completada)
 
 - **Objetivo:** entender el dataset antes de entrenar y dejar la descarga reproducible.
 - **AC propuestos:**
@@ -275,7 +275,7 @@ Jesús decida).
   - Descarga reproducible del `PPE.zip` con **SHA256** y ruta configurable.
   - Reporte en `docs/spikes/` o `docs/dataset/`; sin `.ipynb` versionado.
 - **SP:** 3 (propuesto).
-- **Validación:** Jesús (dueño del backlog).
+- **Estado:** completada por Hernán; ver [`docs/dataset/EDA.md`](../../dataset/EDA.md).
 
 ### AC propuestos para HU-007 y HU-015 (AGPL, sin modificar issues)
 
