@@ -22,8 +22,9 @@ from ppe_detection.detection.yolo import (
     DEFAULT_IOU,
     YoloDetector,
 )
-from ppe_detection.io import load_image
+from ppe_detection.io import load_image, write_image
 from ppe_detection.results import NO_DETECTIONS_MESSAGE
+from ppe_detection.visualization import draw_detections
 
 DEFAULT_OUTPUT = Path("artifacts/predictions/demo")
 DEFAULT_SEED = 42
@@ -51,6 +52,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         type=int,
         default=DEFAULT_SEED,
         help="semilla declarada en el manifiesto de la ejecución",
+    )
+    parser.add_argument(
+        "--annotated",
+        action="store_true",
+        help="guarda las imágenes con cajas en <salida>/annotated/",
     )
     return parser.parse_args(argv)
 
@@ -216,11 +222,14 @@ def run(args: argparse.Namespace) -> None:
     )
     rows: list[dict[str, Any]] = []
     records: list[dict[str, Any]] = []
+    annotated_dir = args.output / "annotated"
     for image_path in images:
         image = load_image(image_path)
         detections = detector.detect(image)
         rows.extend(detection_rows(image_path, detections))
         records.append(image_record(image_path, image, len(detections)))
+        if getattr(args, "annotated", False):
+            write_image(draw_detections(image, detections), annotated_dir / image_path.name)
         print(f"{image_path}: {len(detections)} detecciones")
 
     csv_path = args.output / "detections.csv"
@@ -230,6 +239,8 @@ def run(args: argparse.Namespace) -> None:
     print(format_summary(rows))
     print(f"CSV: {csv_path}")
     print(f"Manifiesto: {manifest_path}")
+    if getattr(args, "annotated", False):
+        print(f"Anotadas: {annotated_dir}")
 
 
 def main(argv: Sequence[str] | None = None) -> int:

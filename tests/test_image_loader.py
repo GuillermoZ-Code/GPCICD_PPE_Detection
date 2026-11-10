@@ -8,8 +8,13 @@ import cv2
 import numpy as np
 import pytest
 
-from ppe_detection.contracts import FakeDetector
-from ppe_detection.io.images import InvalidImageError, load_image, load_image_bytes
+from ppe_detection.contracts import FakeDetector, ImageData
+from ppe_detection.io.images import (
+    InvalidImageError,
+    load_image,
+    load_image_bytes,
+    write_image,
+)
 
 
 def _encode(array_rgb: np.ndarray, extension: str, params: list[int] | None = None) -> bytes:
@@ -140,6 +145,40 @@ def test_directory_is_rejected(tmp_path: Path) -> None:
     # Act / Assert
     with pytest.raises(InvalidImageError):
         load_image(directory)
+
+
+def test_write_image_roundtrip(tmp_path: Path) -> None:
+    # Arrange
+    image = ImageData(array=_rgb(), width=8, height=6, format="png", source="test")
+
+    # Act
+    path = write_image(image, tmp_path / "salida.png")
+    loaded = load_image(path)
+
+    # Assert
+    assert (loaded.width, loaded.height) == (8, 6)
+    assert np.allclose(loaded.array[0, 0], (255, 0, 0))
+
+
+def test_write_image_creates_missing_directories(tmp_path: Path) -> None:
+    # Arrange
+    image = ImageData(array=_rgb(), width=8, height=6, format="png", source="test")
+
+    # Act
+    path = write_image(image, tmp_path / "sub" / "salida.png")
+
+    # Assert
+    assert path.is_file()
+
+
+@pytest.mark.parametrize("suffix", [".gif", ".bmp", ".txt", ""])
+def test_write_image_rejects_unknown_extension(tmp_path: Path, suffix: str) -> None:
+    # Arrange
+    image = ImageData(array=_rgb(), width=8, height=6, format="png", source="test")
+
+    # Act / Assert
+    with pytest.raises(InvalidImageError):
+        write_image(image, tmp_path / f"salida{suffix}")
 
 
 def test_loading_does_not_invoke_detector(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

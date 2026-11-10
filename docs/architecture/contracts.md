@@ -144,6 +144,34 @@ detector = YoloDetector("artifacts/models/yolo11s_clean/weights/best.pt")
 detections = detector.detect(load_image("foto.jpg"))
 ```
 
+## Visualización (HU-003)
+
+`draw_detections` convierte una lista de `Detection` en una imagen anotada:
+
+```python
+from ppe_detection.io import load_image
+from ppe_detection.visualization import draw_detections
+
+annotated = draw_detections(load_image("foto.jpg"), detections)
+```
+
+- Devuelve una `ImageData` nueva; **no** modifica la entrada.
+- Cada detección se dibuja con su caja, la categoría en español y la confianza
+  (`Casco 0.87`). Los nombres canónicos del contrato no cambian.
+- La caja usa los píxeles de `Detection`. Si el lienzo tiene otro tamaño, las
+  coordenadas se escalan proporcionalmente (AC-003.2).
+- Sin detecciones devuelve la imagen intacta, sin cajas (AC-003.3).
+- El grosor y la fuente crecen con el lado mayor de la imagen.
+
+La CLI de inferencia puede guardar las anotaciones con `--annotated`:
+
+```bash
+uv run --extra inference python -m ppe_detection.detection.predict \
+    --model artifacts/models/yolo11s_clean/weights/best.pt \
+    --source artifacts/samples --annotated
+# genera artifacts/predictions/demo/annotated/*.png
+```
+
 ## Contrato de resultado vacío (HU-004)
 
 `ppe_detection.results` clasifica la salida de la inferencia y fija el mensaje de

@@ -69,6 +69,7 @@ def test_parse_args_defaults() -> None:
     assert args.imgsz == predict.DEFAULT_IMGSZ
     assert args.device == predict.DEFAULT_DEVICE
     assert args.seed == predict.DEFAULT_SEED
+    assert args.annotated is False
     assert args.output == predict.DEFAULT_OUTPUT
 
 
@@ -229,6 +230,32 @@ def test_run_writes_manifest_with_provenance(
     ]
     assert manifest["totals"] == {"images": 1, "images_with_detections": 1, "detections": 1}
     assert "git_commit" in manifest["code"]
+
+
+def test_run_saves_annotated_images(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Arrange
+    image = _write_image(tmp_path / "a.png")
+    model = tmp_path / "best.pt"
+    model.write_bytes(b"pesos simulados")
+    output = tmp_path / "out"
+    monkeypatch.setattr(predict, "YoloDetector", FakeDetector)
+    args = predict.parse_args(
+        [
+            "--model",
+            str(model),
+            "--source",
+            str(image),
+            "--output",
+            str(output),
+            "--annotated",
+        ]
+    )
+
+    # Act
+    predict.run(args)
+
+    # Assert
+    assert (output / "annotated" / "a.png").is_file()
 
 
 def test_run_rejects_missing_model(tmp_path: Path) -> None:
