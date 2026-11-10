@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import csv
+import hashlib
+import json
 from pathlib import Path
 from typing import Any
 
@@ -56,6 +58,7 @@ def test_parse_args_defaults() -> None:
     assert args.iou == predict.DEFAULT_IOU
     assert args.imgsz == predict.DEFAULT_IMGSZ
     assert args.device == predict.DEFAULT_DEVICE
+    assert args.seed == predict.DEFAULT_SEED
     assert args.output == predict.DEFAULT_OUTPUT
 
 
@@ -148,6 +151,72 @@ def test_run_writes_detections_csv(
     assert len(saved) == 1
     assert saved[0]["image"] == str(image)
     assert "Total de detecciones: 1" in capsys.readouterr().out
+
+
+def test_sha256_file_matches_hashlib(tmp_path: Path) -> None:
+    # Arrange
+    model = tmp_path / "best.pt"
+    model.write_bytes(b"pesos simulados")
+
+    # Act
+    digest = predict.sha256_file(model)
+
+    # Assert
+    assert digest == hashlib.sha256(b"pesos simulados").hexdigest().upper()
+
+
+def test_run_writes_manifest_with_provenance(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Arrange
+    image = _write_image(tmp_path / "a.png")
+    model = tmp_path / "best.pt"
+    model.write_bytes(b"pesos simulados")
+    output = tmp_path / "out"
+    monkeypatch.setattr(predict, "YoloDetector", FakeDetector)
+    args = predict.parse_args(
+        [
+            "--model",
+            str(model),
+            "--source",
+            str(image),
+            "--output",
+            str(output),
+            "--conf",
+            "0.4",
+            "--iou",
+            "0.5",
+            "--imgsz",
+            "320",
+            "--device",
+            "cpu",
+            "--seed",
+            "7",
+        ]
+    )
+
+    # Act
+    predict.run(args)
+
+    # Assert
+    manifest = json.loads((output / predict.MANIFEST_NAME).read_text(encoding="utf-8"))
+    assert manifest["model"] == {
+        "path": str(model),
+        "sha256": hashlib.sha256(b"pesos simulados").hexdigest().upper(),
+        "size_bytes": len(b"pesos simulados"),
+    }
+    assert manifest["parameters"] == {
+        "conf": 0.4,
+        "iou": 0.5,
+        "imgsz": 320,
+        "device": "cpu",
+        "seed": 7,
+    }
+    assert manifest["images"] == [
+        {"path": str(image), "width": 8, "height": 6, "format": "png", "detections": 1}
+    ]
+    assert manifest["totals"] == {"images": 1, "images_with_detections": 1, "detections": 1}
+    assert "git_commit" in manifest["code"]
 
 
 def test_run_rejects_missing_model(tmp_path: Path) -> None:

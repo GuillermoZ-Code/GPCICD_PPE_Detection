@@ -4,12 +4,17 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
+import json
+import subprocess
 from collections import Counter
 from collections.abc import Sequence
+from datetime import UTC, datetime
+from importlib import metadata
 from pathlib import Path
 from typing import Any
 
-from ppe_detection.contracts import Detection
+from ppe_detection.contracts import Detection, ImageData
 from ppe_detection.detection.yolo import (
     DEFAULT_CONF,
     DEFAULT_DEVICE,
@@ -20,8 +25,11 @@ from ppe_detection.detection.yolo import (
 from ppe_detection.io import load_image
 
 DEFAULT_OUTPUT = Path("artifacts/predictions/demo")
+DEFAULT_SEED = 42
 CSV_FIELDS = ("image", "class_name", "confidence", "x1", "y1", "x2", "y2")
 IMAGE_SUFFIXES = frozenset({".jpg", ".jpeg", ".png"})
+MANIFEST_NAME = "run.json"
+PACKAGE_NAME = "gpcicd-ppe-detection"
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -37,6 +45,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--iou", type=float, default=DEFAULT_IOU)
     parser.add_argument("--imgsz", type=int, default=DEFAULT_IMGSZ)
     parser.add_argument("--device", default=DEFAULT_DEVICE, help="cpu o 0 para GPU")
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=DEFAULT_SEED,
+        help="semilla declarada en el manifiesto de la ejecución",
+    )
     return parser.parse_args(argv)
 
 
@@ -78,6 +92,91 @@ def write_detections_csv(rows: Sequence[dict[str, Any]], path: Path) -> None:
         writer.writerows(rows)
 
 
+def sha256_file(path: Path) -> str:
+    """Calcula el SHA256 de un archivo por bloques, sin cargarlo en memoria."""
+    digest = hashlib.sha256()
+    with path.open("rb") as file:
+        for chunk in iter(lambda: file.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest().upper()
+
+
+def git_commit() -> str | None:
+    """Devuelve el commit corto del repositorio, si está disponible."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short=12", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    commit = result.stdout.strip()
+    return commit or None
+
+
+def package_version() -> str:
+    """Devuelve la versión instalada del paquete."""
+    try:
+        return metadata.version(PACKAGE_NAME)
+    except metadata.PackageNotFoundError:
+        return "unknown"
+
+
+def image_record(image_path: Path, image: ImageData, detections: int) -> dict[str, Any]:
+    """Resume una imagen procesada para el manifiesto."""
+    return {
+        "path": str(image_path),
+        "width": image.width,
+        "height": image.height,
+        "format": image.format,
+        "detections": detections,
+    }
+
+
+def build_manifest(
+    args: argparse.Namespace,
+    images: Sequence[dict[str, Any]],
+    detection_count: int,
+) -> dict[str, Any]:
+    """Construye el manifiesto de procedencia de la inferencia."""
+    return {
+        "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        "code": {
+            "package": PACKAGE_NAME,
+            "version": package_version(),
+            "git_commit": git_commit(),
+        },
+        "model": {
+            "path": str(args.model),
+            "sha256": sha256_file(args.model),
+            "size_bytes": args.model.stat().st_size,
+        },
+        "parameters": {
+            "conf": args.conf,
+            "iou": args.iou,
+            "imgsz": args.imgsz,
+            "device": args.device,
+            "seed": getattr(args, "seed", DEFAULT_SEED),
+        },
+        "images": list(images),
+        "totals": {
+            "images": len(images),
+            "images_with_detections": sum(1 for item in images if item["detections"]),
+            "detections": detection_count,
+        },
+    }
+
+
+def write_manifest(manifest: dict[str, Any], path: Path) -> None:
+    """Guarda el manifiesto en JSON, creando el directorio si hace falta."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    text = json.dumps(manifest, ensure_ascii=False, indent=2)
+    path.write_text(f"{text}\n", encoding="utf-8")
+
+
 def format_summary(rows: Sequence[dict[str, Any]]) -> str:
     """Resumen legible por clase."""
     counts = Counter(str(row["class_name"]) for row in rows)
@@ -92,7 +191,7 @@ def format_summary(rows: Sequence[dict[str, Any]]) -> str:
 
 
 def run(args: argparse.Namespace) -> None:
-    """Ejecuta la inferencia y escribe el CSV de detecciones."""
+    """Ejecuta la inferencia y escribe el CSV y el manifiesto de la ejecución."""
     if not args.model.is_file():
         raise FileNotFoundError(f"No existe el modelo: {args.model}")
     images = iter_images(args.source)
@@ -107,16 +206,21 @@ def run(args: argparse.Namespace) -> None:
         device=args.device,
     )
     rows: list[dict[str, Any]] = []
+    records: list[dict[str, Any]] = []
     for image_path in images:
         image = load_image(image_path)
         detections = detector.detect(image)
         rows.extend(detection_rows(image_path, detections))
+        records.append(image_record(image_path, image, len(detections)))
         print(f"{image_path}: {len(detections)} detecciones")
 
     csv_path = args.output / "detections.csv"
     write_detections_csv(rows, csv_path)
+    manifest_path = args.output / MANIFEST_NAME
+    write_manifest(build_manifest(args, records, len(rows)), manifest_path)
     print(format_summary(rows))
     print(f"CSV: {csv_path}")
+    print(f"Manifiesto: {manifest_path}")
 
 
 def main(argv: Sequence[str] | None = None) -> int:
