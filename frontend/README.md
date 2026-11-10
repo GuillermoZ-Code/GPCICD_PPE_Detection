@@ -29,17 +29,19 @@ npm ci
 
 - `VITE_API_URL` define la base de la API REST (HU-006). Si está vacía, la aplicación
   usa un **cliente simulado** determinista y funciona sin backend.
+- Copia `.env.example` a `.env.local` o exporta la variable.
 
 ```bash
-# Con API real
-VITE_API_URL=http://localhost:8000 npm run dev
+# Con API real (la API debe estar escuchando)
+VITE_API_URL=http://127.0.0.1:8000 npm run dev
 
 # Sin API (cliente simulado)
 npm run dev
 ```
 
 El cliente HTTP hace `POST {VITE_API_URL}/predict` con `multipart/form-data` y el campo
-`file`. El contrato definitivo se ajusta cuando cierre HU-006.
+`file`. El contrato está cerrado desde HU-006 y la respuesta incluye `model_version` y
+`elapsed_ms`.
 
 ## Estructura
 

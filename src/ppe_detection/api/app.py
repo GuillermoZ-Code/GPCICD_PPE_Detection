@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import os
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from pathlib import Path
 from time import perf_counter
 from typing import Annotated, cast
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -74,10 +76,7 @@ def _default_model_version() -> str:
 def _build_detector() -> Detector:
     model_path = os.getenv("PPE_MODEL_PATH")
     if not model_path:
-        raise HTTPException(
-            status_code=503,
-            detail="No hay modelo configurado: define PPE_MODEL_PATH.",
-        )
+        raise RuntimeError("No hay modelo configurado: define PPE_MODEL_PATH.")
     return YoloDetector(
         model_path,
         conf=_env_float("PPE_CONF", DEFAULT_CONF),
@@ -89,10 +88,18 @@ def _build_detector() -> Detector:
 
 def create_app(detector: Detector | None = None, model_version: str | None = None) -> FastAPI:
     """Crea la aplicación; permite inyectar un detector para pruebas."""
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
+        if application.state.detector is None and os.getenv("PPE_MODEL_PATH"):
+            application.state.detector = _build_detector()
+        yield
+
     application = FastAPI(
         title="GPCICD PPE Detection API",
         version="0.1.0",
         description="Detección de EPP sobre imágenes JPEG/PNG.",
+        lifespan=lifespan,
     )
     origins = [
         origin.strip()
@@ -110,12 +117,16 @@ def create_app(detector: Detector | None = None, model_version: str | None = Non
 
     def get_detector() -> Detector:
         if application.state.detector is None:
-            application.state.detector = _build_detector()
+            try:
+                application.state.detector = _build_detector()
+            except RuntimeError as exc:
+                raise HTTPException(status_code=503, detail=str(exc)) from exc
         return cast(Detector, application.state.detector)
 
     @application.post("/predict", response_model=PredictResponse)
     async def predict(
         file: Annotated[UploadFile, File(description="Imagen JPEG o PNG")],
+        conf: Annotated[float | None, Form(ge=0.01, le=0.99)] = None,
     ) -> PredictResponse:
         """Valida la imagen y devuelve las detecciones del modelo configurado."""
         data = await file.read()
@@ -125,7 +136,7 @@ def create_app(detector: Detector | None = None, model_version: str | None = Non
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         started = perf_counter()
-        detections: list[Detection] = get_detector().detect(image)
+        detections: list[Detection] = get_detector().detect(image, conf=conf)
         elapsed_ms = (perf_counter() - started) * 1000
         return PredictResponse(
             detections=[

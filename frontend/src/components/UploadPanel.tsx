@@ -1,13 +1,24 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 interface UploadPanelProps {
+  fileName?: string
+  previewUrl?: string
+  busy?: boolean
+  canAnalyze: boolean
   onSelect: (file: File) => void
-  disabled?: boolean
+  onAnalyze: () => void
 }
 
-export function UploadPanel({ onSelect, disabled = false }: UploadPanelProps) {
+export function UploadPanel({
+  fileName,
+  previewUrl,
+  busy = false,
+  canAnalyze,
+  onSelect,
+  onAnalyze,
+}: UploadPanelProps) {
   const [dragging, setDragging] = useState(false)
-  const inputId = 'image-input'
+  const inputRef = useRef<HTMLInputElement>(null)
 
   function handleFiles(files: FileList | null) {
     const file = files?.[0]
@@ -17,27 +28,17 @@ export function UploadPanel({ onSelect, disabled = false }: UploadPanelProps) {
   }
 
   return (
-    <section className="card" aria-labelledby="upload-title">
-      <h2 id="upload-title">1. Selecciona una imagen</h2>
-      <p className="hint">JPEG o PNG, hasta 10 MB.</p>
+    <section className="panel panel--upload" aria-labelledby="upload-title">
+      <header className="panel__header">
+        <span className="step">01</span>
+        <div>
+          <h2 id="upload-title">Selecciona una imagen</h2>
+          <p className="muted">JPEG (jpg, jpeg, jfif) o PNG · máximo 10 MB</p>
+        </div>
+      </header>
 
-      <label className="field" htmlFor={inputId}>
-        Archivo
-      </label>
-      <input
-        id={inputId}
-        className="file-input"
-        type="file"
-        accept="image/jpeg,image/png"
-        disabled={disabled}
-        onChange={(event) => {
-          handleFiles(event.target.files)
-          event.target.value = ''
-        }}
-      />
-
-      <div
-        className={`dropzone${dragging ? ' dropzone--active' : ''}`}
+      <label
+        className={`dropzone${dragging ? ' is-dragging' : ''}${previewUrl ? ' has-preview' : ''}`}
         onDragOver={(event) => {
           event.preventDefault()
           setDragging(true)
@@ -46,13 +47,69 @@ export function UploadPanel({ onSelect, disabled = false }: UploadPanelProps) {
         onDrop={(event) => {
           event.preventDefault()
           setDragging(false)
-          if (!disabled) {
+          if (!busy) {
             handleFiles(event.dataTransfer.files)
           }
         }}
       >
-        <span>Arrastra una imagen aquí</span>
-        <span className="hint">o usa el selector de arriba</span>
+        <input
+          ref={inputRef}
+          id="image-input"
+          className="sr-only"
+          type="file"
+          accept="image/jpeg,image/png"
+          aria-label="Archivo"
+          disabled={busy}
+          onChange={(event) => {
+            handleFiles(event.target.files)
+            event.target.value = ''
+          }}
+        />
+
+        {previewUrl ? (
+          <img className="dropzone__preview" src={previewUrl} alt={`Vista previa: ${fileName}`} />
+        ) : (
+          <span className="dropzone__empty">
+            <span className="dropzone__icon" aria-hidden="true">
+              ↑
+            </span>
+            <strong>Arrastra tu imagen aquí</strong>
+            <span className="muted">o haz clic para elegir un archivo</span>
+          </span>
+        )}
+      </label>
+
+      {fileName && (
+        <p className="file-meta">
+          <span className="dot dot--accent" aria-hidden="true" />
+          {fileName}
+        </p>
+      )}
+
+      <div className="actions">
+        <button
+          type="button"
+          className="button button--ghost"
+          onClick={() => inputRef.current?.click()}
+          disabled={busy}
+        >
+          {previewUrl ? 'Cambiar imagen' : 'Elegir imagen'}
+        </button>
+        <button
+          type="button"
+          className="button button--primary"
+          onClick={onAnalyze}
+          disabled={!canAnalyze || busy}
+        >
+          {busy ? (
+            <>
+              <span className="spinner" aria-hidden="true" />
+              Analizando…
+            </>
+          ) : (
+            'Analizar imagen'
+          )}
+        </button>
       </div>
     </section>
   )

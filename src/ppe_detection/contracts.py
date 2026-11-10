@@ -115,7 +115,7 @@ class Detection:
 class Detector(Protocol):
     """Protocolo de inferencia que deben cumplir el fake y el detector real."""
 
-    def detect(self, image: ImageData) -> list[Detection]:
+    def detect(self, image: ImageData, *, conf: float | None = None) -> list[Detection]:
         """Devuelve las detecciones de la imagen."""
         ...
 
@@ -126,6 +126,6 @@ class FakeDetector:
     def __init__(self, detections: Sequence[Detection] | None = None) -> None:
         self._detections = tuple(detections or ())
 
-    def detect(self, image: ImageData) -> list[Detection]:
+    def detect(self, image: ImageData, *, conf: float | None = None) -> list[Detection]:
         """Devuelve las detecciones fijas configuradas."""
         return list(self._detections)

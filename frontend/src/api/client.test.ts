@@ -50,6 +50,14 @@ describe('MockDetectorClient', () => {
 
     expect(second.detections).toHaveLength(MOCK_DETECTIONS.length)
   })
+
+  it('filtra por el umbral del modelo', async () => {
+    const client = new MockDetectorClient()
+
+    const result = await client.detect(pngFile(), 0.8)
+
+    expect(result.detections.map((detection) => detection.class_name)).toEqual(['helmet'])
+  })
 })
 
 describe('HttpDetectorClient', () => {
@@ -61,7 +69,7 @@ describe('HttpDetectorClient', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     const client = new HttpDetectorClient('http://api.local/')
-    const result = await client.detect(pngFile())
+    const result = await client.detect(pngFile(), 0.4)
 
     expect(result).toEqual(response)
     expect(fetchMock).toHaveBeenCalledTimes(1)
@@ -70,6 +78,7 @@ describe('HttpDetectorClient', () => {
     expect(init.method).toBe('POST')
     expect(init.body).toBeInstanceOf(FormData)
     expect((init.body as FormData).get('file')).toBeInstanceOf(File)
+    expect((init.body as FormData).get('conf')).toBe('0.4')
   })
 
   it('falla cuando la API responde con error', async () => {
