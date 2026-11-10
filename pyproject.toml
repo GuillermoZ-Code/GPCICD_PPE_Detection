@@ -43,6 +43,7 @@ module-name = "ppe_detection"
 
 [dependency-groups]
 dev = [
+    "grpcio-tools>=1.85.1",
     "httpx2>=2.16.0",
     "pre-commit>=3.7",
     "pytest>=8.0",
