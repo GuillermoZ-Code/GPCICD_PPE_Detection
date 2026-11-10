@@ -75,6 +75,8 @@ con visión por computador. Curso **GPCICD M2-M4**. Licencia **AGPL-3.0-only**.
   que conservar; **release `develop → main` siempre merge commit**.
 - **No hay push directo a `main` ni a `develop`.** La protección es una regla escrita,
   no configuración de GitHub.
+- Al fusionar en `develop`, **cierra la issue a mano**: `Closes #N` solo actúa de forma
+  automática cuando la PR apunta a la rama por defecto (`main`).
 
 ```bash
 git checkout develop && git pull

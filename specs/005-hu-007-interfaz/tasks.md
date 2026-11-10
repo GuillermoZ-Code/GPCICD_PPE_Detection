@@ -12,38 +12,38 @@ description: "Task list for HU-007 — Interfaz web React"
 
 ## Phase 1: Setup
 
-- [ ] T001 Crear `frontend/` con `package.json`, Vite, React y TypeScript estricto.
-- [ ] T002 Configurar Vitest, Testing Library, ESLint y `npm run build`.
+- [x] T001 Crear `frontend/` con `package.json`, Vite, React y TypeScript estricto.
+- [x] T002 Configurar Vitest, Testing Library, ESLint y `npm run build`.
 
 ## Phase 2: Tests first
 
-- [ ] T003 [P] `client.test.ts`: cliente simulado determinista y cliente HTTP.
-- [ ] T004 [P] `App.test.tsx`: flujo completo con detecciones → AC-007.1.
-- [ ] T005 [P] `App.test.tsx`: sin detecciones no es error → AC-007.3.
-- [ ] T006 [P] `App.test.tsx`: archivo inválido y app disponible → AC-007.4.
-- [ ] T007 [P] `DetectionTable.test.tsx`: categoría y confianza → AC-007.2.
-- [ ] T008 [P] `App.test.tsx`: atribución AGPL y CC-BY → FR-010.
-- [ ] T009 `npm run test` en rojo.
+- [x] T003 [P] `client.test.ts`: cliente simulado determinista y cliente HTTP.
+- [x] T004 [P] `App.test.tsx`: flujo completo con detecciones → AC-007.1.
+- [x] T005 [P] `App.test.tsx`: sin detecciones no es error → AC-007.3.
+- [x] T006 [P] `App.test.tsx`: archivo inválido y app disponible → AC-007.4.
+- [x] T007 [P] `DetectionTable.test.tsx`: categoría y confianza → AC-007.2.
+- [x] T008 [P] `App.test.tsx`: atribución AGPL y CC-BY → FR-010.
+- [x] T009 `npm run test` en rojo.
 
 ## Phase 3: Implementación
 
-- [ ] T010 `types.ts` con `Detection` y `PredictResponse`.
-- [ ] T011 `api/client.ts` con `DetectorClient`, `MockDetectorClient`,
+- [x] T010 `types.ts` con `Detection` y `PredictResponse`.
+- [x] T011 `api/client.ts` con `DetectorClient`, `MockDetectorClient`,
       `HttpDetectorClient` y `createClient`.
-- [ ] T012 `components/UploadPanel.tsx` con validación de tipo y tamaño.
-- [ ] T013 `components/AnnotatedCanvas.tsx` con escalado y paleta por clase.
-- [ ] T014 `components/DetectionTable.tsx` y `StatusBanner.tsx`.
-- [ ] T015 `App.tsx` con los estados `idle`, `loading`, `ready`, `error`.
-- [ ] T016 `styles.css` con diseño responsive y accesible.
-- [ ] T017 `npm run test` en verde.
+- [x] T012 `components/UploadPanel.tsx` con validación de tipo y tamaño.
+- [x] T013 `components/AnnotatedCanvas.tsx` con escalado y paleta por clase.
+- [x] T014 `components/DetectionTable.tsx` y `StatusBanner.tsx`.
+- [x] T015 `App.tsx` con los estados `idle`, `loading`, `ready`, `error`.
+- [x] T016 `styles.css` con diseño responsive y accesible.
+- [x] T017 `npm run test` en verde.
 
 ## Phase 4: Integración
 
-- [ ] T018 Job `frontend` en `.github/workflows/ci.yml`.
-- [ ] T019 Targets `frontend-*` en el `Makefile`.
-- [ ] T020 `frontend/README.md` con instalación, scripts y variables de entorno.
-- [ ] T021 Actualizar `CONSTITUTION.md`, `README.md`, `docs/curso/` y la plantilla de PR.
-- [ ] T022 `make check`, `npm run build` y `make estado-write`.
+- [x] T018 Job `frontend` en `.github/workflows/ci.yml`.
+- [x] T019 Targets `frontend-*` en el `Makefile`.
+- [x] T020 `frontend/README.md` con instalación, scripts y variables de entorno.
+- [x] T021 Actualizar `CONSTITUTION.md`, `README.md`, `docs/curso/` y la plantilla de PR.
+- [x] T022 `make check`, `npm run build` y `make estado-write`.
 
 ## Dependencies & Execution Order
 

@@ -209,6 +209,8 @@ Se usa [Conventional Commits](https://www.conventionalcommits.org/):
 - **Mínimo 1 aprobación** de otro integrante.
 - **Code Reviewer designado:** Guillermo; si él es autor, revisa otro integrante.
 - La PR enlaza su issue (`Closes #N`) y su spec (`specs/...`).
+- Al fusionar en `develop`, **cierra la issue a mano**: GitHub solo cierra
+  automáticamente cuando la PR apunta a la rama por defecto (`main`).
 - La CI debe estar en verde y `make check` debe pasar antes de pedir revisión.
 - No se fusiona con cambios de otros sin resolver; no se fuerza push a `main`.
 
