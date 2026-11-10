@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
 from time import perf_counter
 from typing import Annotated, cast
 
@@ -12,12 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from ppe_detection.contracts import Detection, Detector
-from ppe_detection.detection.yolo import (
-    DEFAULT_CONF,
-    DEFAULT_DEVICE,
-    DEFAULT_IMGSZ,
-    DEFAULT_IOU,
-    YoloDetector,
+from ppe_detection.detector_config import (
+    DetectorNotConfiguredError,
+    build_detector,
+    default_model_version,
 )
 from ppe_detection.io import InvalidImageError, validate_image_bytes
 
@@ -43,48 +40,12 @@ class PredictResponse(BaseModel):
     elapsed_ms: float
 
 
-def _env_float(name: str, default: float) -> float:
-    value = os.getenv(name)
-    if value is None:
-        return default
-    try:
-        return float(value)
-    except ValueError:
-        return default
-
-
-def _env_int(name: str, default: int) -> int:
-    value = os.getenv(name)
-    if value is None:
-        return default
-    try:
-        return int(value)
-    except ValueError:
-        return default
-
-
-def _default_model_version() -> str:
-    explicit = os.getenv("PPE_MODEL_VERSION")
-    if explicit:
-        return explicit
-    model_path = os.getenv("PPE_MODEL_PATH")
-    return Path(model_path).stem if model_path else "unknown"
-
-
 def _build_detector() -> Detector:
-    model_path = os.getenv("PPE_MODEL_PATH")
-    if not model_path:
-        raise HTTPException(
-            status_code=503,
-            detail="No hay modelo configurado: define PPE_MODEL_PATH.",
-        )
-    return YoloDetector(
-        model_path,
-        conf=_env_float("PPE_CONF", DEFAULT_CONF),
-        iou=_env_float("PPE_IOU", DEFAULT_IOU),
-        imgsz=_env_int("PPE_IMGSZ", DEFAULT_IMGSZ),
-        device=os.getenv("PPE_DEVICE", DEFAULT_DEVICE),
-    )
+    """Construye el detector compartido; el 503 es la traducción al mapa HTTP."""
+    try:
+        return build_detector()
+    except DetectorNotConfiguredError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
 
 def create_app(detector: Detector | None = None, model_version: str | None = None) -> FastAPI:
@@ -106,7 +67,7 @@ def create_app(detector: Detector | None = None, model_version: str | None = Non
         allow_headers=["*"],
     )
     application.state.detector = detector
-    application.state.model_version = model_version or _default_model_version()
+    application.state.model_version = model_version or default_model_version()
 
     def get_detector() -> Detector:
         if application.state.detector is None:

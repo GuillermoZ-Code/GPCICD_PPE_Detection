@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -55,6 +55,9 @@ build: ## Construye el paquete (sdist + wheel)
 
 estado: ## Muestra el estado operativo (git, PRs, issues)
 	uv run python -m ppe_detection.tools.estado
+
+protos: ## Regenera los módulos protobuf de HU-010 (grpcio-tools)
+	uv run python -m ppe_detection.grpc.gen
 
 estado-write: ## Actualiza el bloque generado de docs/curso/ESTADO.md
 	uv run python -m ppe_detection.tools.estado --write

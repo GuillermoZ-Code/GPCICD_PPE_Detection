@@ -55,7 +55,7 @@ dev = [
 line-length = 100
 target-version = "py313"
 src = ["src", "tests"]
-extend-exclude = [".specify"]
+extend-exclude = [".specify", "src/ppe_detection/grpc/protos"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "C4"]
@@ -72,3 +72,8 @@ addopts = "-q"
 
 [tool.ty.src]
 exclude = [".specify"]
+
+# Código generado por protoc: `grpc.experimental` no se importa explícitamente.
+[[tool.ty.overrides]]
+include = ["src/ppe_detection/grpc/protos/*.py"]
+rules = { possibly-missing-submodule = "ignore" }

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
+from typing import Any
 
 import cv2
 import grpc
@@ -15,6 +16,7 @@ from ppe_detection.api import create_app
 from ppe_detection.contracts import CLASSES, Detection, Detector, FakeDetector, ImageData
 from ppe_detection.grpc import client, server
 from ppe_detection.grpc.protos import ppe_pb2, ppe_pb2_grpc
+from ppe_detection.grpc.server import default_options
 from ppe_detection.io import MAX_IMAGE_BYTES
 from ppe_detection.results import NO_DETECTIONS_MESSAGE, build_inference_result
 
@@ -51,13 +53,15 @@ def _six_catalog_detector() -> FakeDetector:
 
 
 @contextmanager
-def _grpc_stub(detector: Detector | None) -> Iterator[ppe_pb2_grpc.PpeDetectionStub]:
+def _grpc_stub(
+    detector: Detector | None,
+) -> Generator[ppe_pb2_grpc.PpeDetectionStub]:
     """Servidor gRPC real en bucle local y stub de cliente para una sesión."""
     grpc_server = server.create_server(detector=detector, model_version=MODEL_VERSION)
     port = grpc_server.add_insecure_port("127.0.0.1:0")
     assert port > 0, "no se pudo abrir el puerto efímero de pruebas"
     grpc_server.start()
-    channel = grpc.insecure_channel(f"127.0.0.1:{port}")
+    channel = grpc.insecure_channel(f"127.0.0.1:{port}", options=default_options())
     stub = ppe_pb2_grpc.PpeDetectionStub(channel)
     try:
         yield stub
@@ -126,13 +130,17 @@ def test_grpc_rest_equivalence_same_image_and_detector() -> None:
     # Assert: convenciones semánticas (clase y confianza) y espaciales (bbox xyxy)
     rest_detections = rest_body["detections"]
     assert len(rest_detections) == len(grpc_response.detections)
-    for rest, grpc_detection in zip(rest_detections, grpc_response.detections):
+    for rest, grpc_detection in zip(rest_detections, grpc_response.detections, strict=True):
         assert rest["class_id"] == grpc_detection.class_id
         assert rest["class_name"] == grpc_detection.class_name
         assert rest["confidence"] == pytest.approx(grpc_detection.confidence)
         assert rest["bbox"] == pytest.approx(
-            [grpc_detection.bbox.x1, grpc_detection.bbox.y1,
-             grpc_detection.bbox.x2, grpc_detection.bbox.y2]
+            [
+                grpc_detection.bbox.x1,
+                grpc_detection.bbox.y1,
+                grpc_detection.bbox.x2,
+                grpc_detection.bbox.y2,
+            ]
         )
         assert rest["image_width"] == grpc_detection.image_width
         assert rest["image_height"] == grpc_detection.image_height
@@ -185,7 +193,7 @@ def test_empty_image_returns_invalid_argument_and_server_stays_up() -> None:
     # Act / Assert
     with _grpc_stub(_six_catalog_detector()) as stub:
         error = _rejected(b"", stub)
-        assert error.code() == grpc.StatusCode.INVALID_ARGUMENT
+        assert client.call_status(error)[0] == "INVALID_ARGUMENT"
         response = _call(stub, _png_bytes())
         assert response.image_width == 12
 
@@ -203,8 +211,8 @@ def test_corrupt_image_returns_invalid_argument_without_detector() -> None:
     # Act / Assert
     with _grpc_stub(SpyDetector()) as stub:
         error = _rejected(b"no es una imagen", stub)
-        assert error.code() == grpc.StatusCode.INVALID_ARGUMENT
-        assert "Formato" in error.details()
+        assert client.call_status(error)[0] == "INVALID_ARGUMENT"
+        assert "Formato" in client.call_status(error)[1]
         assert calls == []
 
 
@@ -216,8 +224,8 @@ def test_oversized_image_returns_invalid_argument() -> None:
     # Act / Assert
     with _grpc_stub(_six_catalog_detector()) as stub:
         error = _rejected(oversized, stub)
-        assert error.code() == grpc.StatusCode.INVALID_ARGUMENT
-        assert "10 MB" in error.details()
+        assert client.call_status(error)[0] == "INVALID_ARGUMENT"
+        assert "10 MB" in client.call_status(error)[1]
         assert _call(stub, _png_bytes()).image_width == 12
 
 
@@ -229,9 +237,10 @@ def test_without_model_returns_unavailable(monkeypatch: pytest.MonkeyPatch) -> N
     # Act / Assert
     with _grpc_stub(None) as stub:
         error = _rejected(_png_bytes(), stub)
-        assert error.code() == grpc.StatusCode.UNAVAILABLE
-        assert "modelo" in error.details().lower()
-        assert "PPE_MODEL_PATH" in error.details()
+        state, detail = client.call_status(error)
+        assert state == "UNAVAILABLE"
+        assert "modelo" in detail.lower()
+        assert "PPE_MODEL_PATH" in detail
 
 
 def test_client_detects_against_running_server() -> None:
