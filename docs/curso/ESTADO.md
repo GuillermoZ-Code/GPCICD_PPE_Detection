@@ -9,28 +9,27 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 03:47 UTC
+**Generado:** 2026-11-10 04:27 UTC
 
-**Rama:** `feature/008-hu-006-api-rest` · limpia · +2/-0 vs `origin/develop`
-**develop:** 7f69f87 (2026-11-09)
+**Rama:** `feature/009-hu-010-consumo-grpc` · limpia · +6/-0 vs `origin/develop`
+**develop:** a60d579 (2026-11-09)
 
 **Últimos commits:**
-- `fb38037 docs(specs): registrar la PR #42 de HU-006`
-- `912fa45 feat(api): exponer inferencia REST (HU-006)`
-- `7f69f87 Merge pull request #40 from GuillermoZ-Code/docs/estado-sincronizacion-pr`
-- `b4ff23a docs(m3): cerrar documentacion de TA/SPI y specs 001/002`
-- `2816f83 Merge pull request #39 from GuillermoZ-Code/feature/007-hu-005-validacion-imagenes`
+- `69d6d03 docs(grpc): documentar generación, arranque y consumo`
+- `5bb6728 Merge remote-tracking branch 'origin/develop' into feature/009-hu-010-consumo-grpc`
+- `8d4fe02 feat(grpc): servicio gRPC reutilizando el pipeline compartido (HU-010)`
+- `1f85456 test(grpc): verificar los AC de HU-010 antes de implementar`
+- `a60d579 Merge pull request #43 from GuillermoZ-Code/fix/inventario-pruebas-146`
 
 **Pull requests abiertas (2):**
-- #42 feat(api): exponer inferencia REST (HU-006) → `develop` · revisión: — · CI: ok
-- #41 docs(curso): documentar el inventario de pruebas y la brecha de 400 → `develop` · revisión: — · CI: —
+- #45 docs(hu-008): agregar spec e informe de evaluacion → `develop` · revisión: — · CI: —
+- #44 docs(operacion): runbook de demo local API + frontend → `develop` · revisión: — · CI: ok
 
-**Issues abiertas: 9 · 13 SP**
-- M3-S1 (2 SP): #6
+**Issues abiertas: 8 · 11 SP**
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #6 (PR #42)
+**En revisión:** ninguna
 **Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
@@ -87,3 +86,16 @@
   inyectable, CORS y OpenAPI; 9 pruebas y spec 008.
 - **En vuelo:** PR #42 (`feature/008-hu-006-api-rest`), pendiente de revisión.
 - **Siguiente:** HU-012 o integración del frontend con la API real.
+
+### 2026-11-10 · Eliana (OpenCode) — HU-010
+
+- **Hecho:** HU-010 implementada con Spec Kit: contrato `ppe.v1` (`ppe.proto` +
+  stubs regenerables con `make protos`), servidor y cliente de prueba que
+  reutilizan `validate_image_bytes` (HU-005), el `Detector` del ADR 0005 y
+  `build_inference_result` (HU-004); configuración compartida extraída a
+  `detector_config` (también usa REST); 9 pruebas nuevas (135 passed + 1
+  skipped) y demo e2e verificada con `FakeDetector`.
+- **En vuelo:** rama `feature/009-hu-010-consumo-grpc` (+6 commits), PR por
+  crear y revisión de Guillermo.
+- **Siguiente:** crear la PR a `develop`; tras el merge, HU-011 gana su
+  dependencia.
