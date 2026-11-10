@@ -9,17 +9,17 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 02:21 UTC
+**Generado:** 2026-11-10 03:02 UTC
 
-**Rama:** `fix/estado-parser-y-gh` · limpia · +1/-0 vs `origin/develop`
-**develop:** f975019 (2026-11-09)
+**Rama:** `feature/004-hu-004-informe-sin-detecciones` · 1 archivo(s) sin commit · +2/-0 vs `origin/develop`
+**develop:** b9d3af6 (2026-11-09)
 
 **Últimos commits:**
+- `75ab178 docs(hu-004): spec 004, contrato de resultado y enlaces espejo`
+- `8dbdd6a feat(results): contrato y mensaje de resultado vacÃ­o de EPP (HU-004)`
+- `b9d3af6 Merge pull request #32 from GuillermoZ-Code/fix/estado-parser-y-gh`
+- `8f7f958 docs(estado): registrar la correccion y regenerar el bloque`
 - `685de75 fix(estado): corregir el parser de SP y evitar escrituras sin gh`
-- `f975019 Merge pull request #31 from GuillermoZ-Code/chore/contexto-agentes`
-- `d2eacae docs(pr): alinear la plantilla con make estado-write`
-- `277ca2b docs(estado): regenerar el bloque de estado`
-- `3cb2bab docs(estado): registrar el merge de HU-001 y HU-002`
 
 **Pull requests abiertas (0):**
 - ninguna
@@ -30,7 +30,7 @@
 - M4-S3 (3 SP): #14 #15
 
 **En revisión:** ninguna
-**Siguiente por orden:** #3 HU-003 — Visualizar las detecciones sobre la imagen
+**Siguiente por orden:** #3 HU-003 â€” Visualizar las detecciones sobre la imagen
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -51,3 +51,14 @@
   arreglado el comando de la constitución y añadidas 4 pruebas.
 - **En vuelo:** `fix/estado-parser-y-gh`, pendiente de PR.
 - **Siguiente:** fusionar la corrección y abrir HU-003 con Spec Kit.
+
+### 2026-11-10 · Eliana (OpenCode) — HU-004
+
+- **Hecho:** flujo Spec Kit completo para #4 (specify→análisis→implementación).
+  Rama `feature/004-hu-004-...`, spec `004`, `results.py` (`InferenceResult`),
+  10 pruebas test-first, integración CLI (`format_summary`), 3 pruebas más,
+  checks en verde y `uv build` OK.
+- **En vuelo:** PR a `develop` con `Closes #4`, revisor Guillermo; commits
+  `feat(results)` y `docs(hu-004)` hechos y pushed.
+- **Siguiente:** revisión/aprobación del equipo antes de fusionar (DoD); luego
+  HU-006/HU-007 reutilizan el mensaje del contrato.
