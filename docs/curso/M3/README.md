@@ -8,7 +8,7 @@
 | Fecha | Tema | Impacto en el repo |
 |-------|------|--------------------|
 | **05/11** | FastAPI / REST | HU-006: API `/predict`, contrato OpenAPI, validación de entrada |
-| **07/11** | MLflow + Streamlit | HU-009: experiment tracking; HU-007: interfaz Streamlit |
+| **07/11** | MLflow + Streamlit | HU-009: experiment tracking; HU-007: interfaz web (React) |
 
 ## 2. Sprints
 
@@ -40,7 +40,7 @@
 - Contrato `ImageData → list[Detection]` + `FakeDetector`.
 - Detector YOLO con inferencia local en CPU.
 - API REST FastAPI y servicio gRPC.
-- Interfaz Streamlit.
+- SPA React + Vite + TypeScript.
 - MLflow con runs consultables.
 - Docker CPU reproducible.
 - Suite de pruebas deterministas y `make check` en verde.

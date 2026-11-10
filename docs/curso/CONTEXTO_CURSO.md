@@ -31,7 +31,7 @@
 |--------|--------|-----:|----------------------|
 | **M1** | Cerrado | **25 %** | Primera entrega del proyecto |
 | **M2** | Hasta **31/10/2026, 23:59** | **35 %** | Documento maestro + repositorio alineado (código, arquitectura, evidencias) |
-| **M3** | **31/10 → 14/11/2026** | **25 %** | Implementación local: FastAPI, gRPC, Streamlit, MLflow, Docker CPU |
+| **M3** | **31/10 → 14/11/2026** | **25 %** | Implementación local: FastAPI, gRPC, SPA React, MLflow, Docker CPU |
 | **M4** | **19/11 → 28/11/2026** | **15 %** | MLOps, despliegue, CI/CD y credenciales |
 
 ### Hitos y clases
@@ -78,7 +78,7 @@
 | **MLflow** | Plataforma de experiment tracking y registro de modelos. |
 | **gRPC** | Framework RPC sobre Protocol Buffers. |
 | **FastAPI** | Framework HTTP para la API REST. |
-| **Streamlit** | Framework de interfaz para aplicaciones de datos. |
+| **React + Vite** | Framework de interfaz web (SPA) del proyecto; sustituye a Streamlit (ADR 0006). |
 | **Model Card** | Documento de propósito, datos, métricas, limitaciones y licencias del modelo. |
 | **Spec Kit** | Herramienta de Spec-Driven Development de GitHub. |
 

@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado estado-write arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -58,6 +58,26 @@ estado: ## Muestra el estado operativo (git, PRs, issues)
 
 estado-write: ## Actualiza el bloque generado de docs/curso/ESTADO.md
 	uv run python -m ppe_detection.tools.estado --write
+
+frontend-install: ## Instala las dependencias del frontend (npm ci)
+	cd frontend && npm ci
+
+frontend-dev: ## Levanta el frontend en modo desarrollo (http://localhost:5173)
+	cd frontend && npm run dev
+
+frontend-preview: ## Sirve el build de producción (http://localhost:4173)
+	cd frontend && npm run preview
+
+frontend-lint: ## ESLint del frontend
+	cd frontend && npm run lint
+
+frontend-test: ## Pruebas del frontend (Vitest)
+	cd frontend && npm run test
+
+frontend-build: ## Build de producción del frontend (Vite)
+	cd frontend && npm run build
+
+frontend-check: frontend-lint frontend-test frontend-build ## Verificación completa del frontend
 
 arch: ## Regenera el diagrama de arquitectura con Archify
 	node "$(ARCHIFY_BIN)" finalize architecture docs/architecture/arquitectura.json docs/architecture/arquitectura.html --quality showcase

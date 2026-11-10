@@ -17,6 +17,7 @@ from ppe_detection.tools.estado import (
     Report,
     parse_backlog_sp,
     render,
+    render_summary,
     replace_block,
     run,
 )
@@ -127,7 +128,7 @@ def test_render_summarizes_prs_issues_and_next() -> None:
     assert "Pull requests abiertas (1)" in text
     assert "#28" in text
     assert "revisión: aprobada" in text
-    assert "Issues abiertas: 3 · 4 SP" in text
+    assert "**Issues abiertas: 3 · 4 SP**" in text
     assert "- M3-S1 (2 SP): #1 #3" in text
     assert "**En revisión:** #1 (PR #28)" in text
     assert "**Siguiente por orden:** #3 HU-003" in text
@@ -164,9 +165,16 @@ def test_write_updates_when_sources_are_available(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     # Arrange
-    target = tmp_path / "ESTADO.md"
-    target.write_text(f"{GENERATED_START}\ncontenido previo\n{GENERATED_END}\n", encoding="utf-8")
-    monkeypatch.setattr(estado, "ESTADO_PATH", target)
+    estado_file = tmp_path / "ESTADO.md"
+    estado_file.write_text(
+        f"{GENERATED_START}\ncontenido previo\n{GENERATED_END}\n", encoding="utf-8"
+    )
+    agents_file = tmp_path / "AGENTS.md"
+    agents_file.write_text(
+        f"{GENERATED_START}\ncontenido previo\n{GENERATED_END}\n", encoding="utf-8"
+    )
+    monkeypatch.setattr(estado, "ESTADO_PATH", estado_file)
+    monkeypatch.setattr(estado, "AGENTS_PATH", agents_file)
     monkeypatch.setattr(estado, "collect", _report)
 
     # Act
@@ -174,9 +182,26 @@ def test_write_updates_when_sources_are_available(
 
     # Assert
     assert code == 0
-    content = target.read_text(encoding="utf-8")
-    assert "contenido previo" not in content
-    assert "Pull requests abiertas (1)" in content
+    assert "Pull requests abiertas (1)" in estado_file.read_text(encoding="utf-8")
+    agents_text = agents_file.read_text(encoding="utf-8")
+    assert "contenido previo" not in agents_text
+    assert "**Issues abiertas:** 3 · 4 SP" in agents_text
+    assert "**Siguiente:** #3 HU-003" in agents_text
+
+
+def test_render_summary_covers_state() -> None:
+    # Arrange
+    report = _report()
+
+    # Act
+    text = render_summary(report)
+
+    # Assert
+    assert "**Actualizado:**" in text
+    assert "**Rama:**" in text
+    assert "**Issues abiertas:** 3 · 4 SP" in text
+    assert "#28" in text
+    assert "**Siguiente:** #3 HU-003" in text
 
 
 def test_replace_block_keeps_the_session_log() -> None:

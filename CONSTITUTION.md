@@ -63,7 +63,7 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
   variante exacta en SPI-01), ajustado con el dataset.
 - Postprocesamiento con NMS y umbrales configurables.
 - Visualización de detecciones y respuesta vacía cuando no hay EPP.
-- API REST con FastAPI, servicio gRPC y interfaz Streamlit.
+- API REST con FastAPI, servicio gRPC y interfaz web React (SPA).
 - Evaluación con mAP@0.5, mAP@0.5:0.95, precision, recall y F1 por clase.
 - Registro de experimentos en MLflow.
 - Docker CPU, CI/CD en GitHub Actions y despliegue en Droplet.
@@ -91,7 +91,10 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 | **Pre-commit** | [pre-commit](https://pre-commit.com) |
 | **API REST** | FastAPI + Pydantic |
 | **RPC** | gRPC + Protocol Buffers |
-| **Interfaz** | Streamlit |
+| **Interfaz** | React 19 + Vite 8 + TypeScript 6 (`frontend/`) |
+| **Pruebas del frontend** | Vitest + Testing Library |
+| **Lint del frontend** | ESLint 9/10 + typescript-eslint |
+| **Runtime del frontend** | Node.js 24 + npm |
 | **Visión por computador** | Ultralytics YOLO (nano/small) + PyTorch CPU |
 | **Procesamiento de imagen** | OpenCV + NumPy |
 | **Experiment tracking** | MLflow (local) |
@@ -102,8 +105,9 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 | **Dataset** | [`51ddhesh/PPE_Detection`](https://huggingface.co/datasets/51ddhesh/PPE_Detection) (CC-BY-4.0) |
 | **Licencia** | AGPL-3.0-only |
 
-> ⚠️ **Regla dura:** toda gestión de dependencias pasa por `uv`. Está **prohibido**
-> `pip` y `requirements.txt`.
+> ⚠️ **Regla dura:** la gestión de dependencias de Python pasa por `uv`. Está
+> **prohibido** `pip` y `requirements.txt`. El frontend usa `npm` con
+> `package-lock.json` versionado (ADR 0006).
 
 > La variante exacta de YOLO y la compatibilidad con Python 3.13 + torch CPU se
 > confirman en **SPI-01**; hasta entonces no se fija una versión.
@@ -120,12 +124,12 @@ GPCICD_PPE_Detection/
 │   ├── postprocessing/      # NMS y umbrales (previsto)
 │   ├── api/                 # FastAPI (previsto)
 │   ├── grpc/                # gRPC (previsto)
-│   ├── ui/                  # Streamlit (previsto)
 │   ├── evaluation/          # métricas y MLflow (previsto)
 │   └── training/            # fine-tuning YOLO (script de Colab)
+├── frontend/                # SPA React + Vite + TypeScript (HU-007)
 ├── tests/                   # pytest, patrón AAA
 ├── docs/
-│   ├── adr/                 # ADR 0001–0005
+│   ├── adr/                 # ADR 0001–0006
 │   ├── architecture/        # diagrama Archify (JSON + HTML)
 │   ├── curso/               # contexto, backlog y checklists por módulo
 │   ├── dataset/             # EDA y auditoría del dataset
@@ -182,7 +186,7 @@ Flujo objetivo:
 
 ```text
 Imagen → validación → preprocesamiento → detector YOLO → postprocesamiento (NMS/umbrales)
-       → API REST / gRPC → Streamlit
+       → API REST / gRPC → SPA React (frontend/)
                                      ↘ MLflow (experimentos y métricas)
 Todo en Docker CPU; CI/CD → Droplet
 ```
@@ -235,10 +239,15 @@ falsos positivos/negativos y la ausencia de detecciones no son prueba de incumpl
 | `ty` | Verificación de tipos | `make typecheck` |
 | `pytest` | Pruebas | `make test` |
 | `pre-commit` | Hooks antes de cada commit | `make pre-commit` |
+| `npm` | Dependencias del frontend | `npm ci` |
+| ESLint | Lint del frontend | `make frontend-lint` |
+| Vitest | Pruebas del frontend | `make frontend-test` |
+| Vite | Build del frontend | `make frontend-build` |
 | GitHub Actions | CI en `develop` y `main` | `.github/workflows/ci.yml` |
 | `uv build` | Construcción del paquete | `uv build` |
 
 - `make check` debe estar en verde antes de abrir una PR.
+- `make frontend-check` debe estar en verde si la PR toca `frontend/`.
 - La CI debe estar en verde antes de fusionar.
 - No se usa `--no-verify` salvo causa documentada.
 - Las pruebas unitarias no dependen de GPU, dataset completo ni red.
@@ -325,6 +334,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-10-31 | Sin umbral de cobertura hasta HU-012 | El equipo decide con evidencia |
 | 2026-11-04 | Reestimar el backlog de 67 a 22 SP (HU-001 a HU-015) | Alinear con el documento del M2; las TA/SPI se absorben en la preparación P1–P4 |
 | 2026-11-04 | HU-002 pasa temporalmente de Jesús a Hernán | Jesús no disponible; HU-002 tiene holgura cero y bloquea la ruta crítica |
+| 2026-11-09 | Interfaz web **React + Vite + TypeScript** en `frontend/`; se retiran Streamlit y Tkinter | Se busca un frontend profesional, testeable y desplegable como estático; la API desacopla la UI de Python (ADR 0006) |
 
 ## 12. Roadmap M3–M4
 

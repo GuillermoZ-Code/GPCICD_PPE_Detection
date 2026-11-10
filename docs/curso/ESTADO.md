@@ -9,29 +9,29 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 03:20 UTC
+**Generado:** 2026-11-10 03:11 UTC
 
-**Rama:** `docs/estado-sesion` · limpia · +2/-0 vs `origin/develop`
-**develop:** 73faac8 (2026-11-09)
+**Rama:** `feature/005-hu-007-interfaz` · 5 archivo(s) sin commit · +4/-0 vs `origin/develop`
+**develop:** c7ae721 (2026-11-09)
 
 **Últimos commits:**
-- `818d23e docs(estado): registrar cierre de sesion`
-- `e997262 fix(estado): decodificar UTF-8 de gh`
-- `73faac8 Merge pull request #34 from GuillermoZ-Code/feature/004-hu-004-informe-sin-detecciones`
-- `81a457d docs(estado): registrar el merge de HU-003 y el estado de la PR 34`
-- `b1f46c6 merge: traer develop (HU-003) a feature/004-hu-004`
+- `8d3f09d docs(estado): registrar el avance de HU-007`
+- `a403a52 docs(proceso): cerrar la issue al fusionar en develop`
+- `3edd27f docs(web): registrar el stack React en la constitucion y el ADR 0006`
+- `b74f0b8 feat(web): interfaz React con cliente de inferencia y pruebas`
+- `c7ae721 Merge pull request #33 from GuillermoZ-Code/feature/004-hu-003-visualizacion`
 
 **Pull requests abiertas (2):**
-- #36 fix(estado): decodificar UTF-8 y actualizar bloque de estado → `develop` · revisión: — · CI: —
 - #35 feat(web): interfaz React con cliente de inferencia y pruebas → `develop` · revisión: — · CI: ok
+- #34 feat(results): contrato y mensaje de resultado vacío de EPP (HU-004) → `develop` · revisión: — · CI: —
 
 **Issues abiertas: 12 · 17 SP**
 - M3-S1 (6 SP): #4 #5 #6 #7
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #7 (PR #35)
-**Siguiente por orden:** #4 HU-004 — Informar cuando no se detectan elementos de protección personal
+**En revisión:** #7 (PR #35), #4 (PR #34)
+**Siguiente por orden:** #5 HU-005 — Validar las imágenes recibidas
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -57,23 +57,12 @@
 
 - **Hecho:** HU-003 implementada: `draw_detections`, etiquetas en español, escalado
   proporcional, flag `--annotated` y 13 pruebas nuevas (95 passed + 1 skipped).
-- **En vuelo:** PR #33 fusionada a `develop`.
-- **Siguiente:** HU-004 o HU-007.
+- **En vuelo:** `feature/004-hu-003-visualizacion`, pendiente de PR.
+- **Siguiente:** PR de HU-003 y, tras el merge, HU-004 o HU-007.
 
-### 2026-11-10 · Eliana (OpenCode) — HU-004
+### 2026-11-10 · Guillermo (OpenCode)
 
-- **Hecho:** flujo Spec Kit completo para #4 (specify→análisis→implementación).
-  Rama `feature/004-hu-004-...`, spec `004`, `results.py` (`InferenceResult`),
-  10 pruebas test-first, integración CLI (`format_summary`), 3 pruebas más,
-  checks en verde y `uv build` OK.
-- **En vuelo:** PR #34 abierta con `Closes #4`, revisor Guillermo y merge con
-  origin/develop para incluir HU-003.
-- **Siguiente:** revisión/aprobación del equipo antes de fusionar (DoD); luego
-  HU-006/HU-007 reutilizan el mensaje del contrato.
-
-### 2026-11-10 · Hernán (OpenCode) — estado y PR #36
-
-- **Hecho:** verificado #32; `gh` autenticado con OAuth (`repo`); corregida la
-  decodificación UTF-8 de `gh` y regenerado el bloque con 12 issues / 17 SP.
-- **En vuelo:** PR #36 (`docs/estado-sesion`).
-- **Siguiente:** abrir HU-005 con Spec Kit.
+- **Hecho:** HU-007 con SPA React + Vite + TypeScript: cliente HTTP y simulado, 19
+  pruebas, job de CI y ADR 0006; cerrada la issue #3 al fusionar #33.
+- **En vuelo:** `feature/005-hu-007-interfaz`, pendiente de PR; PR #34 (HU-004) abierta.
+- **Siguiente:** PR de HU-007 y revisar #34 de Eliana.

@@ -20,6 +20,7 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[3]
 BACKLOG_PATH = REPO_ROOT / "docs" / "curso" / "backlog.md"
 ESTADO_PATH = REPO_ROOT / "docs" / "curso" / "ESTADO.md"
+AGENTS_PATH = REPO_ROOT / "AGENTS.md"
 GENERATED_START = "<!-- estado:inicio -->"
 GENERATED_END = "<!-- estado:fin -->"
 
@@ -347,10 +348,32 @@ def replace_block(document: str, block: str) -> str:
     start = document.find(GENERATED_START)
     end = document.find(GENERATED_END)
     if start == -1 or end == -1 or end < start:
-        raise ValueError("ESTADO.md no tiene los marcadores estado:inicio/estado:fin")
+        raise ValueError("el documento no tiene los marcadores estado:inicio/estado:fin")
     header = document[: start + len(GENERATED_START)]
     footer = document[end:]
     return f"{header}\n{block}\n{footer}"
+
+
+def render_summary(report: Report) -> str:
+    """Resumen corto para el §0 de ``AGENTS.md``."""
+    generated = report.generated_at.astimezone(UTC).strftime("%Y-%m-%d %H:%M UTC")
+    branch = f"`{report.branch}` · +{report.ahead}/-{report.behind} vs `origin/develop`"
+    total = sum(issue.sp for issue in report.issues)
+    in_flight = (
+        "; ".join(f"#{pr.number} {pr.title} (PR, revisión: {pr.review})" for pr in report.prs)
+        or "ninguna"
+    )
+    next_issue = _next_issue(report)
+    following = f"#{next_issue.number} {next_issue.title}" if next_issue else "sin issues abiertas"
+    return "\n".join(
+        [
+            f"**Actualizado:** {generated}",
+            f"- **Rama:** {branch}",
+            f"- **Issues abiertas:** {len(report.issues)} · {total} SP",
+            f"- **En vuelo:** {in_flight}",
+            f"- **Siguiente:** {following}",
+        ]
+    )
 
 
 def _display(path: Path) -> str:
@@ -385,12 +408,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("El bloque se escribiría incompleto. Instala y autentica `gh`, ejecuta")
         print("`git fetch` o regenera el archivo en una máquina con acceso.")
         return 1
-    if not ESTADO_PATH.exists():
-        print(f"No existe {_display(ESTADO_PATH)}")
-        return 1
-    document = ESTADO_PATH.read_text(encoding="utf-8")
-    ESTADO_PATH.write_text(replace_block(document, text), encoding="utf-8", newline="\n")
-    print(f"Actualizado {_display(ESTADO_PATH)}")
+
+    updates: list[tuple[Path, str]] = []
+    for path, block in ((ESTADO_PATH, text), (AGENTS_PATH, render_summary(report))):
+        if not path.exists():
+            print(f"No existe {_display(path)}")
+            return 1
+        document = path.read_text(encoding="utf-8")
+        try:
+            updates.append((path, replace_block(document, block)))
+        except ValueError as error:
+            print(f"{_display(path)}: {error}")
+            return 1
+
+    for path, updated in updates:
+        path.write_text(updated, encoding="utf-8", newline="\n")
+        print(f"Actualizado {_display(path)}")
     return 0
 
 
