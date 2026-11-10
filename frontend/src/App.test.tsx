@@ -10,7 +10,7 @@ function pngFile(name = 'foto.png'): File {
 }
 
 function dropzone(): HTMLElement {
-  const label = screen.getByText('Arrastra una imagen aquí')
+  const label = screen.getByText('Arrastra tu imagen aquí')
   const container = label.closest('.dropzone')
   if (!container) {
     throw new Error('No se encontró la zona de arrastre')
@@ -18,20 +18,34 @@ function dropzone(): HTMLElement {
   return container as HTMLElement
 }
 
+async function analyze(user: ReturnType<typeof userEvent.setup>, file = pngFile()) {
+  await user.upload(screen.getByLabelText('Archivo'), file)
+  await user.click(screen.getByRole('button', { name: 'Analizar imagen' }))
+}
+
 describe('App', () => {
+  it('deshabilita el análisis hasta que haya una imagen', () => {
+    // Arrange / Act
+    render(<App client={new MockDetectorClient()} />)
+
+    // Assert
+    expect(screen.getByRole('button', { name: 'Analizar imagen' })).toBeDisabled()
+  })
+
   it('muestra las detecciones de una imagen válida', async () => {
     // Arrange
     const user = userEvent.setup()
     render(<App client={new MockDetectorClient()} />)
 
     // Act
-    await user.upload(screen.getByLabelText('Archivo'), pngFile())
+    await analyze(user)
 
     // Assert
     expect(await screen.findByText('Casco')).toBeInTheDocument()
     expect(screen.getByText('Chaleco')).toBeInTheDocument()
-    expect(screen.getByText('2 detección(es) en foto.png')).toBeInTheDocument()
+    expect(screen.getByText('2')).toBeInTheDocument()
     expect(screen.getByRole('img', { name: 'Imagen analizada: foto.png' })).toBeInTheDocument()
+    expect(screen.getByText('mock-1.0.0')).toBeInTheDocument()
   })
 
   it('informa cuando no hay detecciones sin tratarlo como error', async () => {
@@ -40,7 +54,7 @@ describe('App', () => {
     render(<App client={new MockDetectorClient([])} />)
 
     // Act
-    await user.upload(screen.getByLabelText('Archivo'), pngFile())
+    await analyze(user)
 
     // Assert
     expect(await screen.findByText(/No se detectaron EPP en la imagen/)).toBeInTheDocument()
@@ -57,7 +71,7 @@ describe('App', () => {
 
     // Assert
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Formato no admitido. Usa una imagen JPEG o PNG.',
+      'Formato no admitido. Usa JPEG (jpg, jpeg, jfif) o PNG; AVIF no está soportado.',
     )
     expect(screen.getByLabelText('Archivo')).not.toBeDisabled()
   })

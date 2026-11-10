@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 from typing import Any
 
 import cv2
@@ -171,6 +172,24 @@ def test_without_model_returns_503(monkeypatch: pytest.MonkeyPatch) -> None:
     # Assert
     assert response.status_code == 503
     assert "modelo" in response.json()["detail"].lower()
+
+
+def test_lifespan_preloads_model(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Con PPE_MODEL_PATH, el modelo se carga al arrancar y no en la primera petición."""
+    # Arrange
+    module = importlib.import_module("ppe_detection.api.app")
+    fake = FakeDetector([_detection()])
+    monkeypatch.setenv("PPE_MODEL_PATH", "modelo.pt")
+    monkeypatch.setattr(module, "_build_detector", lambda: fake)
+    application = create_app()
+
+    # Act
+    with TestClient(application) as client:
+        response = client.get("/openapi.json")
+
+    # Assert
+    assert response.status_code == 200
+    assert application.state.detector is fake
 
 
 def test_cors_allows_frontend_origin() -> None:

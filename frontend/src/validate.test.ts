@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import { MAX_BYTES, validateFile } from './validate'
+import { FORMAT_ERROR, MAX_BYTES, validateFile } from './validate'
 
-function fileOf(size: number, type: string): File {
-  return new File([new Uint8Array(size)], 'archivo', { type })
+function fileOf(size: number, type: string, name = 'archivo'): File {
+  return new File([new Uint8Array(size)], name, { type })
 }
 
 describe('validateFile', () => {
@@ -15,10 +15,25 @@ describe('validateFile', () => {
     expect(validateFile(fileOf(1024, 'image/jpeg'))).toBeNull()
   })
 
+  it('acepta JFIF cuando el navegador lo reporta como image/jfif', () => {
+    expect(validateFile(fileOf(1024, 'image/jfif', 'foto.jfif'))).toBeNull()
+  })
+
+  it('acepta JFIF cuando el navegador deja el tipo vacío', () => {
+    expect(validateFile(fileOf(1024, '', 'foto.jfif'))).toBeNull()
+  })
+
+  it('acepta PNG por extensión si el tipo viene vacío', () => {
+    expect(validateFile(fileOf(1024, '', 'foto.png'))).toBeNull()
+  })
+
   it('rechaza un tipo no admitido', () => {
-    expect(validateFile(fileOf(1024, 'text/plain'))).toBe(
-      'Formato no admitido. Usa una imagen JPEG o PNG.',
-    )
+    expect(validateFile(fileOf(1024, 'text/plain'))).toBe(FORMAT_ERROR)
+  })
+
+  it('rechaza AVIF aunque la extensión se parezca', () => {
+    expect(validateFile(fileOf(1024, 'image/avif', 'foto.avif'))).toBe(FORMAT_ERROR)
+    expect(validateFile(fileOf(1024, '', 'foto.avif'))).toBe(FORMAT_ERROR)
   })
 
   it('rechaza un archivo vacío', () => {

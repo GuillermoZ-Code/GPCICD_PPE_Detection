@@ -8,7 +8,7 @@ interface DetectionTableProps {
 export function DetectionTable({ detections }: DetectionTableProps) {
   return (
     <table className="table">
-      <caption>Detecciones encontradas</caption>
+      <caption className="sr-only">Detecciones encontradas</caption>
       <thead>
         <tr>
           <th scope="col">Categoría</th>
@@ -17,20 +17,32 @@ export function DetectionTable({ detections }: DetectionTableProps) {
         </tr>
       </thead>
       <tbody>
-        {detections.map((detection, index) => (
-          <tr key={`${detection.class_name}-${index}`}>
-            <td>
-              <span
-                className="dot"
-                style={{ backgroundColor: colorFor(detection.class_name) }}
-                aria-hidden="true"
-              />
-              {displayName(detection.class_name)}
-            </td>
-            <td>{Math.round(detection.confidence * 100)} %</td>
-            <td className="mono">{detection.bbox.map((value) => Math.round(value)).join(', ')}</td>
-          </tr>
-        ))}
+        {detections.map((detection, index) => {
+          const percent = Math.round(detection.confidence * 100)
+          return (
+            <tr key={`${detection.class_name}-${index}`}>
+              <td>
+                <span
+                  className="dot"
+                  style={{ backgroundColor: colorFor(detection.class_name) }}
+                  aria-hidden="true"
+                />
+                {displayName(detection.class_name)}
+              </td>
+              <td>
+                <span className="confidence">
+                  <span className="confidence__bar" aria-hidden="true">
+                    <span style={{ width: `${percent}%` }} />
+                  </span>
+                  {percent} %
+                </span>
+              </td>
+              <td className="mono">
+                {detection.bbox.map((value) => Math.round(value)).join(', ')}
+              </td>
+            </tr>
+          )
+        })}
       </tbody>
     </table>
   )

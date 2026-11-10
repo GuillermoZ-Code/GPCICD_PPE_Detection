@@ -10,9 +10,10 @@ import { validateFile } from './validate'
 
 type Analysis =
   | { status: 'idle' }
-  | { status: 'loading'; fileName: string }
-  | { status: 'ready'; fileName: string; imageUrl: string; response: PredictResponse }
-  | { status: 'error'; message: string }
+  | { status: 'selected'; file: File; imageUrl: string }
+  | { status: 'loading'; file: File; imageUrl: string }
+  | { status: 'ready'; file: File; imageUrl: string; response: PredictResponse }
+  | { status: 'error'; message: string; file?: File; imageUrl?: string }
 
 interface AppProps {
   client?: DetectorClient
@@ -31,89 +32,158 @@ export function App({ client }: AppProps) {
     }
   }, [])
 
-  async function handleFile(file: File) {
-    const problem = validateFile(file)
+  const file = 'file' in analysis ? analysis.file : undefined
+  const imageUrl = 'imageUrl' in analysis ? analysis.imageUrl : undefined
+  const busy = analysis.status === 'loading'
+
+  function handleSelect(nextFile: File) {
+    const problem = validateFile(nextFile)
     if (problem) {
       setAnalysis({ status: 'error', message: problem })
       return
     }
-
     if (imageUrlRef.current) {
       URL.revokeObjectURL(imageUrlRef.current)
     }
-    const imageUrl = URL.createObjectURL(file)
-    imageUrlRef.current = imageUrl
-    setAnalysis({ status: 'loading', fileName: file.name })
+    const nextUrl = URL.createObjectURL(nextFile)
+    imageUrlRef.current = nextUrl
+    setAnalysis({ status: 'selected', file: nextFile, imageUrl: nextUrl })
+  }
 
+  async function handleAnalyze() {
+    if (!file || !imageUrl) {
+      return
+    }
+    setAnalysis({ status: 'loading', file, imageUrl })
     try {
       const response = await detector.detect(file)
-      setAnalysis({ status: 'ready', fileName: file.name, imageUrl, response })
+      setAnalysis({ status: 'ready', file, imageUrl, response })
     } catch (error) {
       const detail = error instanceof Error ? error.message : ''
       setAnalysis({
         status: 'error',
         message: `No se pudo completar el análisis. ${detail}`.trim(),
+        file,
+        imageUrl,
       })
     }
   }
 
   return (
-    <div className="page">
-      <header className="header">
-        <p className="eyebrow">GPCICD · Grupo 4</p>
-        <h1>Detección de EPP</h1>
-        <p className="lede">
-          Sube una imagen y consulta qué Equipos de Protección Personal aparecen. El sistema
-          reporta EPP detectado; no evalúa cumplimiento normativo.
-        </p>
+    <div className="app">
+      <header className="topbar">
+        <div className="brand">
+          <span className="brand__mark">EPP</span>
+          <span className="brand__name">Vision</span>
+        </div>
+        <span className="badge">GPCICD · M3</span>
       </header>
 
-      <main className="layout">
-        <UploadPanel onSelect={handleFile} disabled={analysis.status === 'loading'} />
-
-        <section className="card" aria-labelledby="result-title">
-          <h2 id="result-title">2. Resultado</h2>
-
-          {analysis.status === 'idle' && (
-            <StatusBanner tone="info">
-              Aún no hay análisis. Selecciona una imagen para empezar.
-            </StatusBanner>
-          )}
-
-          {analysis.status === 'loading' && (
-            <StatusBanner tone="info">Analizando {analysis.fileName}…</StatusBanner>
-          )}
-
-          {analysis.status === 'error' && (
-            <StatusBanner tone="error">{analysis.message}</StatusBanner>
-          )}
-
-          {analysis.status === 'ready' && (
-            <div className="result">
-              <AnnotatedCanvas
-                src={analysis.imageUrl}
-                width={analysis.response.image_width}
-                height={analysis.response.image_height}
-                detections={analysis.response.detections}
-                alt={`Imagen analizada: ${analysis.fileName}`}
-              />
-
-              {analysis.response.detections.length === 0 ? (
-                <StatusBanner tone="warning">
-                  No se detectaron EPP en la imagen. La inferencia terminó sin errores; la ausencia
-                  de detecciones no implica que no haya EPP.
-                </StatusBanner>
-              ) : (
-                <>
-                  <p className="hint">
-                    {analysis.response.detections.length} detección(es) en {analysis.fileName}
-                  </p>
-                  <DetectionTable detections={analysis.response.detections} />
-                </>
-              )}
-            </div>
-          )}
+      <main className="main">
+        <section className="hero">
+          <p className="eyebrow">Visión por computador · 6 categorías</p>
+          <h1>Detecta Equipos de Protección Personal en una imagen</h1>
+          <p className="lede">
+            Sube una foto, ejecuta el detector y revisa qué EPP aparecen y dónde. El sistema
+            reporta detecciones; no evalúa cumplimiento normativo.
+          </p>
         </section>
+
+        <div className="workspace">
+          <UploadPanel
+            fileName={file?.name}
+            previewUrl={imageUrl}
+            busy={busy}
+            canAnalyze={Boolean(file)}
+            onSelect={handleSelect}
+            onAnalyze={handleAnalyze}
+          />
+
+          <section className="panel panel--result" aria-labelledby="result-title">
+            <header className="panel__header">
+              <span className="step">02</span>
+              <div>
+                <h2 id="result-title">Resultado</h2>
+                <p className="muted">Detecciones y ubicación</p>
+              </div>
+            </header>
+
+            {analysis.status === 'idle' && (
+              <div className="empty-state">
+                <span className="empty-state__icon" aria-hidden="true">
+                  ◉
+                </span>
+                <strong>Los resultados aparecerán aquí</strong>
+                <p className="muted">Selecciona una imagen y pulsa «Analizar imagen».</p>
+              </div>
+            )}
+
+            {analysis.status === 'selected' && (
+              <div className="empty-state">
+                <span className="empty-state__icon empty-state__icon--ready" aria-hidden="true">
+                  ✓
+                </span>
+                <strong>Imagen lista para analizar</strong>
+                <p className="muted">Pulsa «Analizar imagen» para ejecutar el detector.</p>
+              </div>
+            )}
+
+            {analysis.status === 'loading' && (
+              <div className="loading" role="status" aria-live="polite">
+                <span className="spinner spinner--lg" aria-hidden="true" />
+                <div>
+                  <strong>Analizando imagen…</strong>
+                  <p className="muted">El modelo está procesando los píxeles.</p>
+                </div>
+                <div className="skeleton" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
+            )}
+
+            {analysis.status === 'error' && (
+              <StatusBanner tone="error">{analysis.message}</StatusBanner>
+            )}
+
+            {analysis.status === 'ready' && (
+              <div className="result">
+                <div className="stats">
+                  <div className="stat">
+                    <span>Detecciones</span>
+                    <strong>{analysis.response.detections.length}</strong>
+                  </div>
+                  <div className="stat">
+                    <span>Tiempo</span>
+                    <strong>{Math.round(analysis.response.elapsed_ms ?? 0)} ms</strong>
+                  </div>
+                  <div className="stat">
+                    <span>Modelo</span>
+                    <strong>{analysis.response.model_version ?? '—'}</strong>
+                  </div>
+                </div>
+
+                <AnnotatedCanvas
+                  src={analysis.imageUrl}
+                  width={analysis.response.image_width}
+                  height={analysis.response.image_height}
+                  detections={analysis.response.detections}
+                  alt={`Imagen analizada: ${analysis.file.name}`}
+                />
+
+                {analysis.response.detections.length === 0 ? (
+                  <StatusBanner tone="warning">
+                    No se detectaron EPP en la imagen. La inferencia terminó sin errores; la
+                    ausencia de detecciones no implica que no haya EPP.
+                  </StatusBanner>
+                ) : (
+                  <DetectionTable detections={analysis.response.detections} />
+                )}
+              </div>
+            )}
+          </section>
+        </div>
       </main>
 
       <footer className="footer">
