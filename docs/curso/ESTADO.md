@@ -9,29 +9,29 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 03:10 UTC
+**Generado:** 2026-11-10 03:20 UTC
 
-**Rama:** `feature/004-hu-004-informe-sin-detecciones` · limpia · +5/-0 vs `origin/develop`
-**develop:** c7ae721 (2026-11-09)
+**Rama:** `docs/estado-sesion` · limpia · +2/-0 vs `origin/develop`
+**develop:** 73faac8 (2026-11-09)
 
 **Últimos commits:**
+- `818d23e docs(estado): registrar cierre de sesion`
+- `e997262 fix(estado): decodificar UTF-8 de gh`
+- `73faac8 Merge pull request #34 from GuillermoZ-Code/feature/004-hu-004-informe-sin-detecciones`
+- `81a457d docs(estado): registrar el merge de HU-003 y el estado de la PR 34`
 - `b1f46c6 merge: traer develop (HU-003) a feature/004-hu-004`
-- `18034c1 docs(hu-004): registrar la PR 34 y regenerar el estado`
-- `b288dd2 docs(estado): registrar el cierre de la sesion de HU-004`
-- `75ab178 docs(hu-004): spec 004, contrato de resultado y enlaces espejo`
-- `8dbdd6a feat(results): contrato y mensaje de resultado vacío de EPP (HU-004)`
 
 **Pull requests abiertas (2):**
+- #36 fix(estado): decodificar UTF-8 y actualizar bloque de estado → `develop` · revisión: — · CI: —
 - #35 feat(web): interfaz React con cliente de inferencia y pruebas → `develop` · revisión: — · CI: ok
-- #34 feat(results): contrato y mensaje de resultado vacío de EPP (HU-004) → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 12 · 17 SP**
 - M3-S1 (6 SP): #4 #5 #6 #7
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #7 (PR #35), #4 (PR #34)
-**Siguiente por orden:** #5 HU-005 — Validar las imágenes recibidas
+**En revisión:** #7 (PR #35)
+**Siguiente por orden:** #4 HU-004 — Informar cuando no se detectan elementos de protección personal
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -70,3 +70,10 @@
   origin/develop para incluir HU-003.
 - **Siguiente:** revisión/aprobación del equipo antes de fusionar (DoD); luego
   HU-006/HU-007 reutilizan el mensaje del contrato.
+
+### 2026-11-10 · Hernán (OpenCode) — estado y PR #36
+
+- **Hecho:** verificado #32; `gh` autenticado con OAuth (`repo`); corregida la
+  decodificación UTF-8 de `gh` y regenerado el bloque con 12 issues / 17 SP.
+- **En vuelo:** PR #36 (`docs/estado-sesion`).
+- **Siguiente:** abrir HU-005 con Spec Kit.
