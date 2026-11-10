@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-04
 
-**Status**: Draft
+**Status**: Implementada (PR #30)
 
 **Input**: Issue #2 — “Detectar las seis categorías de EPP en una imagen”.
 

@@ -62,6 +62,7 @@ def _detector(model: FakeModel, **kwargs: Any) -> YoloDetector:
 
 
 def test_detector_maps_boxes_to_detections() -> None:
+    """AC-01: la inferencia no entrena y mapea las cajas a `Detection`."""
     # Arrange
     model = FakeModel([FakeResult([FakeBox(3, 0.82, [1.0, 2.0, 5.0, 6.0])])])
     detector = _detector(model)
@@ -78,6 +79,7 @@ def test_detector_maps_boxes_to_detections() -> None:
 
 
 def test_detector_uses_canonical_catalog() -> None:
+    """AC-02: el catálogo coincide con las seis clases del `data.yaml`."""
     # Arrange / Act
     detector = _detector(FakeModel([]))
 
@@ -125,6 +127,7 @@ def test_detector_returns_empty_list_without_results() -> None:
 
 
 def test_detector_clips_boxes_to_image() -> None:
+    """AC-03: cada detección tiene clase, coordenadas válidas y confianza."""
     # Arrange
     model = FakeModel([FakeResult([FakeBox(0, 0.5, [-5.0, -5.0, 100.0, 100.0])])])
     detector = _detector(model)

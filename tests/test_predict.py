@@ -132,6 +132,7 @@ def test_format_summary_counts_by_class() -> None:
 def test_run_writes_detections_csv(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
+    """AC-04: la corrida deja un CSV reproducible con las detecciones."""
     # Arrange
     image = _write_image(tmp_path / "a.png")
     model = tmp_path / "best.pt"
@@ -168,6 +169,7 @@ def test_sha256_file_matches_hashlib(tmp_path: Path) -> None:
 def test_run_writes_manifest_with_provenance(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """AC-04: el manifiesto registra modelo, commit, parámetros y totales."""
     # Arrange
     image = _write_image(tmp_path / "a.png")
     model = tmp_path / "best.pt"
