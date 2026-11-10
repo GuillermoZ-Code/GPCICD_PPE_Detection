@@ -9,17 +9,17 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 05:20 UTC
+**Generado:** 2026-11-10 05:26 UTC
 
-**Rama:** `feat/app-config` · limpia · +3/-0 vs `origin/develop`
-**develop:** ee6cd86 (2026-11-09)
+**Rama:** `feat/app-config` · limpia · +5/-0 vs `origin/develop`
+**develop:** a60d579 (2026-11-09)
 
 **Últimos commits:**
+- `8c9681f Merge remote-tracking branch 'origin/develop' into feat/app-config`
+- `da65775 docs(estado): registrar la configuracion de la app`
 - `f4886f8 feat(web): tema claro/oscuro, olas y panel de configuracion`
 - `b925bed feat(api): precargar el modelo y aceptar conf por peticion`
 - `968223c feat(app): levantar API y frontend con make app`
-- `ee6cd86 Merge pull request #42 from GuillermoZ-Code/feature/008-hu-006-api-rest`
-- `22504fc Merge pull request #41 from GuillermoZ-Code/docs/inventario-pruebas`
 
 **Pull requests abiertas (4):**
 - #47 feat(app): ejecucion local y configuracion de la interfaz → `develop` · revisión: — · CI: ok
