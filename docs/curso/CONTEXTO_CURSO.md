@@ -86,6 +86,7 @@
 
 - [Constitución](../../CONSTITUTION.md)
 - [Backlog](backlog.md)
+- [Inventario de pruebas](PRUEBAS.md)
 - [Checklist M2](M2/README.md)
 - [M3](M3/README.md)
 - [M4](M4/README.md)
