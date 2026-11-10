@@ -9,28 +9,29 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 03:31 UTC
+**Generado:** 2026-11-10 03:36 UTC
 
-**Rama:** `docs/estado-post-merge` · 8 archivo(s) sin commit · +0/-0 vs `origin/develop`
-**develop:** 976437d (2026-11-09)
+**Rama:** `feature/007-hu-005-validacion-imagenes` · limpia · +2/-0 vs `origin/develop`
+**develop:** 13b97e7 (2026-11-09)
 
 **Últimos commits:**
+- `de8bee5 docs(specs): registrar la PR #39 de HU-005`
+- `a57d0cb feat(io): validar imagenes de entrada (HU-005)`
+- `13b97e7 Merge pull request #37 from GuillermoZ-Code/docs/estado-post-merge`
+- `f9a34b2 docs(estado): sincronizar el estado tras HU-004 y HU-007`
 - `976437d Merge pull request #35 from GuillermoZ-Code/feature/005-hu-007-interfaz`
-- `cbb91e0 Merge branch 'develop' into feature/005-hu-007-interfaz`
-- `c1fbcc4 Merge pull request #36 from GuillermoZ-Code/docs/estado-sesion`
-- `ad9a801 feat(frontend): agregar make frontend-dev y frontend-preview`
-- `8018055 docs(estado): regenerar bloque de estado`
 
-**Pull requests abiertas (0):**
-- ninguna
+**Pull requests abiertas (2):**
+- #40 docs(estado): sincronizar estado y regla de actualizacion por PR → `develop` · revisión: — · CI: —
+- #39 feat(io): validar imagenes de entrada (HU-005) → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 10 · 14 SP**
 - M3-S1 (3 SP): #5 #6
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** ninguna
-**Siguiente por orden:** #5 HU-005 — Validar las imágenes recibidas
+**En revisión:** #5 (PR #39)
+**Siguiente por orden:** #6 HU-006 — Consultar inferencias mediante una API REST con FastAPI
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
