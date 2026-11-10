@@ -28,7 +28,7 @@ Issues = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues"
 
 [project.optional-dependencies]
 inference = [
-    "ultralytics>=8.4.202",
+    "ultralytics>=8.4.195,<9",
 ]
 
 [build-system]

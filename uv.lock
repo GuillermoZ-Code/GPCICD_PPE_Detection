@@ -421,7 +421,7 @@ dev = [
 requires-dist = [
     { name = "numpy", specifier = ">=2.5.4" },
     { name = "opencv-python-headless", specifier = ">=5.0.0.93" },
-    { name = "ultralytics", marker = "extra == 'inference'", specifier = ">=8.4.202" },
+    { name = "ultralytics", marker = "extra == 'inference'", specifier = ">=8.4.195,<9" },
 ]
 provides-extras = ["inference"]
 
