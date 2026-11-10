@@ -11,9 +11,9 @@
 
 - **Actualizado:** 2026-11-09.
 - **Sprint:** M3-S2 (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
-- **En vuelo:** #28 aprobada y pendiente de merge; #30 en corrección por Hernán.
-- **Fusionado en `develop`:** M2 + planificación del M3. Ninguna HU cerrada.
-- **Siguiente acción:** fusionar #28 con merge commit; luego reorientar #30 a `develop`.
+- **Fusionado en `develop`:** HU-001 (#28) y HU-002 (#30); issues #1 y #2 cerradas.
+- **En vuelo:** ninguna PR de código abierta. Pendiente el PR de contexto para agentes.
+- **Siguiente acción:** abrir HU-003 (depende de #2, ya cerrada) con Spec Kit.
 - **Detalle:** [`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md).
 
 ### 0.1 Protocolo de arranque (obligatorio para OpenCode y Codex)
@@ -26,7 +26,7 @@
 
 ### 0.2 Protocolo de cierre (obligatorio)
 
-1. `make estado --write` regenera el bloque de `ESTADO.md`.
+1. `make estado-write` regenera el bloque de `ESTADO.md`.
 2. Añade una entrada a la bitácora con: **hecho**, **en vuelo**, **siguiente**.
 3. Commit: `docs(estado): registrar cierre de sesion`.
 4. Si no puedes commitear, deja el archivo modificado y dilo explícitamente.

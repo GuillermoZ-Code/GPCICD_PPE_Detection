@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado estado-write arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -53,8 +53,11 @@ check: lint format-check typecheck test ## Verificación completa (lint + format
 build: ## Construye el paquete (sdist + wheel)
 	uv build
 
-estado: ## Muestra el estado operativo (git, PRs, issues); usa ARGS=--write para guardarlo
-	uv run python -m ppe_detection.tools.estado $(ARGS)
+estado: ## Muestra el estado operativo (git, PRs, issues)
+	uv run python -m ppe_detection.tools.estado
+
+estado-write: ## Actualiza el bloque generado de docs/curso/ESTADO.md
+	uv run python -m ppe_detection.tools.estado --write
 
 arch: ## Regenera el diagrama de arquitectura con Archify
 	node "$(ARCHIFY_BIN)" finalize architecture docs/architecture/arquitectura.json docs/architecture/arquitectura.html --quality showcase

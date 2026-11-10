@@ -266,7 +266,7 @@ mismo cambio. Ante una diferencia, **avisa al equipo antes de continuar**.
 ### Inicio y cierre de sesión de un agente
 
 Todo agente (OpenCode, Codex) empieza ejecutando `make estado` y termina con
-`make estado --write` y una entrada en la bitácora de
+`make estado-write` y una entrada en la bitácora de
 [`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md). El protocolo completo, incluida la
 precedencia de fuentes, vive en [`AGENTS.md`](./AGENTS.md) §0.
 
