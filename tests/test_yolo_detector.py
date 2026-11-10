@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from pathlib import Path
 from typing import Any
 
@@ -145,6 +146,24 @@ def test_detector_skips_degenerate_boxes() -> None:
 
     # Assert
     assert detections == []
+
+
+def test_detector_skips_invalid_confidence() -> None:
+    # Arrange: una caja válida entre confianzas no finitas o fuera de rango.
+    boxes = [
+        FakeBox(0, 0.5, [1.0, 1.0, 4.0, 4.0]),
+        FakeBox(1, math.nan, [1.0, 1.0, 4.0, 4.0]),
+        FakeBox(1, math.inf, [1.0, 1.0, 4.0, 4.0]),
+        FakeBox(1, -0.2, [1.0, 1.0, 4.0, 4.0]),
+        FakeBox(1, 1.4, [1.0, 1.0, 4.0, 4.0]),
+    ]
+    detector = _detector(FakeModel([FakeResult(boxes)]))
+
+    # Act
+    detections = detector.detect(_image())
+
+    # Assert
+    assert [detection.class_name for detection in detections] == ["Gloves"]
 
 
 def test_detector_rejects_wrong_catalog() -> None:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import math
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Protocol
@@ -112,6 +113,9 @@ class YoloDetector:
             class_id = int(box.cls.item())
             if not 0 <= class_id < len(CLASSES):
                 raise ValueError(f"El modelo devolvió class_id fuera de rango: {class_id}")
+            confidence = float(box.conf.item())
+            if not math.isfinite(confidence) or not 0.0 <= confidence <= 1.0:
+                continue
             x1, y1, x2, y2 = (float(value) for value in box.xyxy[0].tolist())
             x1 = _clip(x1, 0.0, float(image.width))
             y1 = _clip(y1, 0.0, float(image.height))
