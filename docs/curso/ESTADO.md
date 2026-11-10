@@ -9,28 +9,28 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 03:02 UTC
+**Generado:** 2026-11-10 03:04 UTC
 
-**Rama:** `feature/004-hu-004-informe-sin-detecciones` · 1 archivo(s) sin commit · +2/-0 vs `origin/develop`
+**Rama:** `feature/004-hu-004-informe-sin-detecciones` · 1 archivo(s) sin commit · +3/-0 vs `origin/develop`
 **develop:** b9d3af6 (2026-11-09)
 
 **Últimos commits:**
+- `b288dd2 docs(estado): registrar el cierre de la sesion de HU-004`
 - `75ab178 docs(hu-004): spec 004, contrato de resultado y enlaces espejo`
-- `8dbdd6a feat(results): contrato y mensaje de resultado vacÃ­o de EPP (HU-004)`
+- `8dbdd6a feat(results): contrato y mensaje de resultado vacío de EPP (HU-004)`
 - `b9d3af6 Merge pull request #32 from GuillermoZ-Code/fix/estado-parser-y-gh`
 - `8f7f958 docs(estado): registrar la correccion y regenerar el bloque`
-- `685de75 fix(estado): corregir el parser de SP y evitar escrituras sin gh`
 
-**Pull requests abiertas (0):**
-- ninguna
+**Pull requests abiertas (1):**
+- #34 feat(results): contrato y mensaje de resultado vacío de EPP (HU-004) → `develop` · revisión: — · CI: —
 
 **Issues abiertas: 13 · 18 SP**
 - M3-S1 (7 SP): #3 #4 #5 #6 #7
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** ninguna
-**Siguiente por orden:** #3 HU-003 â€” Visualizar las detecciones sobre la imagen
+**En revisión:** #4 (PR #34)
+**Siguiente por orden:** #3 HU-003 — Visualizar las detecciones sobre la imagen
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
