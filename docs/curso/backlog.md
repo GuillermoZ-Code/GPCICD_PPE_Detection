@@ -55,7 +55,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Imagen válida decodificada y entregada al preprocesamiento.
   - Dimensiones originales conservadas como metadatos.
   - La entrada no ejecuta inferencia y cumple el contrato de datos.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/002-hu-001-carga-imagen`](../../specs/002-hu-001-carga-imagen/spec.md) · PR #28.
 
 ### HU-002 — Detectar las seis categorías de EPP en una imagen
 
@@ -68,7 +68,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Catálogo de 6 clases: Helmet, Vest, Gloves, Goggles, Mask, Safety Shoe.
   - Cada detección incluye clase, coordenadas y confianza en [0,1].
   - Evaluación reproducible; no se asume que todas las predicciones sean correctas.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/003-hu-002-deteccion`](../../specs/003-hu-002-deteccion/spec.md) · PR #30.
 
 ### HU-003 — Visualizar las detecciones sobre la imagen
 

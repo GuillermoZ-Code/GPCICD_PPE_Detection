@@ -9,8 +9,9 @@ Este directorio contiene una spec por HU, creada con
   `sh`.
 - **Comandos:** `.opencode/commands/speckit.*.md`.
 - **Rama:** `branch_template: "feature/{number}-{slug}"`; el slug incluye el ID
-  (`feature/001-hu-001-carga-imagen`, `feature/002-ta-11-contract-first`).
-- **Spec de ejemplo:** `001-ta-contract-first/` (borrador, sin implementar).
+  (`feature/002-hu-001-carga-imagen`, `feature/003-hu-002-deteccion`).
+- **Specs en curso:** `002-hu-001-carga-imagen` (PR #28) y `003-hu-002-deteccion`
+  (PR #30).
 
 ## Flujo por HU
 
@@ -36,4 +37,6 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 
 | Spec | Estado |
 |------|--------|
-| `001-ta-contract-first` | Borrador para validación de Jesús; sin implementar |
+| `001-ta-contract-first` | Borrador; el contrato se implementó con la carga de HU-001 |
+| `002-hu-001-carga-imagen` | Implementada en `feature/002-hu-001-carga-imagen` (PR #28) |
+| `003-hu-002-deteccion` | Implementada en `feature/003-hu-002-deteccion` (PR #30) |
