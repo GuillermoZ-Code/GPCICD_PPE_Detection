@@ -4,6 +4,45 @@
 > **Lee [`CONSTITUTION.md`](./CONSTITUTION.md) antes de operar.** Si hay conflicto,
 > manda la constitución y se actualiza en el mismo commit.
 
+## 0. Estado actual y protocolo de sesión
+
+> **Este bloque caduca.** Si tiene más de 3 días o no coincide con `git log`, ignóralo
+> y reconstruye el estado con `make estado`.
+
+- **Actualizado:** 2026-11-09.
+- **Sprint:** M3-S2 (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
+- **En vuelo:** #28 aprobada y pendiente de merge; #30 en corrección por Hernán.
+- **Fusionado en `develop`:** M2 + planificación del M3. Ninguna HU cerrada.
+- **Siguiente acción:** fusionar #28 con merge commit; luego reorientar #30 a `develop`.
+- **Detalle:** [`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md).
+
+### 0.1 Protocolo de arranque (obligatorio para OpenCode y Codex)
+
+1. Ejecuta `make estado`. Lee **git, PRs e issues**, no la memoria de este archivo.
+2. Contrasta con `docs/curso/backlog.md` y `docs/curso/ESTADO.md`.
+3. Si dos fuentes difieren, **avisa al usuario antes de continuar**.
+4. Elige la tarea: la del §0 o la siguiente HU abierta del sprint activo.
+5. Una HU sin `specs/<NNN>-.../spec.md` no se implementa: primero Spec Kit.
+
+### 0.2 Protocolo de cierre (obligatorio)
+
+1. `make estado --write` regenera el bloque de `ESTADO.md`.
+2. Añade una entrada a la bitácora con: **hecho**, **en vuelo**, **siguiente**.
+3. Commit: `docs(estado): registrar cierre de sesion`.
+4. Si no puedes commitear, deja el archivo modificado y dilo explícitamente.
+
+### 0.3 Precedencia de fuentes
+
+| Nivel | Fuente | Qué manda |
+|-------|--------|-----------|
+| 1 | Código + `git` | El hecho: rama, commits, PRs, CI |
+| 2 | Issues + tablero | Operación del sprint |
+| 3 | `specs/<HU>` | Diseño de esa HU |
+| 4 | `CONSTITUTION.md` | Reglas técnicas |
+| 5 | `AGENTS.md` | Cómo trabajar; el §0 es el nivel más débil |
+| 6 | `docs/curso/backlog.md` | Espejo; si difiere, gana la issue y se corrige el espejo |
+| 7 | `docs/adr/` | Histórico; no se reescribe |
+
 ## Proyecto
 
 Detección de las seis categorías de EPP del dataset

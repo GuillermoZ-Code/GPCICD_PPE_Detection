@@ -263,6 +263,13 @@ fuente para el Capítulo 5. Debe coincidir 1:1 con las issues, el tablero y `spe
 Si alguien cambia título, AC o SP en uno de esos lugares, actualiza los demás en el
 mismo cambio. Ante una diferencia, **avisa al equipo antes de continuar**.
 
+### Inicio y cierre de sesión de un agente
+
+Todo agente (OpenCode, Codex) empieza ejecutando `make estado` y termina con
+`make estado --write` y una entrada en la bitácora de
+[`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md). El protocolo completo, incluida la
+precedencia de fuentes, vive en [`AGENTS.md`](./AGENTS.md) §0.
+
 ## 📄 Licencia
 
 El proyecto se distribuye bajo **AGPL-3.0-only**. Al contribuir, aceptas que tus
