@@ -13,6 +13,9 @@ JPEG_MAGIC = b"\xff\xd8\xff"
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 SUPPORTED_SUFFIXES = frozenset({".jpg", ".jpeg", ".png"})
 
+#: Límite de entrada alineado con `MAX_BYTES` del frontend (10 MB).
+MAX_IMAGE_BYTES = 10 * 1024 * 1024
+
 
 class InvalidImageError(ValueError):
     """La entrada no es una imagen JPEG/PNG válida."""
@@ -26,9 +29,17 @@ def _detect_format(data: bytes) -> str:
     raise InvalidImageError("Formato no admitido: se aceptan JPEG y PNG.")
 
 
-def _decode(data: bytes, source: str) -> ImageData:
-    if not data:
+def _check_size(size: int, max_bytes: int = MAX_IMAGE_BYTES) -> None:
+    """Rechaza entradas vacías o mayores que el límite configurado."""
+    if size == 0:
         raise InvalidImageError("El archivo está vacío.")
+    if size > max_bytes:
+        limit = max_bytes // (1024 * 1024)
+        raise InvalidImageError(f"La imagen supera el límite de {limit} MB.")
+
+
+def _decode(data: bytes, source: str) -> ImageData:
+    _check_size(len(data))
     image_format = _detect_format(data)
     buffer = np.frombuffer(data, dtype=np.uint8)
     decoded = cv2.imdecode(buffer, cv2.IMREAD_COLOR)
@@ -52,12 +63,27 @@ def load_image(path: str | Path) -> ImageData:
         raise FileNotFoundError(f"No existe la imagen: {file_path}")
     if not file_path.is_file():
         raise InvalidImageError(f"La ruta no es un archivo: {file_path}")
+    _check_size(file_path.stat().st_size)
     return _decode(file_path.read_bytes(), str(file_path))
+
+
+def validate_image_bytes(
+    data: bytes,
+    source: str = "upload",
+    max_bytes: int = MAX_IMAGE_BYTES,
+) -> ImageData:
+    """Valida y decodifica una imagen recibida (JPEG/PNG, hasta 10 MB).
+
+    No importa ni ejecuta el detector: solo comprueba el tamaño, el formato por
+    contenido y la decodificación.
+    """
+    _check_size(len(data), max_bytes)
+    return _decode(data, source)
 
 
 def load_image_bytes(data: bytes, source: str = "bytes") -> ImageData:
     """Carga una imagen JPEG/PNG desde bytes (API o interfaz)."""
-    return _decode(data, source)
+    return validate_image_bytes(data, source=source)
 
 
 def write_image(image: ImageData, path: str | Path) -> Path:

@@ -95,6 +95,19 @@ image = load_image_bytes(data, source="upload")
 La carga decodifica a RGB, conserva las dimensiones originales y **no ejecuta
 inferencia**.
 
+## Validación de entrada (HU-005)
+
+`validate_image_bytes(data, source="upload")` es la puerta de entrada para la API y la
+interfaz. Aplica las mismas reglas que `load_image` y `load_image_bytes`:
+
+- Acepta **JPEG o PNG** detectados por contenido, no por extensión.
+- Rechaza archivos vacíos, corruptos o de más de **10 MB** (`MAX_IMAGE_BYTES`).
+- Lanza `InvalidImageError` con un mensaje en español.
+- No importa ni ejecuta `YoloDetector`: la validación ocurre antes de la inferencia.
+
+La API de HU-006 puede capturar `InvalidImageError` y responder con un error de cliente
+4xx sin duplicar la lógica.
+
 ## Detector real (HU-002)
 
 `YoloDetector` adapta un artefacto Ultralytics al protocolo `Detector`:

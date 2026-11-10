@@ -42,3 +42,4 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `003-hu-002-deteccion` | Implementada en `feature/003-hu-002-deteccion` (PR #30) |
 | `004-hu-003-visualizacion` | Implementada en `feature/004-hu-003-visualizacion` |
 | `005-hu-007-interfaz` | Implementada en `feature/005-hu-007-interfaz` |
+| `006-hu-005-validacion-imagenes` | Implementada en `feature/006-hu-005-validacion-imagenes` |
