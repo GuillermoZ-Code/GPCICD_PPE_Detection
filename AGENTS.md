@@ -12,11 +12,11 @@
 Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-10 03:36 UTC
-- **Rama:** `feature/007-hu-005-validacion-imagenes` · +2/-0 vs `origin/develop`
-- **Issues abiertas:** 10 · 14 SP
-- **En vuelo:** #40 docs(estado): sincronizar estado y regla de actualizacion por PR (PR, revisión: —); #39 feat(io): validar imagenes de entrada (HU-005) (PR, revisión: —)
-- **Siguiente:** #6 HU-006 — Consultar inferencias mediante una API REST con FastAPI
+**Actualizado:** 2026-11-10 03:47 UTC
+- **Rama:** `feature/008-hu-006-api-rest` · +2/-0 vs `origin/develop`
+- **Issues abiertas:** 9 · 13 SP
+- **En vuelo:** #42 feat(api): exponer inferencia REST (HU-006) (PR, revisión: —); #41 docs(curso): documentar el inventario de pruebas y la brecha de 400 (PR, revisión: —)
+- **Siguiente:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
 - **Detalle:** [`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md).
