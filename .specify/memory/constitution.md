@@ -44,7 +44,8 @@
 
 ### VI. Uso responsable
 
-- Seis clases: Helmet, Vest, Gloves, Goggles, Mask, Safety Shoe.
+- Seis clases en el orden del `data.yaml`: `Gloves, Vest, goggles, helmet, mask,
+  safety_shoe`. La interfaz puede capitalizarlas o traducirlas para mostrarlas.
 - No hay clase `person` ni `no-EPP`: se reporta EPP detectado, no cumplimiento.
 - El sistema es asistivo, no certifica seguridad.
 - Dataset CC-BY-4.0 con fuente original no declarada; documentar la limitación.

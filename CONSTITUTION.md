@@ -163,7 +163,9 @@ crean vacías por adelantado.
 - **Idioma:** documentación, comentarios y commits en español; identificadores de
   código en inglés.
 - **Contratos:** `Detection` usa `bbox` en formato `xyxy`, `confidence` en `[0, 1]` y
-  `class_name` limitado a las seis clases del dataset.
+  `class_name` limitado a las seis clases del dataset. Los nombres canónicos y su orden
+  son los del `data.yaml`: `Gloves, Vest, goggles, helmet, mask, safety_shoe`; la
+  interfaz puede capitalizarlos o traducirlos para mostrarlos.
 - **Rutas:** datos, artefactos y configuración se reciben por CLI o configuración; no
   se codifican rutas absolutas.
 - **Datos y pesos:** nunca se versionan. Se documenta su origen, licencia y SHA256.
@@ -212,7 +214,8 @@ requisito de CPU y necesidad de reproducibilidad.
 
 ### Dataset: hechos y límites
 
-- 6 clases: **Helmet, Vest, Gloves, Goggles, Mask, Safety Shoe**.
+- 6 clases en el orden del `data.yaml`: **Gloves, Vest, goggles, helmet, mask, safety_shoe**
+  (la interfaz puede mostrarlas capitalizadas o traducidas).
 - **16.014 objetos anotados**; el número de imágenes no está publicado.
 - Un solo `PPE.zip` de **668 MB**; estructura YOLO (`train/valid/test`, `data.yaml`).
 - Licencia declarada: **CC-BY-4.0** (requiere atribución).
