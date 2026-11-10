@@ -46,14 +46,12 @@
 - Suite de pruebas deterministas y `make check` en verde.
 - Evidencias y documentación de arquitectura actualizadas.
 
-## 4. Pendiente de validación (Jesús)
-
-- Creación de TA-04, TA-11, SPI-01, TA-02, TA-09, SPI-02 y TA-10.
-- Criterio de SP para TA/SPI: desglose dentro de la HU padre o alcance adicional.
+## 4. Decisiones de planificación
 
 **Resuelto el 04/11/2026:** la reestimación fijó HU-002 en **3 SP** y absorbió el
-trabajo de las TA/SPI en las actividades de preparación P1–P4 (12 SP). La incoherencia
-entre HU-002 (8 SP) y sus dependencias (14 SP) queda cerrada.
+trabajo de las TA/SPI en las actividades de preparación P1–P4 (12 SP). Las TA/SPI no se
+crean como issues salvo decisión expresa de Jesús; la incoherencia entre HU-002 (8 SP)
+y sus dependencias (14 SP) queda cerrada.
 
 Ver [`docs/curso/backlog.md`](../backlog.md) para el detalle.
 

@@ -72,3 +72,7 @@ uv build
 | Issues TA-04, TA-11, SPI-01, TA-02, TA-09, SPI-02, TA-10, TA-EDA | Jesús | Alcance M3 | Son alcance del M3, no criterio de cierre del M2 |
 | AC de AGPL para HU-007 y HU-015 | Jesús + Eliana | Decisión | Propuesta, sin modificar las issues |
 | Aprobación de la PR #20 | Revisor | Proceso | Se registra como incumplimiento, no se corrige a posteriori |
+
+> **Actualización del 04/11/2026:** la reestimación cerró el pendiente de SP de HU-002
+> y absorbió las TA/SPI en P1–P4. Los AC de AGPL siguen pendientes de validación de
+> Jesús. Ver [`docs/curso/backlog.md`](../backlog.md).

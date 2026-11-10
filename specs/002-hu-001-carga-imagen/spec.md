@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-04
 
-**Status**: Draft
+**Status**: Implementada (PR #28)
 
 **Input**: Issue #1 — “Cargar una imagen para su análisis”.
 

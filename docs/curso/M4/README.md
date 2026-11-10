@@ -28,10 +28,11 @@
 - Demostración de una inferencia real contra el sistema desplegado.
 - Documentación de operación y recuperación.
 
-## 4. Pendiente de validación (Jesús)
+## 4. Decisiones de planificación
 
-- TA-10 (dependencias C++ y Docker CPU).
-- Criterio de SP de TA/SPI y su relación con HU-011/HU-014.
+**Resuelto el 04/11/2026:** TA-10 y el criterio de SP de TA/SPI se absorbieron en las
+actividades de preparación P1–P4 (12 SP); no se crean como issues salvo decisión
+expresa de Jesús.
 
 Ver [`docs/curso/backlog.md`](../backlog.md).
 

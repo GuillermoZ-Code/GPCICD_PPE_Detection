@@ -36,7 +36,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 
 | Spec | Estado |
 |------|--------|
-| `001-ta-contract-first` | Borrador; el contrato se implementó con la carga de HU-001 |
+| `001-ta-contract-first` | Absorbida en P4; contrato implementado con HU-001 (PR #28) |
 | `002-hu-001-carga-imagen` | Fusionada (PR #28) |
 | `003-hu-002-deteccion` | Fusionada (PR #30) |
 | `004-hu-003-visualizacion` | Fusionada (PR #33) |

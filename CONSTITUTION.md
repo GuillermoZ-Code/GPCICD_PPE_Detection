@@ -354,16 +354,18 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 **Total backlog oficial:** 22 SP (reestimación del 04/11/2026 sobre la planificación del
 documento del M2, aprobada por Jesús). Las actividades de preparación del M3 (P1–P4)
 suman 12 SP y no son issues, por lo que no entran en el total del tablero. Las TA/SPI
-propuestas (25 SP) están **pendientes de validación por Jesús** y no se suman. Ver
+se absorbieron en P1–P4; no se crean como issues salvo decisión expresa de Jesús. Si se
+contaran aparte, serían 25 SP sin TA-EDA y 28 SP con TA-EDA. Ver
 `docs/curso/backlog.md`.
 
 ### Riesgos y decisiones pendientes
 
 | Riesgo / decisión | Responsable sugerido por rol | Acción / fecha |
 |-------------------|------------------------------|----------------|
-| **Entrenamiento en CPU no es viable** | Hernán (modelo) | Colab/Kaggle **solo como cómputo GPU**, ejecutando un script versionado del repo con `uv`, sin `.ipynb`. Documentar la excepción en la Model Card antes de HU-002. |
-| **Python 3.13 + Ultralytics/torch CPU** | Guillermo (entorno/arquitectura) | Validar en **SPI-01, días 1–2 del M3**. Plan B: fijar **3.12** en `.python-version` y `pyproject.toml`. |
-| **EDA y descarga del dataset** | Jesús (planificación/backlog) valida; Hernán ejecuta | TA propuesta **“EDA del dataset”**: conteo de imágenes por split, objetos por clase, desbalance, imágenes sin etiquetas y cajas inválidas; descarga reproducible del ZIP con SHA256 y ruta configurable. Pendiente de validación de Jesús. |
+| **Entrenamiento en CPU no es viable** | Hernán (modelo) | Colab/Kaggle **solo como cómputo GPU**, ejecutando un script versionado del repo con `uv`, sin `.ipynb`. Documentar la excepción en la Model Card. |
+| **Python 3.13 + Ultralytics/torch CPU** | Guillermo (entorno/arquitectura) | **Cerrado en SPI-01:** Ultralytics 8.4.195 + torch 2.15.0+cpu cargan e infieren en Python 3.13.7. Ver [`SPI-01`](docs/spikes/SPI-01-compatibilidad-yolo.md). |
+| **EDA y descarga del dataset** | Hernán (datos) | **Completado:** 12.078 imágenes originales, 10.941 tras limpieza y SHA256 del ZIP registrado. Ver [`EDA`](docs/dataset/EDA.md). |
+| **Latencia en CPU** | Hernán (modelo) + Guillermo (entorno) | SPI-01 midió **136–158 ms** a 640 px en un i5-1235U: decidir si se acepta el tradeoff o se reduce resolución/ONNX antes de HU-011. |
 | **AGPL en el despliegue (M4)** | Guillermo (repo) + Eliana (documento) | La interfaz y la API deben enlazar el código fuente; el dataset CC-BY exige atribución visible. AC propuesto en HU-007 y HU-015, pendiente de validación de Jesús. |
 | **Droplet (M4)** | Guillermo (infra) + Jesús (planificación) | Definir dueño de la cuenta, costo y administración de los secrets de GitHub Actions **antes del 19/11**. |
 | **Repo privado vs. AGPL** | Guillermo + Eliana | Si el servicio se publica, el repo debe ser público o el código debe ofrecerse a los usuarios. Decidir antes del M4. |
