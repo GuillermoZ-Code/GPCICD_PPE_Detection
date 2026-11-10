@@ -9,28 +9,28 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 02:35 UTC
+**Generado:** 2026-11-10 03:06 UTC
 
-**Rama:** `feature/004-hu-003-visualizacion` · limpia · +1/-0 vs `origin/develop`
-**develop:** b9d3af6 (2026-11-09)
+**Rama:** `feature/005-hu-007-interfaz` · 1 archivo(s) sin commit · +3/-0 vs `origin/develop`
+**develop:** c7ae721 (2026-11-09)
 
 **Últimos commits:**
-- `f2e1d13 feat(viz): dibujar detecciones y guardar imagenes anotadas`
-- `b9d3af6 Merge pull request #32 from GuillermoZ-Code/fix/estado-parser-y-gh`
-- `8f7f958 docs(estado): registrar la correccion y regenerar el bloque`
-- `685de75 fix(estado): corregir el parser de SP y evitar escrituras sin gh`
-- `f975019 Merge pull request #31 from GuillermoZ-Code/chore/contexto-agentes`
+- `a403a52 docs(proceso): cerrar la issue al fusionar en develop`
+- `3edd27f docs(web): registrar el stack React en la constitucion y el ADR 0006`
+- `b74f0b8 feat(web): interfaz React con cliente de inferencia y pruebas`
+- `c7ae721 Merge pull request #33 from GuillermoZ-Code/feature/004-hu-003-visualizacion`
+- `b4c490b docs(estado): registrar el avance de HU-003`
 
-**Pull requests abiertas (0):**
-- ninguna
+**Pull requests abiertas (1):**
+- #34 feat(results): contrato y mensaje de resultado vacío de EPP (HU-004) → `develop` · revisión: — · CI: —
 
-**Issues abiertas: 13 · 18 SP**
-- M3-S1 (7 SP): #3 #4 #5 #6 #7
+**Issues abiertas: 12 · 17 SP**
+- M3-S1 (6 SP): #4 #5 #6 #7
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** ninguna
-**Siguiente por orden:** #3 HU-003 — Visualizar las detecciones sobre la imagen
+**En revisión:** #4 (PR #34)
+**Siguiente por orden:** #5 HU-005 — Validar las imágenes recibidas
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -58,3 +58,10 @@
   proporcional, flag `--annotated` y 13 pruebas nuevas (95 passed + 1 skipped).
 - **En vuelo:** `feature/004-hu-003-visualizacion`, pendiente de PR.
 - **Siguiente:** PR de HU-003 y, tras el merge, HU-004 o HU-007.
+
+### 2026-11-10 · Guillermo (OpenCode)
+
+- **Hecho:** HU-007 con SPA React + Vite + TypeScript: cliente HTTP y simulado, 19
+  pruebas, job de CI y ADR 0006; cerrada la issue #3 al fusionar #33.
+- **En vuelo:** `feature/005-hu-007-interfaz`, pendiente de PR; PR #34 (HU-004) abierta.
+- **Siguiente:** PR de HU-007 y revisar #34 de Eliana.
