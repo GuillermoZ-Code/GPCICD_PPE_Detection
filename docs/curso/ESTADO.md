@@ -9,29 +9,30 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 03:47 UTC
+**Generado:** 2026-11-10 05:20 UTC
 
-**Rama:** `feature/008-hu-006-api-rest` · limpia · +2/-0 vs `origin/develop`
-**develop:** 7f69f87 (2026-11-09)
+**Rama:** `feat/app-config` · limpia · +3/-0 vs `origin/develop`
+**develop:** ee6cd86 (2026-11-09)
 
 **Últimos commits:**
-- `fb38037 docs(specs): registrar la PR #42 de HU-006`
-- `912fa45 feat(api): exponer inferencia REST (HU-006)`
-- `7f69f87 Merge pull request #40 from GuillermoZ-Code/docs/estado-sincronizacion-pr`
-- `b4ff23a docs(m3): cerrar documentacion de TA/SPI y specs 001/002`
-- `2816f83 Merge pull request #39 from GuillermoZ-Code/feature/007-hu-005-validacion-imagenes`
+- `f4886f8 feat(web): tema claro/oscuro, olas y panel de configuracion`
+- `b925bed feat(api): precargar el modelo y aceptar conf por peticion`
+- `968223c feat(app): levantar API y frontend con make app`
+- `ee6cd86 Merge pull request #42 from GuillermoZ-Code/feature/008-hu-006-api-rest`
+- `22504fc Merge pull request #41 from GuillermoZ-Code/docs/inventario-pruebas`
 
-**Pull requests abiertas (2):**
-- #42 feat(api): exponer inferencia REST (HU-006) → `develop` · revisión: — · CI: ok
-- #41 docs(curso): documentar el inventario de pruebas y la brecha de 400 → `develop` · revisión: — · CI: —
+**Pull requests abiertas (4):**
+- #47 feat(app): ejecucion local y configuracion de la interfaz → `develop` · revisión: — · CI: ok
+- #46 feat(grpc): consumir inferencia mediante gRPC (HU-010) → `develop` · revisión: — · CI: ok
+- #45 docs(eval): agregar spec e informe de HU-008 → `develop` · revisión: — · CI: ok
+- #44 docs(operacion): runbook de demo local API + frontend → `develop` · revisión: — · CI: ok
 
-**Issues abiertas: 9 · 13 SP**
-- M3-S1 (2 SP): #6
+**Issues abiertas: 8 · 11 SP**
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #6 (PR #42)
-**Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
+**En revisión:** #10 (PR #46), #8 (PR #45)
+**Siguiente por orden:** #9 HU-009 — Consultar y comparar experimentos en MLflow
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -87,3 +88,10 @@
   inyectable, CORS y OpenAPI; 9 pruebas y spec 008.
 - **En vuelo:** PR #42 (`feature/008-hu-006-api-rest`), pendiente de revisión.
 - **Siguiente:** HU-012 o integración del frontend con la API real.
+
+### 2026-11-10 · Guillermo (OpenCode) — configuración de la app
+
+- **Hecho:** `make app` con precarga del modelo; `conf` por petición en la API; tema
+  claro/oscuro/sistema, 5 acentos, olas, panel de configuración, filtros y descargas.
+- **En vuelo:** PR #47 (`feat/app-config`), pendiente de revisión.
+- **Siguiente:** fusionar #47 y #44; revisar #45 y #46.
