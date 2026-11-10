@@ -32,8 +32,10 @@ Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/202
 ### 0.2 Protocolo de cierre (obligatorio)
 
 1. `make estado-write` regenera `docs/curso/ESTADO.md` y el bloque del §0.
-2. Si cambió el stack, una decisión o el estado del proyecto, actualiza también
-   `CONSTITUTION.md`, `README.md` y el ADR correspondiente en el mismo PR.
+2. La actualización va **dentro del PR de la HU**: `ESTADO.md`, `AGENTS.md` §0,
+   `README.md`, `specs/` y, si cambió el stack o una decisión, `CONSTITUTION.md` y el
+   ADR. **No se abren PRs de solo estado** salvo para corregir una desincronización ya
+   fusionada.
 3. Añade una entrada a la bitácora con: **hecho**, **en vuelo**, **siguiente**.
 4. Commit: `docs(estado): registrar cierre de sesion`.
 5. Si no puedes commitear, deja el archivo modificado y dilo explícitamente.

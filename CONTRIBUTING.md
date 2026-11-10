@@ -265,6 +265,10 @@ fuente para el Capítulo 5. Debe coincidir 1:1 con las issues, el tablero y `spe
 Si alguien cambia título, AC o SP en uno de esos lugares, actualiza los demás en el
 mismo cambio. Ante una diferencia, **avisa al equipo antes de continuar**.
 
+Cada PR de HU incluye su actualización de estado (`docs/curso/ESTADO.md`,
+`AGENTS.md` §0, `README.md` y `specs/`) en el mismo PR. **No se abren PRs de solo
+estado** salvo para corregir una desincronización ya fusionada.
+
 ### Inicio y cierre de sesión de un agente
 
 Todo agente (OpenCode, Codex) empieza ejecutando `make estado` y termina con
