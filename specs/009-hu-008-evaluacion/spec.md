@@ -80,15 +80,15 @@ del modelo y partición, sin entrenar ni descargar pesos.
 
 ## Acceptance → Test
 
-| AC | Prueba pytest |
-|----|----------------|
-| AC-008.1 Evaluación reproducible | `tests/test_evaluation.py::test_report_records_model_partition_and_config` |
-| AC-008.2 Resultados por clase | `tests/test_evaluation.py::test_report_contains_global_and_per_class_metrics` |
-| AC-008.3 Análisis de errores | `tests/test_evaluation.py::test_report_requires_error_analysis_section` |
-| AC-008.4 Protección de particiones | `tests/test_evaluation.py::test_eval_partition_is_explicit` |
-| FR-001 Sin entrenamiento | `tests/test_evaluation.py::test_evaluator_does_not_train` |
+| AC | Evidencia |
+|----|-----------|
+| AC-008.1 Evaluación reproducible | `tests/test_evaluation.py::test_evaluate_writes_summary_and_does_not_train` |
+| AC-008.2 Resultados por clase | `tests/test_evaluation.py::test_build_summary_contains_global_and_per_class_metrics` |
+| AC-008.3 Análisis de errores | `docs/evaluation/HU-008.md` §6 |
+| AC-008.4 Protección de particiones | `tests/test_evaluation.py::test_count_images_uses_declared_split` |
+| FR-001 Sin entrenamiento | `tests/test_evaluation.py::test_evaluate_writes_summary_and_does_not_train` |
 | FR-007 Configuración determinista | `tests/test_evaluation.py::test_default_config_is_deterministic` |
-| FR-008 Pruebas sin GPU/dataset | `tests/test_evaluation.py::test_unit_tests_use_fake_metrics` |
+| FR-008 Pruebas sin GPU/dataset | Toda la suite de `tests/test_evaluation.py` usa métricas falsas |
 
 ## Success Criteria *(mandatory)*
 
@@ -111,5 +111,6 @@ del modelo y partición, sin entrenar ni descargar pesos.
   el test de 1.094 se usa para el desempeño del modelo ajustado.
 - El entrenamiento usó Ultralytics 8.4.198; la reproducción local usó 8.4.202. La
   diferencia debe declararse en el informe y fijarse en la implementación final.
-- El informe preliminar ya existe en `docs/evaluation/HU-008.md`; la implementación
-  versionada del evaluador queda en las tareas de esta spec.
+- El informe existe en `docs/evaluation/HU-008.md`; el evaluador versionado está en
+  `src/ppe_detection/evaluation/` y se validó sobre el eval de 492. Falta regenerar el
+  test de 1.094 desde el módulo antes de cerrar la issue.
