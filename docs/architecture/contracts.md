@@ -143,3 +143,33 @@ from ppe_detection.io import load_image
 detector = YoloDetector("artifacts/models/yolo11s_clean/weights/best.pt")
 detections = detector.detect(load_image("foto.jpg"))
 ```
+
+## Contrato de resultado vacío (HU-004)
+
+`ppe_detection.results` clasifica la salida de la inferencia y fija el mensaje de
+las respuestas sin objetos, para que API (HU-006), interfaz (HU-007) y gRPC
+(HU-010) compartan la misma semántica:
+
+- `InferenceResult`: envuelve `detections`, `is_empty`, `is_error` y `message`.
+- `build_inference_result(detections)`: `_ → []` es éxito sin objetos
+  (`is_empty=True`, `is_error=False`); `None` es error de contrato, no se
+  normaliza a vacío.
+- `build_error_result(error)`: fallos reales (imagen corrupta, artefacto ausente)
+  se clasifican `is_error=True` y no comparten el mensaje vacío.
+- `NO_DETECTIONS_MESSAGE = "No se detectaron objetos EPP en la imagen."`: su
+  redacción es por detección; no afirma incumplimiento ni ausencia real de EPP.
+- `RESPONSIBLE_USE_NOTE`: nota de uso responsable disponible para API/UI.
+- Integración CLI (HU-004, FR-008): `format_summary` de
+  `detection/predict.py` imprime `NO_DETECTIONS_MESSAGE` cuando la corrida no
+  genera detecciones y sale con código 0; los fallos de carga reales se lanzan
+  como excepciones (`InvalidImageError`, `FileNotFoundError`).
+
+```python
+from ppe_detection.results import build_inference_result
+
+result = build_inference_result(detector.detect(load_image("foto.jpg")))
+result.is_empty, result.message
+# (True, 'No se detectaron objetos EPP en la imagen.')
+```
+
+Pruebas: `tests/test_results.py` (AC-004.1..AC-004.3, refs de issue #4).
