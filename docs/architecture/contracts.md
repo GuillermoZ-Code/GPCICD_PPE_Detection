@@ -94,3 +94,52 @@ image = load_image_bytes(data, source="upload")
 
 La carga decodifica a RGB, conserva las dimensiones originales y **no ejecuta
 inferencia**.
+
+## Detector real (HU-002)
+
+`YoloDetector` adapta un artefacto Ultralytics al protocolo `Detector`:
+
+- Carga perezosa de `ultralytics`: las pruebas unitarias no requieren torch.
+- `conf`, `iou`, `imgsz` y `device` configurables; la CLI los registra en `run.json`.
+- Convierte la entrada RGB a BGR antes de `predict` (Ultralytics asume BGR en arrays
+  NumPy).
+- Exige que el catálogo del modelo sea exactamente `CLASSES`; un modelo COCO u otro
+  catálogo de EPP se rechaza.
+- Recorta las cajas a la imagen y descarta cajas degeneradas antes de construir
+  `Detection`.
+- Sin resultados devuelve `[]`.
+
+### Manifiesto de la ejecución
+
+Cada corrida de `python -m ppe_detection.detection.predict` escribe, junto a
+`detections.csv`, un `run.json` con la procedencia de la inferencia:
+
+| Bloque | Contenido |
+|---|---|
+| `generated_at` | fecha UTC de la ejecución |
+| `code` | paquete, versión instalada y commit del repositorio |
+| `model` | ruta, SHA256 y tamaño del artefacto |
+| `parameters` | `conf`, `iou`, `imgsz`, `device` y `seed` |
+| `images` | ruta, dimensiones, formato y número de detecciones por imagen |
+| `totals` | imágenes procesadas, con detecciones y total de detecciones |
+
+Con esto se cumple la regla de reproducibilidad de `CONSTITUTION.md` §6: semilla,
+versión del modelo, tamaño de imagen y umbrales quedan registrados en cada
+inferencia. Con `conf` e `iou` fijos la inferencia no tiene componentes estocásticos;
+la semilla se registra para trazabilidad.
+
+Instalación del extra:
+
+```bash
+uv sync --extra inference
+```
+
+Uso:
+
+```python
+from ppe_detection.detection import YoloDetector
+from ppe_detection.io import load_image
+
+detector = YoloDetector("artifacts/models/yolo11s_clean/weights/best.pt")
+detections = detector.detect(load_image("foto.jpg"))
+```
