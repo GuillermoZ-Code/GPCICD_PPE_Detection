@@ -70,3 +70,10 @@
   origin/develop para incluir HU-003.
 - **Siguiente:** revisión/aprobación del equipo antes de fusionar (DoD); luego
   HU-006/HU-007 reutilizan el mensaje del contrato.
+
+### 2026-11-10 · Hernán (OpenCode) — estado y PR #36
+
+- **Hecho:** verificado #32; `gh` autenticado con OAuth (`repo`); corregida la
+  decodificación UTF-8 de `gh` y regenerado el bloque con 12 issues / 17 SP.
+- **En vuelo:** PR #36 (`docs/estado-sesion`).
+- **Siguiente:** abrir HU-005 con Spec Kit.
