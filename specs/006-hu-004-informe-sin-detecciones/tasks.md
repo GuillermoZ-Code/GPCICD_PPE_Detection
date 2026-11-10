@@ -4,7 +4,7 @@ description: "Task list for HU-004 — Informe sin detecciones"
 
 # Tasks: HU-004 — Informar cuando no se detectan elementos de protección personal
 
-**Input**: Design documents from `specs/004-hu-004-informe-sin-detecciones/`
+**Input**: Design documents from `specs/006-hu-004-informe-sin-detecciones/`
 
 **Prerequisites**: `plan.md`, `spec.md`, contrato TA-11 (`contracts.py`), especificación
 de HU-002 (el detector ya devuelve `[]` sin cajas) e issue #4.

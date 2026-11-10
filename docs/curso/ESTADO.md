@@ -9,28 +9,27 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 03:11 UTC
+**Generado:** 2026-11-10 03:31 UTC
 
-**Rama:** `feature/005-hu-007-interfaz` · 5 archivo(s) sin commit · +4/-0 vs `origin/develop`
-**develop:** c7ae721 (2026-11-09)
+**Rama:** `docs/estado-post-merge` · 8 archivo(s) sin commit · +0/-0 vs `origin/develop`
+**develop:** 976437d (2026-11-09)
 
 **Últimos commits:**
-- `8d3f09d docs(estado): registrar el avance de HU-007`
-- `a403a52 docs(proceso): cerrar la issue al fusionar en develop`
-- `3edd27f docs(web): registrar el stack React en la constitucion y el ADR 0006`
-- `b74f0b8 feat(web): interfaz React con cliente de inferencia y pruebas`
-- `c7ae721 Merge pull request #33 from GuillermoZ-Code/feature/004-hu-003-visualizacion`
+- `976437d Merge pull request #35 from GuillermoZ-Code/feature/005-hu-007-interfaz`
+- `cbb91e0 Merge branch 'develop' into feature/005-hu-007-interfaz`
+- `c1fbcc4 Merge pull request #36 from GuillermoZ-Code/docs/estado-sesion`
+- `ad9a801 feat(frontend): agregar make frontend-dev y frontend-preview`
+- `8018055 docs(estado): regenerar bloque de estado`
 
-**Pull requests abiertas (2):**
-- #35 feat(web): interfaz React con cliente de inferencia y pruebas → `develop` · revisión: — · CI: ok
-- #34 feat(results): contrato y mensaje de resultado vacío de EPP (HU-004) → `develop` · revisión: — · CI: —
+**Pull requests abiertas (0):**
+- ninguna
 
-**Issues abiertas: 12 · 17 SP**
-- M3-S1 (6 SP): #4 #5 #6 #7
+**Issues abiertas: 10 · 14 SP**
+- M3-S1 (3 SP): #5 #6
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #7 (PR #35), #4 (PR #34)
+**En revisión:** ninguna
 **Siguiente por orden:** #5 HU-005 — Validar las imágenes recibidas
 <!-- estado:fin -->
 
@@ -66,3 +65,10 @@
   pruebas, job de CI y ADR 0006; cerrada la issue #3 al fusionar #33.
 - **En vuelo:** `feature/005-hu-007-interfaz`, pendiente de PR; PR #34 (HU-004) abierta.
 - **Siguiente:** PR de HU-007 y revisar #34 de Eliana.
+
+### 2026-11-10 · Guillermo (OpenCode) — cierre post-merge
+
+- **Hecho:** #34 y #35 fusionadas; issues #4 y #7 cerradas; spec de HU-004 renumerada a
+  `006`; README, M3, specs y backlog sincronizados.
+- **En vuelo:** ninguna PR; rama `docs/estado-post-merge` pendiente de revisión.
+- **Siguiente:** HU-005 y HU-006 (Hernán); Guillermo pasa a HU-015 en el M4.

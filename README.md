@@ -61,7 +61,8 @@ desarrolla en M3–M4.
 | Contrato de inferencia y carga de imágenes | ✅ HU-001 |
 | Detector YOLO (inferencia CPU) | ✅ HU-002 |
 | Visualización de detecciones | ✅ HU-003 |
-| SPA React con Vite y TypeScript | 🚧 HU-007 en revisión (#35) |
+| Resultado vacío de EPP | ✅ HU-004 |
+| SPA React con Vite y TypeScript | ✅ HU-007 |
 | API REST y gRPC | ⏳ M3 |
 | MLflow, Docker CPU y CI/CD | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |

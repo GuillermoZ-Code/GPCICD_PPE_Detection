@@ -12,10 +12,10 @@
 Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-10 03:11 UTC
-- **Rama:** `feature/005-hu-007-interfaz` · +4/-0 vs `origin/develop`
-- **Issues abiertas:** 12 · 17 SP
-- **En vuelo:** #35 feat(web): interfaz React con cliente de inferencia y pruebas (PR, revisión: —); #34 feat(results): contrato y mensaje de resultado vacío de EPP (HU-004) (PR, revisión: —)
+**Actualizado:** 2026-11-10 03:31 UTC
+- **Rama:** `docs/estado-post-merge` · +0/-0 vs `origin/develop`
+- **Issues abiertas:** 10 · 14 SP
+- **En vuelo:** ninguna
 - **Siguiente:** #5 HU-005 — Validar las imágenes recibidas
 <!-- estado:fin -->
 
@@ -108,7 +108,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
   con los principios no negociables y se sincroniza en el mismo commit.
 - Spec Kit **v1.2.5** está inicializado en `.specify/`; los comandos viven en
   `.opencode/commands/` y `branch_template` es `feature/{number}-{slug}`.
-- Specs `001`–`005` en `specs/`; las HU se implementan con el flujo anterior.
+- Specs `001`–`006` en `specs/`; las HU se implementan con el flujo anterior.
 
 ## Comandos
 
