@@ -80,7 +80,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Cada detección se dibuja con caja, categoría y confianza.
   - Transformación espacial correcta según dimensiones originales.
   - Sin detecciones: no se dibujan cajas inexistentes.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/004-hu-003-visualizacion`](../../specs/004-hu-003-visualizacion/spec.md).
 
 ### HU-004 — Informar cuando no se detectan elementos de protección personal
 

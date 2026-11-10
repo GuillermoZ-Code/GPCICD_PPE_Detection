@@ -11,6 +11,7 @@ from ppe_detection.contracts import ImageData
 
 JPEG_MAGIC = b"\xff\xd8\xff"
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
+SUPPORTED_SUFFIXES = frozenset({".jpg", ".jpeg", ".png"})
 
 
 class InvalidImageError(ValueError):
@@ -57,3 +58,15 @@ def load_image(path: str | Path) -> ImageData:
 def load_image_bytes(data: bytes, source: str = "bytes") -> ImageData:
     """Carga una imagen JPEG/PNG desde bytes (API o interfaz)."""
     return _decode(data, source)
+
+
+def write_image(image: ImageData, path: str | Path) -> Path:
+    """Guarda una ``ImageData`` en JPEG o PNG según la extensión del archivo."""
+    file_path = Path(path)
+    if file_path.suffix.lower() not in SUPPORTED_SUFFIXES:
+        raise InvalidImageError("Extensión no admitida: usa .jpg, .jpeg o .png.")
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    encoded = cv2.cvtColor(image.array, cv2.COLOR_RGB2BGR)
+    if not cv2.imwrite(str(file_path), encoded):
+        raise InvalidImageError(f"No se pudo guardar la imagen: {file_path}")
+    return file_path
