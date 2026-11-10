@@ -42,8 +42,9 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `004-hu-003-visualizacion` | Fusionada (PR #33) |
 | `005-hu-007-interfaz` | Fusionada (PR #35) |
 | `006-hu-004-informe-sin-detecciones` | Fusionada (PR #34) |
-| `007-hu-005-validacion-imagenes` | En revisión (PR #39) |
-| `008-hu-006-api-rest` | En revisión (PR #42) |
+| `007-hu-005-validacion-imagenes` | Fusionada (PR #39) |
+| `008-hu-006-api-rest` | Fusionada (PR #42) |
+| `009-hu-008-evaluacion` | En revisión (PR #45) |
 
 > La numeración es secuencial por orden de creación, no por número de HU: `006`
 > corresponde a HU-004 porque su spec se creó después de `005`.

@@ -146,7 +146,8 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Métricas globales y por clase (precision, recall, mAP).
   - Análisis de falsos positivos/negativos y limitaciones.
   - Partición de evaluación protegida y documentada.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/009-hu-008-evaluacion`](../../specs/009-hu-008-evaluacion/spec.md).
+- **Informe:** [`docs/evaluation/HU-008.md`](../../docs/evaluation/HU-008.md).
 
 ### HU-009 — Consultar y comparar experimentos en MLflow
 
