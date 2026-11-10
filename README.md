@@ -63,7 +63,8 @@ desarrolla en M3–M4.
 | Visualización de detecciones | ✅ HU-003 |
 | Resultado vacío de EPP | ✅ HU-004 |
 | SPA React con Vite y TypeScript | ✅ HU-007 |
-| API REST y gRPC | ⏳ M3 |
+| API REST (FastAPI) | ✅ HU-006 |
+| Servicio gRPC | 🔍 HU-010 · en revisión |
 | MLflow, Docker CPU y CI/CD | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 
@@ -129,6 +130,26 @@ uv build     # construye sdist + wheel
 
 > ⚠️ **Regla del proyecto:** toda gestión de dependencias y entornos pasa por `uv`.
 > Está **prohibido** `pip` y `requirements.txt`.
+
+### Iniciar servicios
+
+```bash
+# API REST (HU-006) — http://localhost:8000/docs
+uv run python -m ppe_detection.api
+
+# Servicio gRPC (HU-010) — 127.0.0.1:9000
+uv run python -m ppe_detection.grpc
+
+# Cliente de prueba del servicio gRPC
+uv run python -m ppe_detection.grpc.client --image ruta/imagen.png
+```
+
+El servidor gRPC y su cliente usan `PPE_GRPC_HOST` / `PPE_GRPC_PORT` (y
+`PPE_GRPC_TARGET` en el cliente); el detector se configura con las mismas
+variables que la API REST (`PPE_MODEL_PATH`, `PPE_MODEL_VERSION`, `PPE_CONF`,
+`PPE_IOU`, `PPE_IMGSZ`, `PPE_DEVICE`). Los mensajes Protocol Buffers se
+regeneran con `make protos`. El detalle del contrato está en
+[`docs/architecture/contracts.md`](./docs/architecture/contracts.md).
 
 ## 🗺️ Arquitectura
 

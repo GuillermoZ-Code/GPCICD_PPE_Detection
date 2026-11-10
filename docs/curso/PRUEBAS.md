@@ -8,14 +8,14 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend Python | pytest | 11 | **127** | `make test` |
+| Backend Python | pytest | 12 | **136** | `make test` |
 | Frontend | Vitest | 5 | **19** | `make frontend-test` |
-| **Total** | | **16** | **146** | `make check` + `make frontend-check` |
+| **Total** | | **17** | **155** | `make check` + `make frontend-check` |
 
 Una prueba del backend se omite cuando no hay artefactos locales
-(`test_real_weights_smoke`), por eso la corrida muestra **126 passed + 1 skipped**.
+(`test_real_weights_smoke`), por eso la corrida muestra **135 passed + 1 skipped**.
 
-> Incluye HU-005 (#39, +7 pruebas) y HU-006 (#42, +9 pruebas).
+> Incluye HU-005 (#39, +7 pruebas), HU-006 (#42, +9) y HU-010 (rama, +9).
 
 ## 2. Desglose del backend
 
@@ -28,11 +28,12 @@ Una prueba del backend se omite cuando no hay artefactos locales
 | `tests/test_estado.py` | 10 |
 | `tests/test_results.py` | 10 |
 | `tests/test_api.py` | 9 |
+| `tests/test_grpc.py` | 9 |
 | `tests/test_image_validation.py` | 7 |
 | `tests/test_overlay.py` | 7 |
 | `tests/test_training.py` | 7 |
 | `tests/test_smoke.py` | 1 |
-| **Total** | **127** |
+| **Total** | **136** |
 
 ## 3. Desglose del frontend
 
@@ -64,8 +65,8 @@ correr sin ellas.
 | Concepto | Valor |
 |----------|------:|
 | Requisito | **≥ 400** |
-| Actual | **146** |
-| Brecha | **254** |
+| Actual | **155** |
+| Brecha | **245** |
 
 ## 6. Ruta propuesta para llegar a 400 o más
 
@@ -75,17 +76,17 @@ correr sin ellas.
 | HU-006 (#42) | 9 | ✅ aplicado: API REST |
 | HU-008 evaluación | 60 | IoU, mAP, matrices y métricas por clase |
 | HU-009 MLflow | 30 | Runs, parámetros, métricas y artefactos |
-| HU-010 gRPC | 35 | Contrato, errores y equivalencia con REST |
+| HU-010 gRPC (rama) | 9 | ✅ aplicado: contrato, errores y equivalencia con REST |
 | HU-011 Docker CPU | 12 | Build, smoke y ejecución sin GPU |
 | HU-012 calidad | 25 | Regresiones y contratos |
 | HU-013 versión | 20 | Identificación y distinción de versiones |
 | Frontend (ampliación) | 35 | Estados, accesibilidad y API real |
 | Contratos y geometría parametrizados | 40 | Casos borde por clase y formato |
-| **Pendiente** | **257** | → **403 acumuladas** |
+| **Pendiente** | **248** | → **403 acumuladas** |
 
-> HU-006 aportó 9 pruebas, por debajo de las 60 que se habían proyectado. La ruta está
-> recalculada: los frentes pendientes deben cubrir **257 casos** para superar los 400.
-> El requisito se cumple con pruebas que verifican un AC o un FR, no con duplicados.
+> HU-006 y HU-010 aportaron 9 pruebas cada una, por debajo de lo proyectado. La ruta
+> está recalculada: los frentes pendientes deben cubrir **248 casos** para superar los
+> 400. El requisito se cumple con pruebas que verifican un AC o un FR, no con duplicados.
 
 ## 7. Reglas
 

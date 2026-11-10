@@ -262,3 +262,66 @@ Variables: `PPE_MODEL_PATH`, `PPE_MODEL_VERSION`, `PPE_CONF`, `PPE_IOU`,
 `PPE_IMGSZ`, `PPE_DEVICE`, `PPE_CORS_ORIGINS`, `PPE_API_HOST`, `PPE_API_PORT`.
 
 Pruebas: `tests/test_api.py` (AC-006.1..AC-006.4, refs de issue #6).
+
+## Servicio gRPC (HU-010)
+
+Segunda puerta de integración sobre el mismo pipeline: el servicer valida con
+HU-005, detecta con el mismo `Detector` inyectable y construye la respuesta con
+`build_inference_result` (HU-004). No duplica la lógica de la API REST.
+
+Contrato Protocol Buffers: [`src/ppe_detection/grpc/protos/ppe.proto`](../../src/ppe_detection/grpc/protos/ppe.proto)
+(paquete `ppe.v1`, servicio `PpeDetection`, RPC `Detect`).
+
+```text
+PredictRequest  { bytes image = 1; string source = 2; }
+PredictResponse {
+  repeated Detection detections = 1;   // class_id/class_name canónicos,
+                                       // confidence en [0,1] y bbox xyxy
+  int32 image_width = 2;
+  int32 image_height = 3;
+  string model_version = 4;
+  double elapsed_ms = 5;
+  string message = 6;                  // mensaje de HU-004 ("sin detecciones")
+}
+```
+
+`Detect` recibe los bytes del archivo JPEG o PNG y los valida con
+`validate_image_bytes` antes de decodificar. La caja se comparte en un mensaje
+anidado `BoundingBox { x1, y1, x2, y2 }` en píxeles de la imagen original;
+sin enum de clases: `class_id` y `class_name` canónicos, igual que en REST.
+
+### Mapa de errores
+
+| Situación | Estado gRPC | Espejo REST |
+|---|---|---|
+| Archivo vacío, corrupto, no decodificable o > 10 MB | `INVALID_ARGUMENT` | `400` |
+| Artefacto no configurado (`PPE_MODEL_PATH` ausente) | `UNAVAILABLE` | `503` |
+| Fallo interno inesperado | `INTERNAL` | `500` (por defecto de FastAPI) |
+
+El servidor sigue operativo después de un error: la validación y el mapeo
+ocurren en el servicer, nunca en el transporte.
+
+```bash
+# Regenerar los stubs (los *.pb2*.py versionados)
+make protos
+
+# Servidor y cliente de prueba
+uv run python -m ppe_detection.grpc            # PPE_GRPC_HOST / PPE_GRPC_PORT
+uv run python -m ppe_detection.grpc.client --image ruta/imagen.png
+# (también: --target 127.0.0.1:9000, --timeout, PPE_GRPC_TARGET)
+```
+
+Notas:
+
+- `PpeDetectionServicer` acepta `detector` y `model_version` para inyección en
+  pruebas, igual que la API REST; sin inyección, ambos módulos leen la
+  configuración compartida de `ppe_detection.detector_config`.
+- El límite de mensaje se sube a `MAX_IMAGE_BYTES + 4096` (en
+  `default_options()`), de modo que una imagen de más de 10 MB llega a la
+  validación de HU-005 y responde `INVALID_ARGUMENT` en vez de
+  `RESOURCE_EXHAUSTED` de transporte.
+- Los stubs generados (`*.pb2*.py`) se excluyen de Ruff; los `.pyi` son
+  manuales porque la metaclase de protobuf es invisible para `ty` (override en
+  `pyproject.toml`).
+
+Pruebas: `tests/test_grpc.py` (AC-010.1..AC-010.3, refs de issue #10).
