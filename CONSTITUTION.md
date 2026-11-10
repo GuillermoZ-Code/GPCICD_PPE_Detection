@@ -366,6 +366,9 @@ propuestas (25 SP) están **pendientes de validación por Jesús** y no se suman
 - `docs/curso/backlog.md` es el espejo de las issues y la fuente para el Capítulo 5.
   Debe coincidir 1:1 con las issues, el tablero y `specs/`. Si alguien cambia título,
   AC o SP en uno, actualiza los demás en el mismo cambio.
+- `docs/curso/ESTADO.md` registra el estado operativo (rama, PRs, issues y bitácora de
+  sesiones). Se regenera con `make estado --write` y **no** sustituye a issues,
+  tablero, backlog ni specs.
 - Ante una diferencia entre PDF, backlog, issues o specs, **el agente avisa al usuario
   antes de continuar**.
 - Engram y GGA se habilitan en la **Fase 3**; no reemplazan este documento ni los ADR.
