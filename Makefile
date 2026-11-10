@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado estado-write frontend-install frontend-lint frontend-test frontend-build frontend-check arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -61,6 +61,12 @@ estado-write: ## Actualiza el bloque generado de docs/curso/ESTADO.md
 
 frontend-install: ## Instala las dependencias del frontend (npm ci)
 	cd frontend && npm ci
+
+frontend-dev: ## Levanta el frontend en modo desarrollo (http://localhost:5173)
+	cd frontend && npm run dev
+
+frontend-preview: ## Sirve el build de producción (http://localhost:4173)
+	cd frontend && npm run preview
 
 frontend-lint: ## ESLint del frontend
 	cd frontend && npm run lint

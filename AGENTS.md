@@ -120,6 +120,7 @@ make lint       # Ruff
 make format     # Ruff format
 make test       # pytest
 make frontend-check  # ESLint + Vitest + build del frontend
+make frontend-dev    # levanta la interfaz en http://localhost:5173
 make arch       # regenera el diagrama Archify (si está instalado)
 ```
 
