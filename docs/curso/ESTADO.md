@@ -9,28 +9,29 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 03:06 UTC
+**Generado:** 2026-11-10 03:10 UTC
 
-**Rama:** `feature/004-hu-004-informe-sin-detecciones` · merge de `origin/develop` en curso · +0/-0 vs `origin/develop`
-**develop:** c7ae721 (2026-11-10) — incluye HU-003 (PR #33)
+**Rama:** `feature/004-hu-004-informe-sin-detecciones` · limpia · +5/-0 vs `origin/develop`
+**develop:** c7ae721 (2026-11-09)
 
 **Últimos commits:**
+- `b1f46c6 merge: traer develop (HU-003) a feature/004-hu-004`
 - `18034c1 docs(hu-004): registrar la PR 34 y regenerar el estado`
 - `b288dd2 docs(estado): registrar el cierre de la sesion de HU-004`
 - `75ab178 docs(hu-004): spec 004, contrato de resultado y enlaces espejo`
 - `8dbdd6a feat(results): contrato y mensaje de resultado vacío de EPP (HU-004)`
-- `b9d3af6 Merge pull request #32 from GuillermoZ-Code/fix/estado-parser-y-gh`
 
-**Pull requests abiertas (1):**
-- #34 feat(results): contrato y mensaje de resultado vacío de EPP (HU-004) → `develop` · revisión: — · CI: —
+**Pull requests abiertas (2):**
+- #35 feat(web): interfaz React con cliente de inferencia y pruebas → `develop` · revisión: — · CI: ok
+- #34 feat(results): contrato y mensaje de resultado vacío de EPP (HU-004) → `develop` · revisión: — · CI: ok
 
-**Issues abiertas: 13 · 18 SP**
-- M3-S1 (7 SP): #3 #4 #5 #6 #7
+**Issues abiertas: 12 · 17 SP**
+- M3-S1 (6 SP): #4 #5 #6 #7
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #4 (PR #34)
-**Siguiente por orden:** #4 HU-004 — Informar cuando no se detectan EPP (en revisión)
+**En revisión:** #7 (PR #35), #4 (PR #34)
+**Siguiente por orden:** #5 HU-005 — Validar las imágenes recibidas
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
