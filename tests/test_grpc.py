@@ -204,7 +204,7 @@ def test_corrupt_image_returns_invalid_argument_without_detector() -> None:
     calls: list[ImageData] = []
 
     class SpyDetector:
-        def detect(self, image: ImageData) -> list[Detection]:
+        def detect(self, image: ImageData, *, conf: float | None = None) -> list[Detection]:
             calls.append(image)
             return []
 
