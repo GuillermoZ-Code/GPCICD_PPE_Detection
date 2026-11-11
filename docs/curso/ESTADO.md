@@ -9,28 +9,27 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 04:34 UTC
+**Generado:** 2026-11-11 04:32 UTC
 
-**Rama:** `feature/009-hu-010-consumo-grpc` · 5 archivo(s) sin commit · +7/-0 vs `origin/develop`
-**develop:** a60d579 (2026-11-09)
+**Rama:** `feature/011-hu-009-mlflow` · 4 archivo(s) sin commit · +1/-0 vs `origin/develop`
+**develop:** 0cbc8d5 (2026-11-10)
 
 **Últimos commits:**
-- `695a23a docs(estado): registrar cierre de sesion`
-- `69d6d03 docs(grpc): documentar generación, arranque y consumo`
-- `5bb6728 Merge remote-tracking branch 'origin/develop' into feature/009-hu-010-consumo-grpc`
-- `8d4fe02 feat(grpc): servicio gRPC reutilizando el pipeline compartido (HU-010)`
-- `1f85456 test(grpc): verificar los AC de HU-010 antes de implementar`
+- `ae85646 feat(tracking): registrar y comparar experimentos en MLflow (HU-009)`
+- `0cbc8d5 Merge pull request #48 from GuillermoZ-Code/fix/api-lifespan-imports`
+- `5264ea8 fix(api): restaurar imports y tipado del lifespan`
+- `f4aa33a Merge pull request #46 from GuillermoZ-Code/feature/009-hu-010-consumo-grpc`
+- `2f0954d Merge branch 'develop' into feature/009-hu-010-consumo-grpc`
 
-**Pull requests abiertas (3):**
-- #46 feat(grpc): consumir inferencia mediante gRPC (HU-010) → `develop` · revisión: — · CI: ok
-- #45 docs(hu-008): agregar spec e informe de evaluacion → `develop` · revisión: — · CI: ok
-- #44 docs(operacion): runbook de demo local API + frontend → `develop` · revisión: — · CI: ok
+**Pull requests abiertas (2):**
+- #50 feat(tracking): registrar y comparar experimentos en MLflow (HU-009) → `develop` · revisión: — · CI: ok
+- #49 feat(calidad): informe automatizado de verificaciones (HU-012) → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 8 · 11 SP**
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #10 (PR #46)
+**En revisión:** #9 (PR #50), #12 (PR #49)
 **Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
@@ -100,3 +99,12 @@
   Guillermo.
 - **Siguiente:** revisión de Guillermo; tras el merge, HU-011 gana su
   dependencia gRPC.
+
+### 2026-11-11 · Jesús (OpenCode) — HU-009
+
+- **Hecho:** HU-009 implementada con Spec Kit: extra opcional `tracking` con MLflow
+  3.18, módulo `tracking/` (payload, tracker, comparación y CLI), 11 pruebas y runbook
+  `docs/operacion/mlflow.md`; `make check` 155 passed + 1 skipped y `uv build` en verde.
+  Dos runs reales registrados y comparados en `sqlite:///mlflow.db`.
+- **En vuelo:** PR #50 (`feature/011-hu-009-mlflow`), revisión pendiente de Guillermo.
+- **Siguiente:** revisar y fusionar #50; después, HU-011 o el evaluador de HU-008.

@@ -65,7 +65,7 @@ desarrolla en M3–M4.
 | SPA React con Vite y TypeScript | ✅ HU-007 |
 | API REST (FastAPI) | ✅ HU-006 |
 | Servicio gRPC | ✅ HU-010 |
-| MLflow (experimentos) | 🔍 HU-009 · en revisión |
+| MLflow (experimentos) | 🔍 HU-009 · PR #50 en revisión |
 | Docker CPU y CI/CD | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 

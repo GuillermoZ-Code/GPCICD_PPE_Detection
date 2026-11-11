@@ -46,7 +46,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `008-hu-006-api-rest` | Fusionada (PR #42) |
 | `009-hu-008-evaluacion` | Informe fusionado (PR #45); evaluador en `feature/009-hu-008-evaluador` |
 | `009-hu-010-consumo-grpc` | Fusionada (PR #46) |
-| `011-hu-009-mlflow` | En revisión (PR pendiente) |
+| `011-hu-009-mlflow` | En revisión (PR #50) |
 
 > La numeración es secuencial por orden de creación, no por número de HU: `006`
 > corresponde a HU-004 porque su spec se creó después de `005`.
