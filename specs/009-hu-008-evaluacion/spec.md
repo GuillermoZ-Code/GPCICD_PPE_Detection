@@ -1,10 +1,10 @@
 # Feature Specification: HU-008 — Evaluar el desempeño del modelo de detección
 
-**Feature Branch**: `feature/009-hu-008-evaluacion`
+**Feature Branch**: `feature/009-hu-008-evaluador`
 
 **Created**: 2026-11-10
 
-**Status**: Draft — implementación en curso
+**Status**: Implementada — pendiente de PR
 
 **Input**: Issue #8 — “Evaluar el desempeño del modelo de detección”.
 
@@ -109,8 +109,7 @@ del modelo y partición, sin entrenar ni descargar pesos.
   test 1.094 y eval sin fuga 492.
 - El eval de 492 es la referencia apples-to-apples contra el baseline preentrenado;
   el test de 1.094 se usa para el desempeño del modelo ajustado.
-- El entrenamiento usó Ultralytics 8.4.198; la reproducción local usó 8.4.202. La
-  diferencia debe declararse en el informe y fijarse en la implementación final.
+- El entrenamiento usó Ultralytics 8.4.198; la reproducción local usó 8.4.202, que es
+  la versión fijada por `uv.lock`. La diferencia de parche se declara en el informe.
 - El informe existe en `docs/evaluation/HU-008.md`; el evaluador versionado está en
-  `src/ppe_detection/evaluation/` y se validó sobre el eval de 492. Falta regenerar el
-  test de 1.094 desde el módulo antes de cerrar la issue.
+  `src/ppe_detection/evaluation/` y regeneró el eval de 492 y el test de 1.094.

@@ -33,9 +33,9 @@ description: "Task list for HU-008 — Evaluación del detector"
 ## Phase 3: Evidencia
 
 - [x] T015 Evaluar `test_original_sin_fuga` (492) y comparar con SPI-02.
-- [ ] T016 Evaluar `test` limpio (1.094) y registrar métricas por clase desde el módulo.
+- [x] T016 Evaluar `test` limpio (1.094) y registrar métricas por clase desde el módulo.
 - [x] T017 Documentar FP/FN representativos y limitaciones.
-- [ ] T018 Completar `docs/evaluation/HU-008.md` con la regeneración versionada del test 1.094.
+- [x] T018 Completar `docs/evaluation/HU-008.md` con la regeneración versionada del test 1.094.
 
 ## Phase 4: Cierre
 
@@ -45,8 +45,8 @@ description: "Task list for HU-008 — Evaluación del detector"
 
 ## Notes
 
-- El informe preliminar de esta rama ya contiene las métricas reproducidas con
-  Ultralytics 8.4.202; la implementación versionada debe regenerarlo.
+- El evaluador versionado regeneró el informe con Ultralytics 8.4.202; las métricas
+  coinciden con la evidencia preliminar.
 - No se versionan pesos, dataset, `runs/` ni `artifacts/`.
 - `safety_shoe` tiene solo 6 objetos en eval492; no se deben sacar conclusiones de esa
   clase en esa partición.
