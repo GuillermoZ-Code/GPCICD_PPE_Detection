@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: En revisión (PR pendiente)
+**Status**: En revisión (PR #49)
 
 **Input**: Issue #12 — «Ejecutar verificaciones automatizadas de calidad». Asignada a
 Hernán (EP-04, Must Have, M3-S2). Depende de los contratos de HU-006, HU-007 y HU-010,

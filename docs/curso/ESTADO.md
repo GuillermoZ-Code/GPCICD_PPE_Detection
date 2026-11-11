@@ -100,3 +100,10 @@
   Guillermo.
 - **Siguiente:** revisión de Guillermo; tras el merge, HU-011 gana su
   dependencia gRPC.
+
+### 2026-11-10 · Hernán (OpenCode) — HU-012
+
+- **Hecho:** comando `make calidad` con informe de lint, formato, tipos y pytest;
+  5 pruebas nuevas; inventario actualizado a 169 y spec 010.
+- **En vuelo:** PR #49 (`feature/010-hu-012-calidad`), pendiente de revisión.
+- **Siguiente:** Model Card, `models.lock` y benchmark ONNX.
