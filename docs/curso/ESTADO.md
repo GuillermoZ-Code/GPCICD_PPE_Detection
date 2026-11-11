@@ -9,28 +9,26 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 04:34 UTC
+**Generado:** 2026-11-11 02:09 UTC
 
-**Rama:** `feature/009-hu-010-consumo-grpc` · 5 archivo(s) sin commit · +7/-0 vs `origin/develop`
-**develop:** a60d579 (2026-11-09)
+**Rama:** `feature/010-hu-012-calidad` · limpia · +2/-0 vs `origin/develop`
+**develop:** 0cbc8d5 (2026-11-10)
 
 **Últimos commits:**
-- `695a23a docs(estado): registrar cierre de sesion`
-- `69d6d03 docs(grpc): documentar generación, arranque y consumo`
-- `5bb6728 Merge remote-tracking branch 'origin/develop' into feature/009-hu-010-consumo-grpc`
-- `8d4fe02 feat(grpc): servicio gRPC reutilizando el pipeline compartido (HU-010)`
-- `1f85456 test(grpc): verificar los AC de HU-010 antes de implementar`
+- `2abda24 docs(specs): registrar la PR #49 de HU-012`
+- `1b11031 feat(calidad): informe automatizado de verificaciones (HU-012)`
+- `0cbc8d5 Merge pull request #48 from GuillermoZ-Code/fix/api-lifespan-imports`
+- `5264ea8 fix(api): restaurar imports y tipado del lifespan`
+- `f4aa33a Merge pull request #46 from GuillermoZ-Code/feature/009-hu-010-consumo-grpc`
 
-**Pull requests abiertas (3):**
-- #46 feat(grpc): consumir inferencia mediante gRPC (HU-010) → `develop` · revisión: — · CI: ok
-- #45 docs(hu-008): agregar spec e informe de evaluacion → `develop` · revisión: — · CI: ok
-- #44 docs(operacion): runbook de demo local API + frontend → `develop` · revisión: — · CI: ok
+**Pull requests abiertas (1):**
+- #49 feat(calidad): informe automatizado de verificaciones (HU-012) → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 8 · 11 SP**
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #10 (PR #46)
+**En revisión:** #12 (PR #49)
 **Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
