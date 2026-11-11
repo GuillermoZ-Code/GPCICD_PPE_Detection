@@ -12,11 +12,11 @@
 Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-10 05:26 UTC
-- **Rama:** `feat/app-config` · +5/-0 vs `origin/develop`
+**Actualizado:** 2026-11-10 04:30 UTC
+- **Rama:** `feature/009-hu-008-evaluacion` · +1/-0 vs `origin/develop`
 - **Issues abiertas:** 8 · 11 SP
-- **En vuelo:** #47 feat(app): ejecucion local y configuracion de la interfaz (PR, revisión: —); #46 feat(grpc): consumir inferencia mediante gRPC (HU-010) (PR, revisión: —); #45 docs(eval): agregar spec e informe de HU-008 (PR, revisión: —); #44 docs(operacion): runbook de demo local API + frontend (PR, revisión: —)
-- **Siguiente:** #9 HU-009 — Consultar y comparar experimentos en MLflow
+- **En vuelo:** #45 docs(hu-008): agregar spec e informe de evaluacion (PR, revisión: —); #44 docs(operacion): runbook de demo local API + frontend (PR, revisión: —)
+- **Siguiente:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
 - **Detalle:** [`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md).

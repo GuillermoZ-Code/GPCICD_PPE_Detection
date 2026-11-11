@@ -9,30 +9,28 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 05:26 UTC
+**Generado:** 2026-11-10 04:30 UTC
 
-**Rama:** `feat/app-config` · limpia · +5/-0 vs `origin/develop`
+**Rama:** `feature/009-hu-008-evaluacion` · limpia · +1/-0 vs `origin/develop`
 **develop:** a60d579 (2026-11-09)
 
 **Últimos commits:**
-- `8c9681f Merge remote-tracking branch 'origin/develop' into feat/app-config`
-- `da65775 docs(estado): registrar la configuracion de la app`
-- `f4886f8 feat(web): tema claro/oscuro, olas y panel de configuracion`
-- `b925bed feat(api): precargar el modelo y aceptar conf por peticion`
-- `968223c feat(app): levantar API y frontend con make app`
+- `7448d63 docs(hu-008): agregar spec e informe de evaluacion`
+- `a60d579 Merge pull request #43 from GuillermoZ-Code/fix/inventario-pruebas-146`
+- `2874b8f docs(curso): actualizar el inventario a 146 y precisar el requisito`
+- `ee6cd86 Merge pull request #42 from GuillermoZ-Code/feature/008-hu-006-api-rest`
+- `22504fc Merge pull request #41 from GuillermoZ-Code/docs/inventario-pruebas`
 
-**Pull requests abiertas (4):**
-- #47 feat(app): ejecucion local y configuracion de la interfaz → `develop` · revisión: — · CI: ok
-- #46 feat(grpc): consumir inferencia mediante gRPC (HU-010) → `develop` · revisión: — · CI: ok
-- #45 docs(eval): agregar spec e informe de HU-008 → `develop` · revisión: — · CI: ok
+**Pull requests abiertas (2):**
+- #45 docs(hu-008): agregar spec e informe de evaluacion → `develop` · revisión: — · CI: ok
 - #44 docs(operacion): runbook de demo local API + frontend → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 8 · 11 SP**
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #10 (PR #46), #8 (PR #45)
-**Siguiente por orden:** #9 HU-009 — Consultar y comparar experimentos en MLflow
+**En revisión:** ninguna
+**Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -89,9 +87,10 @@
 - **En vuelo:** PR #42 (`feature/008-hu-006-api-rest`), pendiente de revisión.
 - **Siguiente:** HU-012 o integración del frontend con la API real.
 
-### 2026-11-10 · Guillermo (OpenCode) — configuración de la app
+### 2026-11-10 · Jesús (OpenCode) — HU-008
 
-- **Hecho:** `make app` con precarga del modelo; `conf` por petición en la API; tema
-  claro/oscuro/sistema, 5 acentos, olas, panel de configuración, filtros y descargas.
-- **En vuelo:** PR #47 (`feat/app-config`), pendiente de revisión.
-- **Siguiente:** fusionar #47 y #44; revisar #45 y #46.
+- **Hecho:** descarga de pesos y dataset, evaluación reproducible en 492 y 1.094,
+  spec 009 e informe `docs/evaluation/HU-008.md`.
+- **En vuelo:** PR #45 (spec + informe), pendiente de revisión; evaluador versionado
+  T009–T018.
+- **Siguiente:** aprobar #45, implementar el evaluador y completar FP/FN.
