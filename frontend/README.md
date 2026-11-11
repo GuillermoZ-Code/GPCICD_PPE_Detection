@@ -43,6 +43,9 @@ El cliente HTTP hace `POST {VITE_API_URL}/predict` con `multipart/form-data` y e
 `file`. El contrato está cerrado desde HU-006 y la respuesta incluye `model_version` y
 `elapsed_ms`.
 
+La receta completa —descarga de pesos, variables de la API, CORS y verificación— está en
+[`docs/operacion/demo-local.md`](../docs/operacion/demo-local.md).
+
 ## Estructura
 
 ```text
