@@ -41,7 +41,7 @@ description: "Task list for HU-008 — Evaluación del detector"
 
 - [x] T019 `make check` y `uv build`.
 - [x] T020 Actualizar `specs/README.md`, backlog y estado.
-- [ ] T021 Abrir PR a `develop` y solicitar revisión.
+- [x] T021 Abrir PR a `develop` y solicitar revisión (PR #51).
 
 ## Notes
 

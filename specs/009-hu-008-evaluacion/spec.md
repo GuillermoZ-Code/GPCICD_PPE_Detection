@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: Implementada — pendiente de PR
+**Status**: En revisión (PR #51)
 
 **Input**: Issue #8 — “Evaluar el desempeño del modelo de detección”.
 
