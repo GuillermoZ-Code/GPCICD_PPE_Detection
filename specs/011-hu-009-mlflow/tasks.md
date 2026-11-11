@@ -48,8 +48,8 @@ menos una prueba que lo referencia.
 
 - [x] T022 Documentar el procedimiento de reproducción y la UI de MLflow.
 - [x] T023 Ejecutar `make check` (155 passed, 1 skipped) y `uv build`.
-- [ ] T024 Actualizar `CONSTITUTION.md`, `README.md`, backlog, `specs/README.md` y estado.
-- [ ] T025 Abrir PR a `develop` y solicitar revisión.
+- [x] T024 Actualizar `CONSTITUTION.md`, `README.md`, backlog, `specs/README.md` y estado.
+- [x] T025 Abrir PR a `develop` y solicitar revisión (PR #50).
 
 ## Notes
 

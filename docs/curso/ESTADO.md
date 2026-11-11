@@ -11,15 +11,15 @@
 <!-- estado:inicio -->
 **Generado:** 2026-11-11 04:32 UTC
 
-**Rama:** `feature/011-hu-009-mlflow` · 4 archivo(s) sin commit · +1/-0 vs `origin/develop`
+**Rama:** `feature/011-hu-009-mlflow` · limpia · +2/-0 vs `origin/develop`
 **develop:** 0cbc8d5 (2026-11-10)
 
 **Últimos commits:**
+- `3dc3a63 docs(estado): registrar HU-009 y la PR #50`
 - `ae85646 feat(tracking): registrar y comparar experimentos en MLflow (HU-009)`
 - `0cbc8d5 Merge pull request #48 from GuillermoZ-Code/fix/api-lifespan-imports`
 - `5264ea8 fix(api): restaurar imports y tipado del lifespan`
 - `f4aa33a Merge pull request #46 from GuillermoZ-Code/feature/009-hu-010-consumo-grpc`
-- `2f0954d Merge branch 'develop' into feature/009-hu-010-consumo-grpc`
 
 **Pull requests abiertas (2):**
 - #50 feat(tracking): registrar y comparar experimentos en MLflow (HU-009) → `develop` · revisión: — · CI: ok
