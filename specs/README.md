@@ -10,7 +10,7 @@ Este directorio contiene una spec por HU, creada con
 - **Comandos:** `.opencode/commands/speckit.*.md`.
 - **Rama:** `branch_template: "feature/{number}-{slug}"`; el slug incluye el ID
   (`feature/002-hu-001-carga-imagen`, `feature/003-hu-002-deteccion`).
-- **Estado:** todas las specs están fusionadas en `develop`; no hay ninguna en curso.
+- **Estado:** HU-009 en curso; el resto de specs están fusionadas o en su rama.
 
 ## Flujo por HU
 
@@ -42,9 +42,11 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `004-hu-003-visualizacion` | Fusionada (PR #33) |
 | `005-hu-007-interfaz` | Fusionada (PR #35) |
 | `006-hu-004-informe-sin-detecciones` | Fusionada (PR #34) |
-| `007-hu-005-validacion-imagenes` | En revisión (PR #39) |
+| `007-hu-005-validacion-imagenes` | Fusionada (PR #39) |
 | `008-hu-006-api-rest` | Fusionada (PR #42) |
-| `009-hu-010-consumo-grpc` | En revisión (PR #46) |
+| `009-hu-008-evaluacion` | Informe fusionado (PR #45); evaluador en `feature/009-hu-008-evaluador` |
+| `009-hu-010-consumo-grpc` | Fusionada (PR #46) |
+| `011-hu-009-mlflow` | En revisión (PR pendiente) |
 
 > La numeración es secuencial por orden de creación, no por número de HU: `006`
 > corresponde a HU-004 porque su spec se creó después de `005`.

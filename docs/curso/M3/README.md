@@ -29,7 +29,7 @@
 | HU | Título | SP | Responsable | Dependencias | Estado |
 |----|--------|----|-------------|--------------|--------|
 | HU-008 | Evaluar el desempeño del modelo | 2 | Jesús | HU-002, TA-02 | ⏳ |
-| HU-009 | Consultar y comparar experimentos en MLflow | 1 | Jesús | HU-008 | ⏳ |
+| HU-009 | Consultar y comparar experimentos en MLflow | 1 | Jesús | HU-008 | ⏳ PR pendiente |
 | HU-010 | Consumir inferencias mediante gRPC | 1 | Eliana | HU-006 | PR #46 (en revisión) |
 | HU-011 | Ejecutar el sistema en Docker CPU | 2 | Eliana | HU-006, HU-007, HU-010 | ⏳ |
 | HU-012 | Verificaciones automatizadas de calidad | 1 | Hernán | Contratos de HU-006/007/010 | ⏳ |
