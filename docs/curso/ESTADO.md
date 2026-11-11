@@ -9,19 +9,20 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 04:30 UTC
+**Generado:** 2026-11-10 04:34 UTC
 
-**Rama:** `feature/009-hu-008-evaluacion` · limpia · +1/-0 vs `origin/develop`
+**Rama:** `feature/009-hu-010-consumo-grpc` · 5 archivo(s) sin commit · +7/-0 vs `origin/develop`
 **develop:** a60d579 (2026-11-09)
 
 **Últimos commits:**
-- `7448d63 docs(hu-008): agregar spec e informe de evaluacion`
-- `a60d579 Merge pull request #43 from GuillermoZ-Code/fix/inventario-pruebas-146`
-- `2874b8f docs(curso): actualizar el inventario a 146 y precisar el requisito`
-- `ee6cd86 Merge pull request #42 from GuillermoZ-Code/feature/008-hu-006-api-rest`
-- `22504fc Merge pull request #41 from GuillermoZ-Code/docs/inventario-pruebas`
+- `695a23a docs(estado): registrar cierre de sesion`
+- `69d6d03 docs(grpc): documentar generación, arranque y consumo`
+- `5bb6728 Merge remote-tracking branch 'origin/develop' into feature/009-hu-010-consumo-grpc`
+- `8d4fe02 feat(grpc): servicio gRPC reutilizando el pipeline compartido (HU-010)`
+- `1f85456 test(grpc): verificar los AC de HU-010 antes de implementar`
 
-**Pull requests abiertas (2):**
+**Pull requests abiertas (3):**
+- #46 feat(grpc): consumir inferencia mediante gRPC (HU-010) → `develop` · revisión: — · CI: ok
 - #45 docs(hu-008): agregar spec e informe de evaluacion → `develop` · revisión: — · CI: ok
 - #44 docs(operacion): runbook de demo local API + frontend → `develop` · revisión: — · CI: ok
 
@@ -29,7 +30,7 @@
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** ninguna
+**En revisión:** #10 (PR #46)
 **Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
@@ -87,10 +88,15 @@
 - **En vuelo:** PR #42 (`feature/008-hu-006-api-rest`), pendiente de revisión.
 - **Siguiente:** HU-012 o integración del frontend con la API real.
 
-### 2026-11-10 · Jesús (OpenCode) — HU-008
+### 2026-11-10 · Eliana (OpenCode) — HU-010
 
-- **Hecho:** descarga de pesos y dataset, evaluación reproducible en 492 y 1.094,
-  spec 009 e informe `docs/evaluation/HU-008.md`.
-- **En vuelo:** PR #45 (spec + informe), pendiente de revisión; evaluador versionado
-  T009–T018.
-- **Siguiente:** aprobar #45, implementar el evaluador y completar FP/FN.
+- **Hecho:** HU-010 implementada con Spec Kit: contrato `ppe.v1` (`ppe.proto` +
+  stubs regenerables con `make protos`), servidor y cliente de prueba que
+  reutilizan `validate_image_bytes` (HU-005), el `Detector` del ADR 0005 y
+  `build_inference_result` (HU-004); configuración compartida extraída a
+  `detector_config` (también usa REST); 9 pruebas nuevas (135 passed + 1
+  skipped) y demo e2e verificada con `FakeDetector`.
+- **En vuelo:** PR #46 (`feature/009-hu-010-consumo-grpc`), revisión pendiente de
+  Guillermo.
+- **Siguiente:** revisión de Guillermo; tras el merge, HU-011 gana su
+  dependencia gRPC.

@@ -1,0 +1,60 @@
+// Contrato gRPC de inferencia de EPP (HU-010).
+//
+// Espejo del esquema HTTP de HU-006 (POST /predict) y del contrato
+// ImageData -> Detector.detect() -> list[Detection] de ADR 0005.
+//
+// Convenciones compartidas con REST (AC-010.2):
+//   - bbox     xyxy, en píxeles de la imagen ORIGINAL (x1<x2, y1<y2).
+//   - conf     finita y en [0, 1].
+//   - clase    canónica del data.yaml del dataset y del checkpoint:
+//              Gloves, Vest, goggles, helmet, mask, safety_shoe.
+//   - mensaje  "message" replica el contrato de resultado de HU-004
+//              (ppe_detection.results.build_inference_result); es la única
+//              adición semántica respecto al esquema REST.
+//
+// Generación:  uv run python -m ppe_detection.grpc.gen  (o make protos).
+// Errores:     entrada inválida -> INVALID_ARGUMENT;
+//              sin artefacto   -> UNAVAILABLE; fallo interno -> INTERNAL.
+
+syntax = "proto3";
+
+package ppe.v1;
+
+// Caja delimitadora xyxy en píxeles de la imagen original.
+message BoundingBox {
+  double x1 = 1;  // borde izquierdo del objeto
+  double y1 = 2;  // borde superior del objeto
+  double x2 = 3;  // borde derecho del objeto
+  double y2 = 4;  // borde inferior del objeto
+}
+
+// Una detección de EPP del catálogo canónico.
+message Detection {
+  int32 class_id = 1;        // índice canónico 0..5 del catálogo
+  string class_name = 2;     // nombre canónico (data.yaml): se muestra tal cual
+  double confidence = 3;     // finita y en [0, 1]
+  BoundingBox bbox = 4;      // xyxy en píxeles de la imagen original
+  int32 image_width = 5;     // ancho original de la imagen (px)
+  int32 image_height = 6;    // alto original de la imagen (px)
+}
+
+// Solicitud de inferencia: imagen JPEG o PNG completa, de hasta 10 MB.
+message PredictRequest {
+  bytes image = 1;    // bytes del archivo (JPEG o PNG)
+  string source = 2;  // nombre o etiqueta de origen para los mensajes (opcional)
+}
+
+// Respuesta estructurada; vaciado válido también se distingue por "message".
+message PredictResponse {
+  repeated Detection detections = 1;  // detecciones post-NMS, sin clase vacía
+  int32 image_width = 2;
+  int32 image_height = 3;
+  string model_version = 4;           // versión del artefacto usado
+  double elapsed_ms = 5;              // latencia de la inferencia en milisegundos
+  string message = 6;                 // resumen del contrato de resultado de HU-004
+}
+
+// Servicio de detección de EPP sobre el pipeline compartido con la API REST.
+service PpeDetection {
+  rpc Detect(PredictRequest) returns (PredictResponse) {}
+}
