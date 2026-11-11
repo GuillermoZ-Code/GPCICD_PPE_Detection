@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check app arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -78,6 +78,9 @@ frontend-build: ## Build de producción del frontend (Vite)
 	cd frontend && npm run build
 
 frontend-check: frontend-lint frontend-test frontend-build ## Verificación completa del frontend
+
+app: ## Levanta API + frontend con el modelo local (Ctrl+C para ambos)
+	uv run python -m ppe_detection.tools.launcher
 
 arch: ## Regenera el diagrama de arquitectura con Archify
 	node "$(ARCHIFY_BIN)" finalize architecture docs/architecture/arquitectura.json docs/architecture/arquitectura.html --quality showcase
