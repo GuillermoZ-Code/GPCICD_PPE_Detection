@@ -198,7 +198,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Una regresión deliberada hace fallar la suite.
   - Ruff reporta incumplimientos configurados.
   - Pruebas unitarias sin GPU ni dataset completo.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/010-hu-012-calidad`](../../specs/010-hu-012-calidad/spec.md) · rama `feature/010-hu-012-calidad`.
 
 ### HU-013 — Consultar la versión del modelo utilizado
 
