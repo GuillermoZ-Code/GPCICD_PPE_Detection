@@ -1,21 +1,21 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
 > **Actualizado:** 2026-11-10.
-> **Requisito del curso:** más de **400 pruebas unitarias** para la entrega
+> **Requisito del curso:** **400 pruebas unitarias o más** (≥ 400) para la entrega
 > (indicación del docente; no constaba en el repositorio hasta este documento).
 
 ## 1. Resumen
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend Python | pytest | 10 | **118** | `make test` |
+| Backend Python | pytest | 11 | **127** | `make test` |
 | Frontend | Vitest | 5 | **19** | `make frontend-test` |
-| **Total** | | **15** | **137** | `make check` + `make frontend-check` |
+| **Total** | | **16** | **146** | `make check` + `make frontend-check` |
 
 Una prueba del backend se omite cuando no hay artefactos locales
-(`test_real_weights_smoke`), por eso la corrida muestra **117 passed + 1 skipped**.
+(`test_real_weights_smoke`), por eso la corrida muestra **126 passed + 1 skipped**.
 
-> La PR #39 (HU-005) ya está fusionada y aportó 7 pruebas de validación de imágenes.
+> Incluye HU-005 (#39, +7 pruebas) y HU-006 (#42, +9 pruebas).
 
 ## 2. Desglose del backend
 
@@ -27,11 +27,12 @@ Una prueba del backend se omite cuando no hay artefactos locales
 | `tests/test_yolo_detector.py` | 15 |
 | `tests/test_estado.py` | 10 |
 | `tests/test_results.py` | 10 |
+| `tests/test_api.py` | 9 |
 | `tests/test_image_validation.py` | 7 |
 | `tests/test_overlay.py` | 7 |
 | `tests/test_training.py` | 7 |
 | `tests/test_smoke.py` | 1 |
-| **Total** | **118** |
+| **Total** | **127** |
 
 ## 3. Desglose del frontend
 
@@ -62,29 +63,29 @@ correr sin ellas.
 
 | Concepto | Valor |
 |----------|------:|
-| Requisito | **> 400** |
-| Actual | **137** |
-| Brecha | **~263** |
+| Requisito | **≥ 400** |
+| Actual | **146** |
+| Brecha | **254** |
 
-## 6. Ruta propuesta para llegar a 400
+## 6. Ruta propuesta para llegar a 400 o más
 
-| Frente | Pruebas objetivo | Enfoque |
-|--------|-----------------:|---------|
+| Frente | Pruebas | Enfoque |
+|--------|--------:|---------|
 | HU-005 (#39) | 7 | ✅ aplicado: validación de imágenes |
-| HU-006 API REST | 60 | Endpoints, esquemas, errores, OpenAPI |
-| HU-008 evaluación | 45 | IoU, mAP, matrices y métricas por clase |
-| HU-009 MLflow | 25 | Runs, parámetros, métricas y artefactos |
-| HU-010 gRPC | 30 | Contrato, errores y equivalencia con REST |
-| HU-011 Docker CPU | 10 | Build, smoke y ejecución sin GPU |
-| HU-012 calidad | 20 | Regresiones y contratos |
-| HU-013 versión | 15 | Identificación y distinción de versiones |
-| Frontend (ampliación) | 25 | Estados, accesibilidad y API real |
-| Contratos y geometría parametrizados | 35 | Casos borde por clase y formato |
-| **Total** | **~272** | **~402 acumuladas** |
+| HU-006 (#42) | 9 | ✅ aplicado: API REST |
+| HU-008 evaluación | 60 | IoU, mAP, matrices y métricas por clase |
+| HU-009 MLflow | 30 | Runs, parámetros, métricas y artefactos |
+| HU-010 gRPC | 35 | Contrato, errores y equivalencia con REST |
+| HU-011 Docker CPU | 12 | Build, smoke y ejecución sin GPU |
+| HU-012 calidad | 25 | Regresiones y contratos |
+| HU-013 versión | 20 | Identificación y distinción de versiones |
+| Frontend (ampliación) | 35 | Estados, accesibilidad y API real |
+| Contratos y geometría parametrizados | 40 | Casos borde por clase y formato |
+| **Pendiente** | **257** | → **403 acumuladas** |
 
+> HU-006 aportó 9 pruebas, por debajo de las 60 que se habían proyectado. La ruta está
+> recalculada: los frentes pendientes deben cubrir **257 casos** para superar los 400.
 > El requisito se cumple con pruebas que verifican un AC o un FR, no con duplicados.
-> Si un frente produce menos casos, se compensa con parametrización de casos borde
-> reales, no con pruebas artificiales.
 
 ## 7. Reglas
 

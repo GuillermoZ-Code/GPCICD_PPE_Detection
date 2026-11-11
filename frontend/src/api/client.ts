@@ -3,7 +3,7 @@
 import type { Detection, PredictResponse } from '../types'
 
 export interface DetectorClient {
-  detect(file: File): Promise<PredictResponse>
+  detect(file: File, conf?: number): Promise<PredictResponse>
 }
 
 export const MOCK_DETECTIONS: Detection[] = [
@@ -23,14 +23,25 @@ export const MOCK_DETECTIONS: Detection[] = [
     image_width: 640,
     image_height: 480,
   },
+  {
+    class_id: 0,
+    class_name: 'Gloves',
+    confidence: 0.38,
+    bbox: [120, 300, 200, 360],
+    image_width: 640,
+    image_height: 480,
+  },
 ]
 
 export class MockDetectorClient implements DetectorClient {
   constructor(private readonly detections: Detection[] = MOCK_DETECTIONS) {}
 
-  async detect(_file: File): Promise<PredictResponse> {
+  async detect(_file: File, conf?: number): Promise<PredictResponse> {
+    const threshold = conf ?? 0
     return Promise.resolve({
-      detections: this.detections.map((detection) => ({ ...detection })),
+      detections: this.detections
+        .filter((detection) => detection.confidence >= threshold)
+        .map((detection) => ({ ...detection })),
       image_width: 640,
       image_height: 480,
       model_version: 'mock-1.0.0',
@@ -46,9 +57,12 @@ export class HttpDetectorClient implements DetectorClient {
     this.baseUrl = baseUrl.replace(/\/+$/, '')
   }
 
-  async detect(file: File): Promise<PredictResponse> {
+  async detect(file: File, conf?: number): Promise<PredictResponse> {
     const body = new FormData()
     body.append('file', file)
+    if (conf !== undefined) {
+      body.append('conf', String(conf))
+    }
     const response = await fetch(`${this.baseUrl}/predict`, { method: 'POST', body })
     if (!response.ok) {
       throw new Error(`La API respondió con estado ${response.status}.`)
