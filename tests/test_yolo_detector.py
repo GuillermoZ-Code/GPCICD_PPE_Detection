@@ -211,6 +211,18 @@ def test_detector_passes_thresholds_to_model() -> None:
     ]
 
 
+def test_detector_uses_conf_override() -> None:
+    # Arrange
+    model = FakeModel([])
+    detector = _detector(model, conf=0.3)
+
+    # Act
+    detector.detect(_image(), conf=0.7)
+
+    # Assert
+    assert model.calls[0]["conf"] == 0.7
+
+
 def test_detector_requires_model_or_path() -> None:
     # Arrange / Act / Assert
     with pytest.raises(ValueError):

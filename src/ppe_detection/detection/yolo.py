@@ -90,13 +90,17 @@ class YoloDetector:
                 f"Esperado: {expected}. Recibido: {self._names}."
             )
 
-    def detect(self, image: ImageData) -> list[Detection]:
-        """Ejecuta inferencia y devuelve detecciones validadas."""
+    def detect(self, image: ImageData, *, conf: float | None = None) -> list[Detection]:
+        """Ejecuta inferencia y devuelve detecciones validadas.
+
+        ``conf`` permite sobrescribir el umbral del detector para una petición.
+        """
+        threshold = self.conf if conf is None else conf
         bgr = cv2.cvtColor(image.array, cv2.COLOR_RGB2BGR)
         results = list(
             self._model.predict(
                 source=bgr,
-                conf=self.conf,
+                conf=threshold,
                 iou=self.iou,
                 imgsz=self.imgsz,
                 device=self.device,

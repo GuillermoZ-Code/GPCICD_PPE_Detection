@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import type { RefObject } from 'react'
 
 import { colorFor, displayName } from '../labels'
 import type { Detection } from '../types'
@@ -9,13 +10,26 @@ interface AnnotatedCanvasProps {
   height: number
   detections: Detection[]
   alt: string
+  thickness?: number
+  showLabels?: boolean
+  canvasRef?: RefObject<HTMLCanvasElement | null>
 }
 
-export function AnnotatedCanvas({ src, width, height, detections, alt }: AnnotatedCanvasProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+export function AnnotatedCanvas({
+  src,
+  width,
+  height,
+  detections,
+  alt,
+  thickness = 3,
+  showLabels = true,
+  canvasRef,
+}: AnnotatedCanvasProps) {
+  const localRef = useRef<HTMLCanvasElement>(null)
+  const ref = canvasRef ?? localRef
 
   useEffect(() => {
-    const canvas = canvasRef.current
+    const canvas = ref.current
     if (!canvas) {
       return
     }
@@ -33,7 +47,7 @@ export function AnnotatedCanvas({ src, width, height, detections, alt }: Annotat
       context.drawImage(image, 0, 0, canvas.width, canvas.height)
 
       const base = Math.max(canvas.width, canvas.height)
-      const lineWidth = Math.max(2, Math.round(base / 400))
+      const lineWidth = Math.max(1, Math.round((thickness * base) / 640))
       const fontSize = Math.max(12, Math.round(base / 40))
 
       for (const detection of detections) {
@@ -46,6 +60,9 @@ export function AnnotatedCanvas({ src, width, height, detections, alt }: Annotat
         context.lineWidth = lineWidth
         context.strokeRect(x1 * scaleX, y1 * scaleY, (x2 - x1) * scaleX, (y2 - y1) * scaleY)
 
+        if (!showLabels) {
+          continue
+        }
         const label = `${displayName(detection.class_name)} ${detection.confidence.toFixed(2)}`
         context.font = `600 ${fontSize}px system-ui, sans-serif`
         context.textBaseline = 'top'
@@ -60,11 +77,11 @@ export function AnnotatedCanvas({ src, width, height, detections, alt }: Annotat
       }
     }
     image.src = src
-  }, [src, width, height, detections])
+  }, [src, width, height, detections, thickness, showLabels, ref])
 
   return (
     <canvas
-      ref={canvasRef}
+      ref={ref}
       className="canvas"
       width={width}
       height={height}

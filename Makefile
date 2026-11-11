@@ -82,6 +82,9 @@ frontend-build: ## Build de producción del frontend (Vite)
 
 frontend-check: frontend-lint frontend-test frontend-build ## Verificación completa del frontend
 
+app: ## Levanta API + frontend con el modelo local (Ctrl+C para ambos)
+	uv run python -m ppe_detection.tools.launcher
+
 arch: ## Regenera el diagrama de arquitectura con Archify
 	node "$(ARCHIFY_BIN)" finalize architecture docs/architecture/arquitectura.json docs/architecture/arquitectura.html --quality showcase
 

@@ -45,6 +45,7 @@
 - Docker CPU reproducible.
 - Suite de pruebas deterministas y `make check` en verde.
 - Evidencias y documentación de arquitectura actualizadas.
+- Runbook de la demo local API + frontend: [`docs/operacion/demo-local.md`](../../operacion/demo-local.md).
 
 ## 4. Decisiones de planificación
 
