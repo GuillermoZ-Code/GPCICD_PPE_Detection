@@ -10,7 +10,8 @@ Este directorio contiene una spec por HU, creada con
 - **Comandos:** `.opencode/commands/speckit.*.md`.
 - **Rama:** `branch_template: "feature/{number}-{slug}"`; el slug incluye el ID
   (`feature/002-hu-001-carga-imagen`, `feature/003-hu-002-deteccion`).
-- **Estado:** todas las specs están fusionadas en `develop`; no hay ninguna en curso.
+- **Estado:** todas las specs anteriores están fusionadas en `develop`; en curso
+  `012-hu-011-docker-cpu` (rama `feature/012-hu-011-docker-cpu`).
 
 ## Flujo por HU
 
@@ -42,9 +43,13 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `004-hu-003-visualizacion` | Fusionada (PR #33) |
 | `005-hu-007-interfaz` | Fusionada (PR #35) |
 | `006-hu-004-informe-sin-detecciones` | Fusionada (PR #34) |
-| `007-hu-005-validacion-imagenes` | En revisión (PR #39) |
+| `007-hu-005-validacion-imagenes` | Fusionada (PR #39) |
 | `008-hu-006-api-rest` | Fusionada (PR #42) |
-| `009-hu-010-consumo-grpc` | En revisión (PR #46) |
+| `009-hu-008-evaluacion` | Espec complementaria en PR #51; informe en `docs/evaluation/HU-008.md` |
+| `009-hu-010-consumo-grpc` | Fusionada (PR #46) |
+| `012-hu-011-docker-cpu` | En curso (rama `feature/012-hu-011-docker-cpu`) |
 
 > La numeración es secuencial por orden de creación, no por número de HU: `006`
-> corresponde a HU-004 porque su spec se creó después de `005`.
+> corresponde a HU-004 porque su spec se creó después de `005`. Los números
+> `010` y `011` están reservados por las specs en revisión de HU-012 (PR #49) y
+> HU-009 (PR #50).
