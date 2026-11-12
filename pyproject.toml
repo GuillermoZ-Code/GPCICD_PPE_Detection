@@ -32,6 +32,16 @@ Issues = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues"
 [project.optional-dependencies]
 inference = [
     "ultralytics>=8.4.195,<9",
+    # HU-011: torch/torchvision se declaran directos para poder fijar el índice
+    # CPU en Linux (tool.uv.sources no aplica a dependencias transitivas); en
+    # Windows/macOS la resolución sigue siendo PyPI (builds CPU de fábrica).
+    "torch>=2.15.0",
+    "torchvision>=0.29.2",
+]
+# HU-011: el servidor gRPC de HU-010 es parte del paquete desplegable, así que
+# grpcio es dependencia de runtime; grpcio-tools (generación) sigue siendo dev.
+grpc = [
+    "grpcio>=1.85.1",
 ]
 
 [build-system]
@@ -66,9 +76,25 @@ known-first-party = ["ppe_detection"]
 [tool.ruff.format]
 quote-style = "double"
 
+# HU-011: en Linux las ruedas de PyPI de torch traen CUDA (paquetes NVIDIA);
+# el índice CPU de PyTorch mantiene el contenedor CPU (Constitución §4/§7).
+# `explicit = true` restringe el índice a torch/torchvision, y el marcador deja
+# intacta la resolución de Windows/macOS (PyPI ya distribuye builds CPU).
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "docker: requiere Docker, la imagen construida y un artefacto local (AC-011.2)",
+]
 
 [tool.ty.src]
 exclude = [".specify"]
