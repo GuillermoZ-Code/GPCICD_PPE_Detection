@@ -2,6 +2,8 @@
 
 > **Periodo:** 31/10/2026 → 14/11/2026. **Peso:** 25 %.
 > **Sustentación:** sábado **14/11/2026**.
+> **Estado al 12/11/2026:** 13/13 HUs fusionadas. Pendiente el plan de **192 pruebas**
+> y el release `develop → main`.
 
 ## 1. Clases y focos
 
@@ -33,7 +35,7 @@
 | HU-010 | Consumir inferencias mediante gRPC | 1 | Eliana | HU-006 | ✅ #46 |
 | HU-011 | Ejecutar el sistema en Docker CPU | 2 | Eliana | HU-006, HU-007, HU-010 | ✅ #52 |
 | HU-012 | Verificaciones automatizadas de calidad | 1 | Hernán | Contratos de HU-006/007/010 | ✅ #49 |
-| HU-013 | Consultar la versión del modelo | 1 | Jesús | HU-002, HU-009 | 🔍 PR #54 (en revisión) |
+| HU-013 | Consultar la versión del modelo | 1 | Jesús | HU-002, HU-009 | ✅ #54 |
 
 ## 3. Entregables del M3
 

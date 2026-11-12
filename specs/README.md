@@ -10,8 +10,8 @@ Este directorio contiene una spec por HU, creada con
 - **Comandos:** `.opencode/commands/speckit.*.md`.
 - **Rama:** `branch_template: "feature/{number}-{slug}"`; el slug incluye el ID
   (`feature/002-hu-001-carga-imagen`, `feature/003-hu-002-deteccion`).
-- **Estado:** todas las specs de HU-001 a HU-012 están fusionadas en `develop`.
-  HU-013 es la única HU del M3-S2 sin spec; su carpeta será `014-hu-013-...`.
+- **Estado:** todas las specs de HU-001 a HU-013 están fusionadas en `develop`; el
+  M3 queda cerrado. La siguiente etapa es el plan de 192 pruebas y el release.
 - **Pruebas:** la entrega exige **≥ 400 pruebas unitarias**; el reparto y los casos
   concretos viven en [`docs/curso/PLAN-PRUEBAS.md`](../docs/curso/PLAN-PRUEBAS.md).
 
@@ -53,7 +53,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `011-hu-012-calidad` | Fusionada (PR #49) |
 | `012-hu-009-mlflow` | Fusionada (PR #50) |
 | `013-hu-011-docker-cpu` | Fusionada (PR #52) |
-| `014-hu-013-version-modelo` | En revisión (PR #54) |
+| `014-hu-013-version-modelo` | Fusionada (PR #54) |
 
 > La numeración es secuencial por orden de creación, no por número de HU: `006`
 > corresponde a HU-004 porque su spec se creó después de `005`. Desde el 12/11/2026
