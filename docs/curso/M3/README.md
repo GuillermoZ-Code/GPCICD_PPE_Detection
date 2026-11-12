@@ -28,12 +28,12 @@
 
 | HU | Título | SP | Responsable | Dependencias | Estado |
 |----|--------|----|-------------|--------------|--------|
-| HU-008 | Evaluar el desempeño del modelo | 2 | Jesús | HU-002, TA-02 | ⏳ |
+| HU-008 | Evaluar el desempeño del modelo | 2 | Jesús | HU-002, TA-02 | ✅ #51 |
 | HU-009 | Consultar y comparar experimentos en MLflow | 1 | Jesús | HU-008 | ✅ #50 |
 | HU-010 | Consumir inferencias mediante gRPC | 1 | Eliana | HU-006 | ✅ #46 |
-| HU-011 | Ejecutar el sistema en Docker CPU | 2 | Eliana | HU-006, HU-007, HU-010 | ✅ PR #52 |
-| HU-012 | Verificaciones automatizadas de calidad | 1 | Hernán | Contratos de HU-006/007/010 | ⏳ |
-| HU-013 | Consultar la versión del modelo | 1 | Jesús | HU-002, HU-009 | ⏳ |
+| HU-011 | Ejecutar el sistema en Docker CPU | 2 | Eliana | HU-006, HU-007, HU-010 | ✅ #52 |
+| HU-012 | Verificaciones automatizadas de calidad | 1 | Hernán | Contratos de HU-006/007/010 | ✅ #49 |
+| HU-013 | Consultar la versión del modelo | 1 | Jesús | HU-002, HU-009 | ⏳ pendiente |
 
 ## 3. Entregables del M3
 
@@ -44,6 +44,8 @@
 - MLflow con runs consultables.
 - Docker CPU reproducible.
 - Suite de pruebas deterministas y `make check` en verde.
+- **≥ 400 pruebas unitarias** para la entrega; conteo y reparto en
+  [`docs/curso/PLAN-PRUEBAS.md`](../PLAN-PRUEBAS.md).
 - Evidencias y documentación de arquitectura actualizadas.
 - Runbook de la demo local API + frontend: [`docs/operacion/demo-local.md`](../../operacion/demo-local.md).
 

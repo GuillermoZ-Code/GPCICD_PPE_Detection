@@ -69,4 +69,5 @@ al menos una prueba que lo referencia.
 - Sin GPU, dataset, pesos ni red.
 - El detector real (HU-002) debe cumplir este contrato.
 - Cualquier cambio de contrato se registra en ADR 0005.
-- Sin umbral de cobertura; se decide en HU-012.
+- Sin umbral de cobertura; la entrega del M3 exige **≥ 400 pruebas unitarias**
+  (`docs/curso/PLAN-PRUEBAS.md`).

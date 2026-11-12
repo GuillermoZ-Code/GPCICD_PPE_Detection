@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: En revisión (PR #34)
+**Status**: Fusionada (PR #34)
 
 **Input**: Issue #4 — “HU-004 — Informar cuando no se detectan elementos de
 protección personal”. Asignada a Eliana (EP-01, Must Have, M3-S1).

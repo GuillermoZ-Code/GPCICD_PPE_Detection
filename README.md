@@ -66,7 +66,9 @@ desarrolla en M3–M4.
 | API REST (FastAPI) | ✅ HU-006 |
 | Servicio gRPC | ✅ HU-010 |
 | MLflow (experimentos) | ✅ HU-009 |
-| Contenedor Docker CPU | 🔍 HU-011 · PR #52 en revisión |
+| Contenedor Docker CPU | ✅ HU-011 (#52) |
+| Verificaciones de calidad | ✅ HU-012 (#49) |
+| Suite de pruebas (≥ 400) | 🔍 218 · [plan de cierre](./docs/curso/PLAN-PRUEBAS.md) |
 | CI/CD de despliegue | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 
@@ -213,6 +215,11 @@ El contrato `ImageData → list[Detection]` se define antes del detector real, c
 | `make docker-build` | Construye la imagen backend CPU (HU-011) |
 | `make docker-up` / `make docker-down` | Compose: API + gRPC + SPA |
 | `make docker-smoke` | Prueba de inferencia REST+gRPC en el contenedor |
+
+> **Requisito de pruebas:** la entrega del M3 exige **≥ 400 pruebas unitarias**.
+> El conteo vigente y el reparto por integrante están en
+> [`docs/curso/PRUEBAS.md`](./docs/curso/PRUEBAS.md) y
+> [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
 
 ## 📂 Estructura del repositorio
 

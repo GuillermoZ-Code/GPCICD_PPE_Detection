@@ -5,7 +5,7 @@
 > no negociables para Spec Kit y se sincroniza **en el mismo commit** que la
 > constitución. Si hay conflicto, manda `CONSTITUTION.md`.
 
-**Versión:** 1.0 · **Fecha:** 2026-10-31 · **Proyecto:** GPCICD PPE Detection
+**Versión:** 1.1 · **Fecha:** 2026-11-12 · **Proyecto:** GPCICD PPE Detection
 **Licencia:** AGPL-3.0-only
 
 ## Principios no negociables
@@ -71,7 +71,8 @@
 - Las pruebas se escriben antes de la implementación; deben fallar primero.
 - Excepciones: SPI y specs de documentación.
 - `/speckit.analyze` marca como error un AC sin prueba.
-- Sin umbral de cobertura; se decide en HU-012.
+- **Sin umbral de cobertura:** la entrega del M3 exige **≥ 400 pruebas unitarias**
+  (mínimo, no techo); el plan vive en `docs/curso/PLAN-PRUEBAS.md`.
 
 ### X. Cómputo GPU
 

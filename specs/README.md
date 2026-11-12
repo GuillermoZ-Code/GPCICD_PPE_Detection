@@ -10,8 +10,10 @@ Este directorio contiene una spec por HU, creada con
 - **Comandos:** `.opencode/commands/speckit.*.md`.
 - **Rama:** `branch_template: "feature/{number}-{slug}"`; el slug incluye el ID
   (`feature/002-hu-001-carga-imagen`, `feature/003-hu-002-deteccion`).
-- **Estado:** todas las specs anteriores están fusionadas en `develop`; en revisión
-  `012-hu-011-docker-cpu` (PR #52) y `010-hu-012-calidad` (PR #49).
+- **Estado:** todas las specs de HU-001 a HU-012 están fusionadas en `develop`.
+  HU-013 es la única HU del M3-S2 sin spec; su carpeta será `014-hu-013-...`.
+- **Pruebas:** la entrega exige **≥ 400 pruebas unitarias**; el reparto y los casos
+  concretos viven en [`docs/curso/PLAN-PRUEBAS.md`](../docs/curso/PLAN-PRUEBAS.md).
 
 ## Flujo por HU
 
@@ -29,7 +31,8 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 - **Test-first:** cada AC tiene al menos una prueba pytest que lo referencia; las
   pruebas se escriben antes de la implementación. Excepciones: SPI y specs de
   documentación. `/speckit.analyze` marca error si un AC no tiene prueba.
-- **Sin umbral de cobertura** por ahora; se decide en HU-012.
+- **Sin umbral de cobertura** por ahora; el requisito de la entrega es **≥ 400 pruebas
+  unitarias**, no un porcentaje de cobertura.
 - `CONSTITUTION.md` es la fuente; `.specify/memory/constitution.md` es un derivado con
   los principios no negociables y se sincroniza en el mismo commit.
 
@@ -45,12 +48,14 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `006-hu-004-informe-sin-detecciones` | Fusionada (PR #34) |
 | `007-hu-005-validacion-imagenes` | Fusionada (PR #39) |
 | `008-hu-006-api-rest` | Fusionada (PR #42) |
-| `009-hu-008-evaluacion` | Evaluador fusionado (PR #51); informe en `docs/evaluation/HU-008.md` |
-| `009-hu-010-consumo-grpc` | Fusionada (PR #46) |
-| `011-hu-009-mlflow` | Fusionada (PR #50) |
-| `012-hu-011-docker-cpu` | En revisión (PR #52) |
+| `009-hu-008-evaluacion` | Fusionada (PR #51); informe en `docs/evaluation/HU-008.md` |
+| `010-hu-010-consumo-grpc` | Fusionada (PR #46) |
+| `011-hu-012-calidad` | Fusionada (PR #49) |
+| `012-hu-009-mlflow` | Fusionada (PR #50) |
+| `013-hu-011-docker-cpu` | Fusionada (PR #52) |
+| `014-hu-013-version-modelo` | Pendiente de crear con Spec Kit |
 
 > La numeración es secuencial por orden de creación, no por número de HU: `006`
-> corresponde a HU-004 porque su spec se creó después de `005`; `010`–`012`
-> corresponden a las specs de HU-012 (PR #49), HU-009 (PR #50, fusionada) y
-> HU-011 (PR #52).
+> corresponde a HU-004 porque su spec se creó después de `005`. Desde el 12/11/2026
+> la secuencia no tiene duplicados: `009`–`013` cubren HU-008, HU-010, HU-012, HU-009
+> y HU-011, en ese orden de creación.

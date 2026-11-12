@@ -141,7 +141,8 @@ uv build
 
 > **Test-first:** las pruebas se escriben antes de la implementación. Excepciones:
 > SPI y specs de documentación. `/speckit.analyze` marca como error un AC sin prueba.
-> **Sin umbral de cobertura** por ahora; se decide en HU-012.
+> **Sin umbral de cobertura:** el requisito de la entrega es **≥ 400 pruebas
+> unitarias** (mínimo, no techo). Ver `docs/curso/PLAN-PRUEBAS.md`.
 
 ---
 

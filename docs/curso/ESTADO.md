@@ -9,28 +9,27 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-12 02:35 UTC
+**Generado:** 2026-11-12 04:44 UTC
 
-**Rama:** `feature/012-hu-011-docker-cpu` · limpia · +7/-0 vs `origin/develop`
-**develop:** 35b28d5 (2026-11-11)
+**Rama:** `docs/cierre-m3-s2` · limpia · +4/-0 vs `origin/develop`
+**develop:** 76e5b07 (2026-11-11)
 
 **Últimos commits:**
-- `6b8dd28 Merge remote-tracking branch 'origin/develop' into feature/012-hu-011-docker-cpu`
-- `b98ce95 docs(estado): registrar cierre de sesion`
-- `35b28d5 Merge pull request #50 from GuillermoZ-Code/feature/011-hu-009-mlflow`
-- `67d939a Merge branch 'develop' into feature/011-hu-009-mlflow`
-- `8e5febc Merge pull request #51 from GuillermoZ-Code/feature/009-hu-008-evaluador`
+- `7ee5904 docs(pruebas): corregir el conteo real a 218 pruebas`
+- `f6ed249 docs(cierre): sincronizar el estado del M3-S2`
+- `6a2ceb2 docs(pruebas): repartir el plan para superar las 400 pruebas`
+- `a1f54fd docs(specs): renumerar las specs 009-013 sin duplicados`
+- `76e5b07 Merge pull request #52 from GuillermoZ-Code/feature/012-hu-011-docker-cpu`
 
-**Pull requests abiertas (2):**
-- #52 feat(docker): ejecutar el sistema en un contenedor CPU (HU-011) → `develop` · revisión: — · CI: —
-- #49 feat(calidad): informe automatizado de verificaciones (HU-012) → `develop` · revisión: aprobada · CI: ok
+**Pull requests abiertas (1):**
+- #53 docs(cierre): sincronizar el M3-S2 y plan de 400 pruebas → `develop` · revisión: — · CI: ok
 
-**Issues abiertas: 8 · 11 SP**
-- M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
+**Issues abiertas: 3 · 4 SP**
+- M3-S2 (1 SP): #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #11 (PR #52), #12 (PR #49)
-**Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
+**En revisión:** ninguna
+**Siguiente por orden:** #13 HU-013 — Consultar la versión del modelo utilizado
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -124,3 +123,14 @@
 - **En vuelo:** PR #52 (`feature/012-hu-011-docker-cpu`), revisión pendiente.
 - **Siguiente:** revisión de la PR y cierre manual de #11 al fusionar; HU-014
   gana su dependencia Docker.
+
+### 2026-11-12 · Guillermo (OpenCode) — cierre del M3-S2
+
+- **Hecho:** cerradas #8–#12 (HU-008 a HU-012) al estar fusionadas; tablero con
+  HU-001 a HU-012 en Done y #13 en Ready; specs renumeradas `009`–`013` sin
+  duplicados; backlog, M3, README, constitución derivada y plantilla de PR
+  sincronizados; conteo real **218** pruebas y plan de **212 nuevas** repartido por
+  integrante en `docs/curso/PLAN-PRUEBAS.md`.
+- **En vuelo:** PR #53 (`docs/cierre-m3-s2`), pendiente de revisión.
+- **Siguiente:** fusionar #53; abrir HU-013 con Spec Kit (`specs/014-hu-013-version-modelo`),
+  ejecutar el plan de pruebas y preparar el release `develop → main` con tag.

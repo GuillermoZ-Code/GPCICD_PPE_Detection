@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-10
 
-**Status**: En revisión (PR #51)
+**Status**: Fusionada (PR #51)
 
 **Input**: Issue #8 — “Evaluar el desempeño del modelo de detección”.
 
