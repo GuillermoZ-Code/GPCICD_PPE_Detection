@@ -8,18 +8,19 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend Python | pytest | 18 | **199** | `make test` |
+| Backend Python | pytest | 20 | **234** | `make test` |
 | Frontend | Vitest | 8 | **39** | `make frontend-test` |
-| **Total** | | **26** | **238** | `make check` + `make frontend-check` |
+| **Total** | | **28** | **273** | `make check` + `make frontend-check` |
 
 Dos pruebas se omiten sin hardware o artefactos: `test_real_weights_smoke` (sin
 pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
-`@pytest.mark.docker`); la corrida muestra **197 passed + 2 skipped**.
+`@pytest.mark.docker`); la corrida muestra **232 passed + 2 skipped**.
 
 > Incluye todas las HU del M3 fusionadas hasta el 12/11/2026: HU-005 (#39),
 > HU-006 (#42), HU-007 (SPA), HU-009 (+11 en `test_tracking.py`), HU-010 (#46),
-> HU-011 (#52, +9 en `test_docker.py`), HU-012 (+5 en `test_calidad.py`) y HU-013
-> (+20 en `test_model_version.py`).
+> HU-011 (#52, +9 en `test_docker.py`), HU-012 (+5 en `test_calidad.py`), HU-013
+> (+20 en `test_model_version.py`) y el plan de Jesús (+25 en
+> `test_tracking_mlflow.py` y +10 en `test_estado_tools.py`).
 
 ## 2. Desglose del backend
 
@@ -36,6 +37,8 @@ pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
 | `tests/test_image_validation.py` | 7 |
 | `tests/test_launcher.py` | 5 |
 | `tests/test_model_version.py` | 20 |
+| `tests/test_tracking_mlflow.py` | 25 |
+| `tests/test_estado_tools.py` | 10 |
 | `tests/test_overlay.py` | 7 |
 | `tests/test_predict.py` | 16 |
 | `tests/test_results.py` | 10 |
@@ -43,7 +46,7 @@ pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
 | `tests/test_tracking.py` | 11 |
 | `tests/test_training.py` | 7 |
 | `tests/test_yolo_detector.py` | 16 |
-| **Total** | **199** |
+| **Total** | **234** |
 
 ## 3. Desglose del frontend
 
@@ -78,9 +81,9 @@ correr sin ellas.
 | Concepto | Valor |
 |----------|------:|
 | Requisito | **≥ 400** |
-| Actual | **238** (199 pytest + 39 Vitest) |
-| Brecha mínima | **162** |
-| Objetivo operativo | **430** (192 nuevas) |
+| Actual | **273** (234 pytest + 39 Vitest) |
+| Brecha mínima | **127** |
+| Objetivo operativo | **430** (157 nuevas) |
 
 > El requisito es un **mínimo**: superar 400 no es un problema. El objetivo operativo
 > del plan es **430** para tener margen de descarte en revisión.
@@ -93,13 +96,13 @@ El reparto por integrante, los archivos propuestos y los casos concretos viven e
 | Integrante | Frente | Nuevas |
 |------------|--------|-------:|
 | Hernán Estrada | Evaluación, métricas, contratos y geometría | 75 |
-| Jesús Riveros | MLflow, versión del modelo y trazabilidad | 35 |
+| Jesús Riveros | MLflow, versión del modelo y trazabilidad | 0 (completado) |
 | Eliana Cardona | API REST, gRPC y Docker | 40 |
 | Guillermo Zabala | Frontend, visualización y herramientas | 42 |
-| **Total** | | **192** → **430** |
+| **Total** | | **157** → **430** |
 
-> HU-013 ya aportó sus 20 pruebas (`test_model_version.py`); el frente de Jesús
-> queda en 35 y el total pendiente del plan en 192.
+> Jesús completó sus 55 pruebas: 20 de HU-013 y 35 de tracking/estado. El plan
+> restante es 157; el mínimo de 400 exige al menos 127.
 
 > Los frentes de HU-005 (#39), HU-006 (#42), HU-010 (#46), HU-011 (PR #52) y
 > HU-012 (PR #49) ya están aplicados y contados en el total actual.

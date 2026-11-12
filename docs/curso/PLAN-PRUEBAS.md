@@ -12,11 +12,11 @@
 
 | Suite | Herramienta | Archivos | Pruebas |
 |-------|-------------|---------:|--------:|
-| Backend Python | pytest | 18 | **199** |
+| Backend Python | pytest | 20 | **234** |
 | Frontend | Vitest | 8 | **39** |
-| **Total** | | **26** | **238** |
+| **Total** | | **28** | **273** |
 
-Brecha contra el mínimo: **162**. Brecha contra el objetivo operativo (430): **192**.
+Brecha contra el mínimo: **127**. Brecha contra el objetivo operativo (430): **157**.
 
 Comando de conteo:
 
@@ -47,13 +47,14 @@ cd frontend && npm run test
 | Integrante | Frente principal | Nuevas |
 |------------|------------------|-------:|
 | **Hernán Estrada** | Evaluación, métricas, contratos y geometría | **75** |
-| **Jesús Riveros** | MLflow, versión del modelo y trazabilidad | **35** |
+| **Jesús Riveros** | MLflow, versión del modelo y trazabilidad | **0 (completado)** |
 | **Eliana Cardona** | API REST, gRPC y Docker | **40** |
 | **Guillermo Zabala** | Frontend, visualización y herramientas | **42** |
-| **Total** | | **192** → **430** |
+| **Total** | | **157** → **430** |
 
-> HU-013 completó sus 20 pruebas (`tests/test_model_version.py`); por eso el frente de
-> Jesús baja de 55 a 35 y el total pendiente de 212 a 192.
+> Jesús completó sus 55 pruebas: 20 de HU-013 (`test_model_version.py`) y 35 de
+> tracking/estado (`test_tracking_mlflow.py` y `test_estado_tools.py`). El plan
+> restante es 157; el mínimo de 400 exige 127.
 
 ## 4. Frentes y casos concretos
 
@@ -70,16 +71,15 @@ cd frontend && npm run test
 `uv run pytest tests/test_metrics.py -q` y luego `make check`; actualizar
 `docs/curso/PRUEBAS.md`; PR `test(eval): ampliar la suite de evaluación y geometría`.
 
-### 4.2 Jesús — 35 pruebas restantes
+### 4.2 Jesús — 0 pruebas restantes (frente completo)
 
 | Archivo propuesto | Casos | Qué debe cubrir | AC/FR |
 |-------------------|------:|-----------------|-------|
-| `tests/test_tracking_mlflow.py` | 25 | Run con parámetros, métricas y referencia al artefacto; dos runs distinguibles; comparación ordenada; fallback sin MLflow instalado; `mlruns/` fuera de Git; SHA256 del modelo; errores de conexión controlados | AC-009.1, AC-009.2, AC-009.3 |
+| `tests/test_tracking_mlflow.py` | **25 (hecho)** | Run con parámetros, métricas y referencia al artefacto; dos runs distinguibles; comparación ordenada; fallback sin MLflow instalado; `mlruns/` fuera de Git; SHA256 del modelo; errores de conexión controlados | AC-009.1, AC-009.2, AC-009.3 |
 | `tests/test_model_version.py` | **20 (hecho)** | Identificador verificable por inferencia; dos versiones distintas se distinguen; artefacto externo referenciado; versión en la respuesta REST y gRPC; versión ausente → error controlado; hash y ruta configurable | AC-013.1, AC-013.2, AC-013.3 |
-| `tests/test_estado_tools.py` | 10 | Parser de SP, issues por milestone, rama y PRs, `--write` con y sin `gh`, bloque generado idempotente | FR de `tools/estado.py` |
+| `tests/test_estado_tools.py` | **10 (hecho)** | Parser de SP, issues por milestone, rama y PRs, `--write` con y sin `gh`, bloque generado idempotente | FR de `tools/estado.py` |
 
-**Dependencia:** HU-013 ya está implementada; `test_model_version.py` está cerrado con
-20 pruebas. Las 35 restantes son MLflow (25) y herramientas de estado (10).
+**Dependencia:** frente completo; no quedan pruebas de Jesús en el plan.
 
 ### 4.3 Eliana — 40 pruebas
 
@@ -108,7 +108,7 @@ para las 400 si el entorno no tiene Docker; las 13 propuestas son estáticas.
 
 | Fecha | Hito |
 |-------|------|
-| **12/11** | Reparto publicado; HU-013 completada (+20); cada integrante abre su rama `test/*` |
+| **12/11** | HU-013 + 35 de tracking/estado completadas (+55 de Jesús); cada integrante abre su rama `test/*` |
 | **13/11** | Cada frente en verde y `PRUEBAS.md` actualizado; PRs a `develop` |
 | **14/11 (mañana)** | `make calidad` + `make frontend-check`; conteo final ≥ 400; release del M3 |
 | **14/11 (sustentación)** | Evidencia del conteo y de la suite en verde |
