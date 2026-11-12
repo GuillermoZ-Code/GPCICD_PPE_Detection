@@ -64,9 +64,9 @@ desarrolla en M3–M4.
 | Resultado vacío de EPP | ✅ HU-004 |
 | SPA React con Vite y TypeScript | ✅ HU-007 |
 | API REST (FastAPI) | ✅ HU-006 |
-| Servicio gRPC | 🔍 HU-010 · en revisión |
-| Evaluación del detector | 🔍 HU-008 · PR #51 en revisión |
-| MLflow, Docker CPU y CI/CD | ⏳ M3–M4 |
+| Servicio gRPC | ✅ HU-010 |
+| MLflow (experimentos) | 🔍 HU-009 · PR #50 en revisión |
+| Docker CPU y CI/CD | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 
 ## 👥 Equipo y roles
@@ -187,6 +187,7 @@ El contrato `ImageData → list[Detection]` se define antes del detector real, c
 | `make check` | Lint + formato + tipos + pruebas |
 | `make lint` / `make format` | Ruff |
 | `make test` | pytest |
+| `make mlflow-ui` | UI local de MLflow (`http://localhost:5000`) |
 | `make arch` | Regenera el diagrama Archify (si está instalado) |
 | `make build` | `uv build` |
 
@@ -195,11 +196,13 @@ El contrato `ImageData → list[Detection]` se define antes del detector real, c
 ```text
 GPCICD_PPE_Detection/
 ├── src/ppe_detection/       # paquete (src-layout)
+│   └── tracking/            # MLflow: registro y comparación (HU-009)
 ├── tests/                   # pytest
 ├── docs/
-│   ├── adr/                 # ADR 0001–0005
+│   ├── adr/                 # ADR 0001–0006
 │   ├── architecture/        # diagrama Archify
-│   └── curso/               # contexto, backlog y checklists M2–M4
+│   ├── curso/               # contexto, backlog y checklists M2–M4
+│   └── operacion/           # runbooks locales (demo y MLflow)
 ├── specs/                   # specs de Spec Kit
 ├── .specify/                # Spec Kit v1.2.5 (integrado)
 ├── CONSTITUTION.md          # verdad central

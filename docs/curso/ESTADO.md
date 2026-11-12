@@ -9,20 +9,19 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-11 04:44 UTC
+**Generado:** 2026-11-11 04:32 UTC
 
-**Rama:** `feature/009-hu-008-evaluador` · limpia · +3/-0 vs `origin/develop`
+**Rama:** `feature/011-hu-009-mlflow` · limpia · +2/-0 vs `origin/develop`
 **develop:** 0cbc8d5 (2026-11-10)
 
 **Últimos commits:**
-- `c851e08 docs(hu-008): registrar la PR #51`
-- `8be549c docs(hu-008): completar regeneracion y tareas T016/T018`
-- `39da02e feat(eval): implementar evaluador reproducible de HU-008`
+- `3dc3a63 docs(estado): registrar HU-009 y la PR #50`
+- `ae85646 feat(tracking): registrar y comparar experimentos en MLflow (HU-009)`
 - `0cbc8d5 Merge pull request #48 from GuillermoZ-Code/fix/api-lifespan-imports`
 - `5264ea8 fix(api): restaurar imports y tipado del lifespan`
+- `f4aa33a Merge pull request #46 from GuillermoZ-Code/feature/009-hu-010-consumo-grpc`
 
-**Pull requests abiertas (3):**
-- #51 feat(eval): implementar evaluador reproducible de HU-008 → `develop` · revisión: — · CI: ok
+**Pull requests abiertas (2):**
 - #50 feat(tracking): registrar y comparar experimentos en MLflow (HU-009) → `develop` · revisión: — · CI: ok
 - #49 feat(calidad): informe automatizado de verificaciones (HU-012) → `develop` · revisión: — · CI: ok
 
@@ -30,8 +29,8 @@
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #8 (PR #51), #9 (PR #50), #12 (PR #49)
-**Siguiente por orden:** #10 HU-010 — Consumir inferencias mediante gRPC
+**En revisión:** #9 (PR #50), #12 (PR #49)
+**Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -101,11 +100,11 @@
 - **Siguiente:** revisión de Guillermo; tras el merge, HU-011 gana su
   dependencia gRPC.
 
-### 2026-11-11 · Jesús (OpenCode) — HU-008
+### 2026-11-11 · Jesús (OpenCode) — HU-009
 
-- **Hecho:** HU-008 completada: evaluador versionado en `src/ppe_detection/evaluation/`,
-  9 pruebas, regeneración del test de 1.094 desde el módulo e informe actualizado;
-  `make check` 153 passed + 1 skipped y `uv build` en verde.
-- **En vuelo:** PR #51 (`feature/009-hu-008-evaluador`), pendiente de revisión de
-  Guillermo.
-- **Siguiente:** revisar y fusionar #51; cerrar #8 a mano. Después, HU-011 o HU-013.
+- **Hecho:** HU-009 implementada con Spec Kit: extra opcional `tracking` con MLflow
+  3.18, módulo `tracking/` (payload, tracker, comparación y CLI), 11 pruebas y runbook
+  `docs/operacion/mlflow.md`; `make check` 155 passed + 1 skipped y `uv build` en verde.
+  Dos runs reales registrados y comparados en `sqlite:///mlflow.db`.
+- **En vuelo:** PR #50 (`feature/011-hu-009-mlflow`), revisión pendiente de Guillermo.
+- **Siguiente:** revisar y fusionar #50; después, HU-011 o el evaluador de HU-008.

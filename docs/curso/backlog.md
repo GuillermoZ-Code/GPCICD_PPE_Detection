@@ -159,7 +159,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Run identificable con parámetros, métricas y referencia al modelo.
   - Dos runs distinguibles.
   - Referencia al artefacto sin almacenar pesos en Git.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/011-hu-009-mlflow`](../../specs/011-hu-009-mlflow/spec.md).
 
 ### HU-010 — Consumir inferencias mediante gRPC
 
