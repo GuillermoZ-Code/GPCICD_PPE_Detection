@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: En revisión (PR #50)
+**Status**: Fusionada (PR #50)
 
 **Input**: Issue #9 — «Consultar y comparar experimentos en MLflow». Asignada a Jesús
 (EP-04, Must Have, M3-S2). Depende de HU-008 (evaluación instrumentada).

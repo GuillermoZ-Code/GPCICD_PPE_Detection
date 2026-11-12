@@ -4,7 +4,7 @@ description: "Task list for HU-012 — Verificaciones de calidad"
 
 # Tasks: HU-012 — Verificaciones automatizadas de calidad
 
-**Input**: Design documents from `specs/010-hu-012-calidad/`
+**Input**: Design documents from `specs/011-hu-012-calidad/`
 
 **Prerequisites**: `plan.md`, `spec.md`, contratos de HU-006/007/010 fusionados.
 

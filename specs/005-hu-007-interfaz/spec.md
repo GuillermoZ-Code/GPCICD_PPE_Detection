@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-09
 
-**Status**: Draft
+**Status**: Fusionada (PR #35)
 
 **Input**: Issue #7 — "Utilizar el detector desde una interfaz gráfica", con la decisión
 del equipo de sustituir Streamlit/Tkinter por una SPA **React + Vite + TypeScript**

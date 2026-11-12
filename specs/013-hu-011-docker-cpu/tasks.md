@@ -4,7 +4,7 @@
 
 ## 1. Especificación (Spec Kit)
 
-- [x] T1.1 Crear `specs/012-hu-011-docker-cpu/spec.md` con los AC de la issue.
+- [x] T1.1 Crear `specs/013-hu-011-docker-cpu/spec.md` con los AC de la issue.
 - [x] T1.2 Registrar el plan de diseño y las alternativas (`plan.md`).
 - [x] T1.3 Listar tareas verificables (`tasks.md`).
 - [ ] T1.4 Enlazar la spec en `specs/README.md` y `docs/curso/backlog.md`.

@@ -3,7 +3,7 @@
 **Branch**: `feature/010-hu-012-calidad` | **Date**: 2026-11-10 |
 **Spec**: [spec.md](spec.md)
 
-**Input**: Feature specification from `specs/010-hu-012-calidad/spec.md` e issue #12.
+**Input**: Feature specification from `specs/011-hu-012-calidad/spec.md` e issue #12.
 
 ## Summary
 

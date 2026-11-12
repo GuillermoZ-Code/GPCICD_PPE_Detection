@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-09
 
-**Status**: Draft
+**Status**: Fusionada (PR #33)
 
 **Input**: Issue #3 — "Visualizar las detecciones sobre la imagen".
 

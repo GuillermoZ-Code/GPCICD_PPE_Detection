@@ -4,7 +4,7 @@ description: "Task list for HU-009 — Experimentos en MLflow"
 
 # Tasks: HU-009 — Consultar y comparar experimentos en MLflow
 
-**Input**: Design documents from `specs/011-hu-009-mlflow/`
+**Input**: Design documents from `specs/012-hu-009-mlflow/`
 
 **Prerequisites**: `plan.md`, `spec.md`, `summary.json` de HU-008 y MLflow local.
 

@@ -4,7 +4,7 @@ description: "Task list for HU-010 — Consumir inferencias mediante gRPC"
 
 # Tasks: HU-010 — Consumir inferencias mediante gRPC
 
-**Input**: Design documents from `specs/009-hu-010-consumo-grpc/`
+**Input**: Design documents from `specs/010-hu-010-consumo-grpc/`
 
 **Prerequisites**: `plan.md`, `spec.md`, contrato de ADR 0005, validación de HU-005,
 API REST de HU-006 (PR #42) y el contrato de resultado vacío de HU-004.

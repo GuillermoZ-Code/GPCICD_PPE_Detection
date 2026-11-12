@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-11
 
-**Status**: En curso (rama)
+**Status**: Fusionada (PR #52)
 
 **Input**: Issue #11 — «HU-011 — Ejecutar el sistema en un contenedor Docker CPU».
 Asignada a ElianaCardona (EP-04, Must Have, M3-S2, 2 SP). Depende de HU-006
