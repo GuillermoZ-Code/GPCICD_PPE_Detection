@@ -185,7 +185,8 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Inferencia en CPU sin GPU dedicada.
   - Artefacto del modelo externo a Git.
   - Documentación de build, configuración y ejecución.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** [`specs/012-hu-011-docker-cpu`](../../specs/012-hu-011-docker-cpu/spec.md) ·
+  rama `feature/012-hu-011-docker-cpu`.
 
 ### HU-012 — Ejecutar verificaciones automatizadas de calidad
 

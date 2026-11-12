@@ -122,6 +122,9 @@ make test       # pytest
 make frontend-check  # ESLint + Vitest + build del frontend
 make frontend-dev    # levanta la interfaz en http://localhost:5173
 make app             # levanta API + interfaz con el modelo local
+make docker-build    # imagen backend CPU (HU-011)
+make docker-up       # compose: API + gRPC + SPA (modelo en PPE_MODELS_DIR)
+make docker-smoke    # inferencia REST+gRPC dentro del contenedor
 make arch       # regenera el diagrama Archify (si está instalado)
 ```
 
