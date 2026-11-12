@@ -1,2 +1,5 @@
 # Artefacto generado por Archify: no aplicar reglas de whitespace del diff.
 docs/architecture/arquitectura.html -whitespace linguist-generated=true
+
+# HU-011: los scripts del contenedor corren en Linux; CRLF rompe la imagen.
+*.sh text eol=lf
