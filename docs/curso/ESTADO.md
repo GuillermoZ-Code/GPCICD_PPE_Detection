@@ -9,29 +9,29 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 04:34 UTC
+**Generado:** 2026-11-11 04:44 UTC
 
-**Rama:** `feature/009-hu-010-consumo-grpc` · 5 archivo(s) sin commit · +7/-0 vs `origin/develop`
-**develop:** a60d579 (2026-11-09)
+**Rama:** `feature/009-hu-008-evaluador` · limpia · +3/-0 vs `origin/develop`
+**develop:** 0cbc8d5 (2026-11-10)
 
 **Últimos commits:**
-- `695a23a docs(estado): registrar cierre de sesion`
-- `69d6d03 docs(grpc): documentar generación, arranque y consumo`
-- `5bb6728 Merge remote-tracking branch 'origin/develop' into feature/009-hu-010-consumo-grpc`
-- `8d4fe02 feat(grpc): servicio gRPC reutilizando el pipeline compartido (HU-010)`
-- `1f85456 test(grpc): verificar los AC de HU-010 antes de implementar`
+- `c851e08 docs(hu-008): registrar la PR #51`
+- `8be549c docs(hu-008): completar regeneracion y tareas T016/T018`
+- `39da02e feat(eval): implementar evaluador reproducible de HU-008`
+- `0cbc8d5 Merge pull request #48 from GuillermoZ-Code/fix/api-lifespan-imports`
+- `5264ea8 fix(api): restaurar imports y tipado del lifespan`
 
 **Pull requests abiertas (3):**
-- #46 feat(grpc): consumir inferencia mediante gRPC (HU-010) → `develop` · revisión: — · CI: ok
-- #45 docs(hu-008): agregar spec e informe de evaluacion → `develop` · revisión: — · CI: ok
-- #44 docs(operacion): runbook de demo local API + frontend → `develop` · revisión: — · CI: ok
+- #51 feat(eval): implementar evaluador reproducible de HU-008 → `develop` · revisión: — · CI: ok
+- #50 feat(tracking): registrar y comparar experimentos en MLflow (HU-009) → `develop` · revisión: — · CI: ok
+- #49 feat(calidad): informe automatizado de verificaciones (HU-012) → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 8 · 11 SP**
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #10 (PR #46)
-**Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
+**En revisión:** #8 (PR #51), #9 (PR #50), #12 (PR #49)
+**Siguiente por orden:** #10 HU-010 — Consumir inferencias mediante gRPC
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -100,3 +100,12 @@
   Guillermo.
 - **Siguiente:** revisión de Guillermo; tras el merge, HU-011 gana su
   dependencia gRPC.
+
+### 2026-11-11 · Jesús (OpenCode) — HU-008
+
+- **Hecho:** HU-008 completada: evaluador versionado en `src/ppe_detection/evaluation/`,
+  9 pruebas, regeneración del test de 1.094 desde el módulo e informe actualizado;
+  `make check` 153 passed + 1 skipped y `uv build` en verde.
+- **En vuelo:** PR #51 (`feature/009-hu-008-evaluador`), pendiente de revisión de
+  Guillermo.
+- **Siguiente:** revisar y fusionar #51; cerrar #8 a mano. Después, HU-011 o HU-013.
