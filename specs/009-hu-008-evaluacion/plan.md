@@ -1,6 +1,6 @@
 # Implementation Plan: HU-008 — Evaluación del detector
 
-**Branch**: `feature/009-hu-008-evaluacion` | **Date**: 2026-11-10 |
+**Branch**: `feature/009-hu-008-evaluador` | **Date**: 2026-11-10 |
 **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `specs/009-hu-008-evaluacion/spec.md` e issue #8.
@@ -9,8 +9,8 @@
 
 Implementar un evaluador versionado que cargue un artefacto YOLO identificado, evalúe
 una partición etiquetada y genere un informe con métricas globales y por clase,
-protección de particiones y análisis de errores. El informe preliminar de esta rama
-usa el mismo protocolo y sirve como evidencia inicial.
+protección de particiones y análisis de errores. El informe de evaluación de esta rama
+usa el mismo protocolo y documenta la evidencia.
 
 ## Technical Context
 
@@ -54,7 +54,7 @@ tests/
 └── test_evaluation.py   # pruebas con métricas falsas y configuración
 
 docs/evaluation/
-└── HU-008.md            # informe preliminar y análisis de errores
+└── HU-008.md            # informe de evaluación y análisis de errores
 ```
 
 ## Phases

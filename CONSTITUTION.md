@@ -124,7 +124,8 @@ GPCICD_PPE_Detection/
 │   ├── postprocessing/      # NMS y umbrales (previsto)
 │   ├── api/                 # FastAPI (previsto)
 │   ├── grpc/                # gRPC (previsto)
-│   ├── evaluation/          # métricas y MLflow (previsto)
+│   ├── evaluation/          # métricas y evaluación (HU-008, en revisión)
+│   ├── tracking/            # registro y comparación de experimentos (HU-009)
 │   └── training/            # fine-tuning YOLO (script de Colab)
 ├── frontend/                # SPA React + Vite + TypeScript (HU-007)
 ├── docker/                  # entrypoint y nginx del contenedor (HU-011)
@@ -136,6 +137,7 @@ GPCICD_PPE_Detection/
 │   ├── architecture/        # diagrama Archify (JSON + HTML)
 │   ├── curso/               # contexto, backlog y checklists por módulo
 │   ├── dataset/             # EDA y auditoría del dataset
+│   ├── operacion/           # runbooks locales (demo y MLflow)
 │   └── spikes/              # SPI-01 y SPI-02
 ├── specs/                   # specs de Spec Kit
 ├── .specify/                # Spec Kit v1.2.5 (integrado; no editar a mano)
@@ -340,6 +342,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-11-04 | HU-002 pasa temporalmente de Jesús a Hernán | Jesús no disponible; HU-002 tiene holgura cero y bloquea la ruta crítica |
 | 2026-11-09 | Interfaz web **React + Vite + TypeScript** en `frontend/`; se retiran Streamlit y Tkinter | Se busca un frontend profesional, testeable y desplegable como estático; la API desacopla la UI de Python (ADR 0006) |
 | 2026-11-11 | Contenedor Docker CPU con `uv sync --frozen` y torch desde el índice `pytorch-cpu` (Linux); SPA servida por nginx; modelo montado `:ro` | Reproducibilidad del sistema completo sin CUDA ni pesos en Git (HU-011); en Windows/macOS la resolución sigue siendo PyPI |
+| 2026-11-11 | MLflow como extra opcional `tracking`; registro en `src/ppe_detection/tracking/` | Evita ~150 dependencias en el paquete base y en la CI; el run referencia el modelo por SHA256 sin copiar pesos |
 
 ## 12. Roadmap M3–M4
 

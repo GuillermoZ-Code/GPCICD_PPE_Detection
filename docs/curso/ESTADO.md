@@ -100,6 +100,15 @@
 - **Siguiente:** revisión de Guillermo; tras el merge, HU-011 gana su
   dependencia gRPC.
 
+### 2026-11-11 · Jesús (OpenCode) — HU-009
+
+- **Hecho:** HU-009 implementada con Spec Kit: extra opcional `tracking` con MLflow
+  3.18, módulo `tracking/` (payload, tracker, comparación y CLI), 11 pruebas y runbook
+  `docs/operacion/mlflow.md`; `make check` 155 passed + 1 skipped y `uv build` en verde.
+  Dos runs reales registrados y comparados en `sqlite:///mlflow.db`.
+- **En vuelo:** PR #50 (`feature/011-hu-009-mlflow`), revisión pendiente de Guillermo.
+- **Siguiente:** revisar y fusionar #50; después, HU-011 o el evaluador de HU-008.
+
 ### 2026-11-11 · Eliana (OpenCode) — HU-011
 
 - **Hecho:** HU-011 implementada con Spec Kit: Dockerfile multi-stage (`runtime`

@@ -65,8 +65,9 @@ desarrolla en M3–M4.
 | SPA React con Vite y TypeScript | ✅ HU-007 |
 | API REST (FastAPI) | ✅ HU-006 |
 | Servicio gRPC | ✅ HU-010 |
-| Contenedor Docker CPU | 🔍 HU-011 · en revisión |
-| MLflow y CI/CD de despliegue | ⏳ M3–M4 |
+| MLflow (experimentos) | ✅ HU-009 |
+| Contenedor Docker CPU | 🔍 HU-011 · PR #52 en revisión |
+| CI/CD de despliegue | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 
 ## 👥 Equipo y roles
@@ -205,6 +206,7 @@ El contrato `ImageData → list[Detection]` se define antes del detector real, c
 | `make check` | Lint + formato + tipos + pruebas |
 | `make lint` / `make format` | Ruff |
 | `make test` | pytest |
+| `make mlflow-ui` | UI local de MLflow (`http://localhost:5000`) |
 | `make arch` | Regenera el diagrama Archify (si está instalado) |
 | `make build` | `uv build` |
 | `make docker-build` | Construye la imagen backend CPU (HU-011) |
@@ -216,15 +218,16 @@ El contrato `ImageData → list[Detection]` se define antes del detector real, c
 ```text
 GPCICD_PPE_Detection/
 ├── src/ppe_detection/       # paquete (src-layout)
+│   └── tracking/            # MLflow: registro y comparación (HU-009)
 ├── tests/                   # pytest
 ├── frontend/                # SPA React + Vite + TypeScript
 ├── docker/                  # entrypoint y nginx del contenedor (HU-011)
 ├── Dockerfile               # imagen CPU multi-stage (HU-011)
 ├── compose.yml              # api + grpc + frontend (HU-011)
 ├── docs/
-│   ├── adr/                 # ADR 0001–0005
+│   ├── adr/                 # ADR 0001–0006
 │   ├── architecture/        # diagrama Archify
-│   ├── operacion/           # runbooks de demo local y Docker
+│   ├── operacion/           # runbooks de demo local, MLflow y Docker
 │   └── curso/               # contexto, backlog y checklists M2–M4
 ├── specs/                   # specs de Spec Kit
 ├── .specify/                # Spec Kit v1.2.5 (integrado)

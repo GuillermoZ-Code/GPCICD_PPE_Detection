@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -84,6 +84,9 @@ frontend-check: frontend-lint frontend-test frontend-build ## Verificación comp
 
 app: ## Levanta API + frontend con el modelo local (Ctrl+C para ambos)
 	uv run python -m ppe_detection.tools.launcher
+
+mlflow-ui: ## Abre la UI local de MLflow (http://localhost:5000)
+	uv run --extra tracking --extra inference mlflow ui --backend-store-uri sqlite:///mlflow.db
 
 # --- Docker CPU (HU-011) ------------------------------------------------------
 docker-build: ## Construye la imagen backend CPU desde uv.lock (HU-011)

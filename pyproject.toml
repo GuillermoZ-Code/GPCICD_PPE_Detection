@@ -45,6 +45,9 @@ grpc = [
     "grpcio>=1.85.1",
     "protobuf>=7.36.2",
 ]
+tracking = [
+    "mlflow>=3,<4",
+]
 
 [build-system]
 requires = ["uv_build>=0.12.2,<0.14.0"]
