@@ -9,20 +9,20 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-12 18:29 UTC
+**Generado:** 2026-11-12 18:32 UTC
 
-**Rama:** `docs/estado-post-54` · 6 archivo(s) sin commit · +0/-0 vs `origin/develop`
+**Rama:** `docs/estado-post-54` · 1 archivo(s) sin commit · +1/-0 vs `origin/develop`
 **develop:** 6496621 (2026-11-12)
 
 **Últimos commits:**
+- `7d16381 docs(estado): cerrar HU-013 y actualizar el M3`
 - `6496621 Merge pull request #54 from GuillermoZ-Code/feature/014-hu-013-version-modelo`
 - `993805a docs(estado): registrar cierre de sesion`
 - `0cae6f0 docs(hu-013): registrar la PR #54`
 - `35ab8d1 feat(version): exponer version verificable del modelo (HU-013)`
-- `bd26930 Merge pull request #53 from GuillermoZ-Code/docs/cierre-m3-s2`
 
-**Pull requests abiertas (0):**
-- ninguna
+**Pull requests abiertas (1):**
+- #55 docs(estado): cerrar HU-013 y actualizar el M3 → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 2 · 3 SP**
 - M4-S3 (3 SP): #14 #15
@@ -148,5 +148,5 @@
 
 - **Hecho:** PR #54 fusionada y #13 cerrada; M3 con **13/13 HUs**; README, M3, backlog,
   specs y estado sincronizados; conteo **238/400** y plan de **192 pruebas**.
-- **En vuelo:** PR de cierre documental `docs/estado-post-54`.
+- **En vuelo:** PR #55 (`docs/estado-post-54`), pendiente de revisión.
 - **Siguiente:** abrir ramas `test/*` y ejecutar las 192 pruebas restantes; release M3.
