@@ -50,6 +50,9 @@ test: ## Ejecuta las pruebas
 
 check: lint format-check typecheck test ## Verificación completa (lint + formato + tipos + pruebas)
 
+calidad: ## Informe de calidad (lint, formato, tipos y pruebas)
+	uv run python -m ppe_detection.tools.calidad
+
 build: ## Construye el paquete (sdist + wheel)
 	uv build
 

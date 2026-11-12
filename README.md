@@ -204,6 +204,7 @@ El contrato `ImageData → list[Detection]` se define antes del detector real, c
 | `make help` | Lista los objetivos |
 | `make dev` | `uv sync` + hooks |
 | `make check` | Lint + formato + tipos + pruebas |
+| `make calidad` | Informe único de lint, formato, tipos y pruebas |
 | `make lint` / `make format` | Ruff |
 | `make test` | pytest |
 | `make mlflow-ui` | UI local de MLflow (`http://localhost:5000`) |
