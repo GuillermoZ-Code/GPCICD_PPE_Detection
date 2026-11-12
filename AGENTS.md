@@ -12,8 +12,8 @@
 Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-12 02:24 UTC
-- **Rama:** `feature/012-hu-011-docker-cpu` · +5/-10 vs `origin/develop`
+**Actualizado:** 2026-11-12 02:35 UTC
+- **Rama:** `feature/012-hu-011-docker-cpu` · +7/-0 vs `origin/develop`
 - **Issues abiertas:** 8 · 11 SP
 - **En vuelo:** #52 feat(docker): ejecutar el sistema en un contenedor CPU (HU-011) (PR, revisión: —); #49 feat(calidad): informe automatizado de verificaciones (HU-012) (PR, revisión: aprobada)
 - **Siguiente:** #8 HU-008 — Evaluar el desempeño del modelo de detección

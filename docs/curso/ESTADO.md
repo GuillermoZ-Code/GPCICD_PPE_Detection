@@ -9,17 +9,17 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-12 02:24 UTC
+**Generado:** 2026-11-12 02:35 UTC
 
-**Rama:** `feature/012-hu-011-docker-cpu` · 2 archivo(s) sin commit · +5/-10 vs `origin/develop`
+**Rama:** `feature/012-hu-011-docker-cpu` · limpia · +7/-0 vs `origin/develop`
 **develop:** 35b28d5 (2026-11-11)
 
 **Últimos commits:**
-- `180c158 fix(docker): librerias del sistema y protobuf runtime (HU-011)`
-- `f2e4785 docs(operacion): runbook docker de HU-011 y sincronia documental`
-- `f12a465 feat(docker): contenedor cpu con api rest y grpc (HU-011)`
-- `380f943 test(docker): verificar los AC de HU-011 antes de implementar`
-- `1ebfa25 docs(hu-011): agregar spec de docker cpu`
+- `6b8dd28 Merge remote-tracking branch 'origin/develop' into feature/012-hu-011-docker-cpu`
+- `b98ce95 docs(estado): registrar cierre de sesion`
+- `35b28d5 Merge pull request #50 from GuillermoZ-Code/feature/011-hu-009-mlflow`
+- `67d939a Merge branch 'develop' into feature/011-hu-009-mlflow`
+- `8e5febc Merge pull request #51 from GuillermoZ-Code/feature/009-hu-008-evaluador`
 
 **Pull requests abiertas (2):**
 - #52 feat(docker): ejecutar el sistema en un contenedor CPU (HU-011) → `develop` · revisión: — · CI: —
