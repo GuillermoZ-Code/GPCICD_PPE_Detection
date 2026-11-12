@@ -8,32 +8,35 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend Python | pytest | 12 | **136** | `make test` |
+| Backend Python | pytest | 14 | **150** | `make test` |
 | Frontend | Vitest | 5 | **19** | `make frontend-test` |
-| **Total** | | **17** | **155** | `make check` + `make frontend-check` |
+| **Total** | | **19** | **169** | `make check` + `make frontend-check` |
 
 Una prueba del backend se omite cuando no hay artefactos locales
-(`test_real_weights_smoke`), por eso la corrida muestra **135 passed + 1 skipped**.
+(`test_real_weights_smoke`), por eso la corrida muestra **149 passed + 1 skipped**.
 
-> Incluye HU-005 (#39, +7 pruebas), HU-006 (#42, +9) y HU-010 (rama, +9).
+> Incluye HU-005 (#39, +7 pruebas), HU-006 (#42, +9), HU-010 (rama, +9),
+> HU-012 (+5) y las pruebas de launcher y gRPC.
 
 ## 2. Desglose del backend
 
 | Archivo | Pruebas |
 |---------|--------:|
+| `tests/test_api.py` | 12 |
+| `tests/test_calidad.py` | 5 |
 | `tests/test_contracts.py` | 28 |
-| `tests/test_image_loader.py` | 17 |
-| `tests/test_predict.py` | 16 |
-| `tests/test_yolo_detector.py` | 15 |
 | `tests/test_estado.py` | 10 |
-| `tests/test_results.py` | 10 |
-| `tests/test_api.py` | 9 |
 | `tests/test_grpc.py` | 9 |
+| `tests/test_image_loader.py` | 17 |
 | `tests/test_image_validation.py` | 7 |
+| `tests/test_launcher.py` | 5 |
 | `tests/test_overlay.py` | 7 |
-| `tests/test_training.py` | 7 |
+| `tests/test_predict.py` | 16 |
+| `tests/test_results.py` | 10 |
 | `tests/test_smoke.py` | 1 |
-| **Total** | **136** |
+| `tests/test_training.py` | 7 |
+| `tests/test_yolo_detector.py` | 16 |
+| **Total** | **150** |
 
 ## 3. Desglose del frontend
 

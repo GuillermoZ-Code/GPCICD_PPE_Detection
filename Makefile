@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check app mlflow-ui arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check calidad build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -49,6 +49,9 @@ test: ## Ejecuta las pruebas
 	uv run pytest
 
 check: lint format-check typecheck test ## Verificación completa (lint + formato + tipos + pruebas)
+
+calidad: ## Informe de calidad (lint, formato, tipos y pruebas)
+	uv run python -m ppe_detection.tools.calidad
 
 build: ## Construye el paquete (sdist + wheel)
 	uv build

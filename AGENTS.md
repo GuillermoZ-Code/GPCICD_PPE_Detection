@@ -12,10 +12,10 @@
 Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-11 04:32 UTC
-- **Rama:** `feature/011-hu-009-mlflow` · +2/-0 vs `origin/develop`
+**Actualizado:** 2026-11-11 02:09 UTC
+- **Rama:** `feature/010-hu-012-calidad` · +2/-0 vs `origin/develop`
 - **Issues abiertas:** 8 · 11 SP
-- **En vuelo:** #50 feat(tracking): registrar y comparar experimentos en MLflow (HU-009) (PR, revisión: —); #49 feat(calidad): informe automatizado de verificaciones (HU-012) (PR, revisión: —)
+- **En vuelo:** #49 feat(calidad): informe automatizado de verificaciones (HU-012) (PR, revisión: —)
 - **Siguiente:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
