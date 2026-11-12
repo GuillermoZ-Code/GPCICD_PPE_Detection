@@ -65,8 +65,9 @@ desarrolla en M3–M4.
 | SPA React con Vite y TypeScript | ✅ HU-007 |
 | API REST (FastAPI) | ✅ HU-006 |
 | Servicio gRPC | ✅ HU-010 |
-| MLflow (experimentos) | 🔍 HU-009 · PR #50 en revisión |
-| Docker CPU y CI/CD | ⏳ M3–M4 |
+| MLflow (experimentos) | ✅ HU-009 |
+| Contenedor Docker CPU | 🔍 HU-011 · PR #52 en revisión |
+| CI/CD de despliegue | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 
 ## 👥 Equipo y roles
@@ -152,6 +153,24 @@ variables que la API REST (`PPE_MODEL_PATH`, `PPE_MODEL_VERSION`, `PPE_CONF`,
 regeneran con `make protos`. El detalle del contrato está en
 [`docs/architecture/contracts.md`](./docs/architecture/contracts.md).
 
+### Ejecutar en Docker (HU-011)
+
+```bash
+make docker-build                              # imagen backend CPU (uv.lock)
+docker run -d --name ppe-system --rm \
+  -p 8000:8000 -p 9000:9000 \
+  -v "/ruta/modelos-epp:/models:ro" \
+  -e PPE_MODEL_PATH=/models/best.pt \
+  -e PPE_SERVICES=rest,grpc \
+  gpcicd-ppe-detection:local
+```
+
+El contenedor expone la API REST (8000) y gRPC (9000) sin GPU; el artefacto del
+modelo se monta **read-only** y nunca entra al repositorio ni a la imagen. La
+aplicación completa (REST + gRPC + SPA en nginx) levanta con
+`PPE_MODELS_DIR=/ruta/modelos-epp make docker-up`. El paso a paso y la prueba de
+inferencia están en [`docs/operacion/docker.md`](./docs/operacion/docker.md).
+
 ## 🗺️ Arquitectura
 
 ```text
@@ -191,6 +210,9 @@ El contrato `ImageData → list[Detection]` se define antes del detector real, c
 | `make mlflow-ui` | UI local de MLflow (`http://localhost:5000`) |
 | `make arch` | Regenera el diagrama Archify (si está instalado) |
 | `make build` | `uv build` |
+| `make docker-build` | Construye la imagen backend CPU (HU-011) |
+| `make docker-up` / `make docker-down` | Compose: API + gRPC + SPA |
+| `make docker-smoke` | Prueba de inferencia REST+gRPC en el contenedor |
 
 ## 📂 Estructura del repositorio
 
@@ -199,11 +221,15 @@ GPCICD_PPE_Detection/
 ├── src/ppe_detection/       # paquete (src-layout)
 │   └── tracking/            # MLflow: registro y comparación (HU-009)
 ├── tests/                   # pytest
+├── frontend/                # SPA React + Vite + TypeScript
+├── docker/                  # entrypoint y nginx del contenedor (HU-011)
+├── Dockerfile               # imagen CPU multi-stage (HU-011)
+├── compose.yml              # api + grpc + frontend (HU-011)
 ├── docs/
 │   ├── adr/                 # ADR 0001–0006
 │   ├── architecture/        # diagrama Archify
-│   ├── curso/               # contexto, backlog y checklists M2–M4
-│   └── operacion/           # runbooks locales (demo y MLflow)
+│   ├── operacion/           # runbooks de demo local, MLflow y Docker
+│   └── curso/               # contexto, backlog y checklists M2–M4
 ├── specs/                   # specs de Spec Kit
 ├── .specify/                # Spec Kit v1.2.5 (integrado)
 ├── CONSTITUTION.md          # verdad central

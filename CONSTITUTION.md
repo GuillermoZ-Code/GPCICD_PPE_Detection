@@ -128,6 +128,9 @@ GPCICD_PPE_Detection/
 │   ├── tracking/            # registro y comparación de experimentos (HU-009)
 │   └── training/            # fine-tuning YOLO (script de Colab)
 ├── frontend/                # SPA React + Vite + TypeScript (HU-007)
+├── docker/                  # entrypoint y nginx del contenedor (HU-011)
+├── Dockerfile               # imagen CPU multi-stage: uv.lock + nginx (HU-011)
+├── compose.yml              # api + grpc + frontend con modelo :ro (HU-011)
 ├── tests/                   # pytest, patrón AAA
 ├── docs/
 │   ├── adr/                 # ADR 0001–0006
@@ -246,6 +249,7 @@ falsos positivos/negativos y la ausencia de detecciones no son prueba de incumpl
 | Vitest | Pruebas del frontend | `make frontend-test` |
 | Vite | Build del frontend | `make frontend-build` |
 | GitHub Actions | CI en `develop` y `main` | `.github/workflows/ci.yml` |
+| Docker | Imagen CPU con `uv.lock` y modelo montado `:ro` | `make docker-build` |
 | `uv build` | Construcción del paquete | `uv build` |
 
 - `make check` debe estar en verde antes de abrir una PR.
@@ -337,6 +341,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-11-04 | Reestimar el backlog de 67 a 22 SP (HU-001 a HU-015) | Alinear con el documento del M2; las TA/SPI se absorben en la preparación P1–P4 |
 | 2026-11-04 | HU-002 pasa temporalmente de Jesús a Hernán | Jesús no disponible; HU-002 tiene holgura cero y bloquea la ruta crítica |
 | 2026-11-09 | Interfaz web **React + Vite + TypeScript** en `frontend/`; se retiran Streamlit y Tkinter | Se busca un frontend profesional, testeable y desplegable como estático; la API desacopla la UI de Python (ADR 0006) |
+| 2026-11-11 | Contenedor Docker CPU con `uv sync --frozen` y torch desde el índice `pytorch-cpu` (Linux); SPA servida por nginx; modelo montado `:ro` | Reproducibilidad del sistema completo sin CUDA ni pesos en Git (HU-011); en Windows/macOS la resolución sigue siendo PyPI |
 | 2026-11-11 | MLflow como extra opcional `tracking`; registro en `src/ppe_detection/tracking/` | Evita ~150 dependencias en el paquete base y en la CI; el run referencia el modelo por SHA256 sin copiar pesos |
 
 ## 12. Roadmap M3–M4

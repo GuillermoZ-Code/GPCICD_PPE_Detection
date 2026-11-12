@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check calidad build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -90,6 +90,25 @@ app: ## Levanta API + frontend con el modelo local (Ctrl+C para ambos)
 
 mlflow-ui: ## Abre la UI local de MLflow (http://localhost:5000)
 	uv run --extra tracking --extra inference mlflow ui --backend-store-uri sqlite:///mlflow.db
+
+# --- Docker CPU (HU-011) ------------------------------------------------------
+docker-build: ## Construye la imagen backend CPU desde uv.lock (HU-011)
+	docker build --target runtime -t gpcicd-ppe-detection:local .
+
+docker-build-web: ## Construye la imagen de la SPA servida por nginx (HU-011)
+	docker build --target web -t gpcicd-ppe-frontend:local .
+
+docker-up: ## Levanta api + grpc + frontend con compose (modelo en PPE_MODELS_DIR)
+	docker compose up -d --build
+
+docker-down: ## Detiene y elimina los contenedores de compose
+	docker compose down --remove-orphans
+
+docker-logs: ## Sigue los registros de los servicios de compose
+	docker compose logs -f
+
+docker-smoke: ## Prueba de inferencia REST+gRPC dentro del contenedor (AC-011.2)
+	PPE_DOCKER_SMOKE=1 uv run pytest tests/test_docker.py -m docker -v
 
 arch: ## Regenera el diagrama de arquitectura con Archify
 	node "$(ARCHIFY_BIN)" finalize architecture docs/architecture/arquitectura.json docs/architecture/arquitectura.html --quality showcase

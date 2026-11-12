@@ -12,10 +12,10 @@
 Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-11 02:09 UTC
-- **Rama:** `feature/010-hu-012-calidad` · +2/-0 vs `origin/develop`
+**Actualizado:** 2026-11-12 02:35 UTC
+- **Rama:** `feature/012-hu-011-docker-cpu` · +7/-0 vs `origin/develop`
 - **Issues abiertas:** 8 · 11 SP
-- **En vuelo:** #49 feat(calidad): informe automatizado de verificaciones (HU-012) (PR, revisión: —)
+- **En vuelo:** #52 feat(docker): ejecutar el sistema en un contenedor CPU (HU-011) (PR, revisión: —); #49 feat(calidad): informe automatizado de verificaciones (HU-012) (PR, revisión: aprobada)
 - **Siguiente:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
@@ -122,6 +122,9 @@ make test       # pytest
 make frontend-check  # ESLint + Vitest + build del frontend
 make frontend-dev    # levanta la interfaz en http://localhost:5173
 make app             # levanta API + interfaz con el modelo local
+make docker-build    # imagen backend CPU (HU-011)
+make docker-up       # compose: API + gRPC + SPA (modelo en PPE_MODELS_DIR)
+make docker-smoke    # inferencia REST+gRPC dentro del contenedor
 make arch       # regenera el diagrama Archify (si está instalado)
 ```
 

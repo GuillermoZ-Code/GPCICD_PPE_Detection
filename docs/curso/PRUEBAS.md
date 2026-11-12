@@ -1,6 +1,6 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Actualizado:** 2026-11-10.
+> **Actualizado:** 2026-11-11.
 > **Requisito del curso:** **400 pruebas unitarias o más** (≥ 400) para la entrega
 > (indicación del docente; no constaba en el repositorio hasta este documento).
 
@@ -8,15 +8,16 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend Python | pytest | 14 | **150** | `make test` |
+| Backend Python | pytest | 13 | **154** | `make test` |
 | Frontend | Vitest | 5 | **19** | `make frontend-test` |
-| **Total** | | **19** | **169** | `make check` + `make frontend-check` |
+| **Total** | | **18** | **173** | `make check` + `make frontend-check` |
 
-Una prueba del backend se omite cuando no hay artefactos locales
-(`test_real_weights_smoke`), por eso la corrida muestra **149 passed + 1 skipped**.
+Dos pruebas se omiten sin hardware o artefactos: `test_real_weights_smoke` (sin
+pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
+`@pytest.mark.docker`); la corrida muestra **152 passed + 2 skipped**.
 
-> Incluye HU-005 (#39, +7 pruebas), HU-006 (#42, +9), HU-010 (rama, +9),
-> HU-012 (+5) y las pruebas de launcher y gRPC.
+> Incluye HU-005 (#39, +7 pruebas), HU-006 (#42, +9), HU-010 (#46, +9) y
+> HU-011 (rama, +9 en `tests/test_docker.py`, 8 estáticas + 1 de contenedor).
 
 ## 2. Desglose del backend
 
@@ -27,16 +28,14 @@ Una prueba del backend se omite cuando no hay artefactos locales
 | `tests/test_contracts.py` | 28 |
 | `tests/test_estado.py` | 10 |
 | `tests/test_grpc.py` | 9 |
-| `tests/test_image_loader.py` | 17 |
+| `tests/test_docker.py` | 9 |
 | `tests/test_image_validation.py` | 7 |
 | `tests/test_launcher.py` | 5 |
 | `tests/test_overlay.py` | 7 |
 | `tests/test_predict.py` | 16 |
 | `tests/test_results.py` | 10 |
 | `tests/test_smoke.py` | 1 |
-| `tests/test_training.py` | 7 |
-| `tests/test_yolo_detector.py` | 16 |
-| **Total** | **150** |
+| **Total** | **154** |
 
 ## 3. Desglose del frontend
 

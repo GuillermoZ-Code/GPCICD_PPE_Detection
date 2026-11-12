@@ -9,26 +9,27 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-11 02:09 UTC
+**Generado:** 2026-11-12 02:35 UTC
 
-**Rama:** `feature/010-hu-012-calidad` · limpia · +2/-0 vs `origin/develop`
-**develop:** 0cbc8d5 (2026-11-10)
+**Rama:** `feature/012-hu-011-docker-cpu` · limpia · +7/-0 vs `origin/develop`
+**develop:** 35b28d5 (2026-11-11)
 
 **Últimos commits:**
-- `2abda24 docs(specs): registrar la PR #49 de HU-012`
-- `1b11031 feat(calidad): informe automatizado de verificaciones (HU-012)`
-- `0cbc8d5 Merge pull request #48 from GuillermoZ-Code/fix/api-lifespan-imports`
-- `5264ea8 fix(api): restaurar imports y tipado del lifespan`
-- `f4aa33a Merge pull request #46 from GuillermoZ-Code/feature/009-hu-010-consumo-grpc`
+- `6b8dd28 Merge remote-tracking branch 'origin/develop' into feature/012-hu-011-docker-cpu`
+- `b98ce95 docs(estado): registrar cierre de sesion`
+- `35b28d5 Merge pull request #50 from GuillermoZ-Code/feature/011-hu-009-mlflow`
+- `67d939a Merge branch 'develop' into feature/011-hu-009-mlflow`
+- `8e5febc Merge pull request #51 from GuillermoZ-Code/feature/009-hu-008-evaluador`
 
-**Pull requests abiertas (1):**
-- #49 feat(calidad): informe automatizado de verificaciones (HU-012) → `develop` · revisión: — · CI: ok
+**Pull requests abiertas (2):**
+- #52 feat(docker): ejecutar el sistema en un contenedor CPU (HU-011) → `develop` · revisión: — · CI: —
+- #49 feat(calidad): informe automatizado de verificaciones (HU-012) → `develop` · revisión: aprobada · CI: ok
 
 **Issues abiertas: 8 · 11 SP**
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #12 (PR #49)
+**En revisión:** #11 (PR #52), #12 (PR #49)
 **Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
@@ -101,7 +102,25 @@
 
 ### 2026-11-10 · Hernán (OpenCode) — HU-012
 
-- **Hecho:** comando `make calidad` con informe de lint, formato, tipos y pytest;
-  5 pruebas nuevas; inventario actualizado a 169 y spec 010.
-- **En vuelo:** PR #49 (`feature/010-hu-012-calidad`), pendiente de revisión.
-- **Siguiente:** Model Card, `models.lock` y benchmark ONNX.
+- **Hecho:** HU-009 implementada con Spec Kit: extra opcional `tracking` con MLflow
+  3.18, módulo `tracking/` (payload, tracker, comparación y CLI), 11 pruebas y runbook
+  `docs/operacion/mlflow.md`; `make check` 155 passed + 1 skipped y `uv build` en verde.
+  Dos runs reales registrados y comparados en `sqlite:///mlflow.db`.
+- **En vuelo:** PR #50 (`feature/011-hu-009-mlflow`), revisión pendiente de Guillermo.
+- **Siguiente:** revisar y fusionar #50; después, HU-011 o el evaluador de HU-008.
+
+### 2026-11-11 · Eliana (OpenCode) — HU-011
+
+- **Hecho:** HU-011 implementada con Spec Kit: Dockerfile multi-stage (`runtime`
+  Python 3.13-slim + uv con extras `inference`/`grpc` y torch CPU vía índice
+  `pytorch-cpu` en Linux; `web` nginx con la SPA), `docker/entrypoint.sh`
+  (`PPE_SERVICES`), `compose.yml` (api/grpc/frontend con modelo montado `:ro`),
+  `.dockerignore`, `.gitattributes` y 9 pruebas (8 estáticas + smoke de Docker);
+  build `--no-cache` verificado, inferencia REST y gRPC dentro del contenedor
+  con `best.pt` (SHA256 `96ba99a7…`), mount `:ro` probado con `Read-only file
+  system`, compose demo verificado (SPA :8080, REST :8000, gRPC :9000); runbook
+  `docs/operacion/docker.md`, 152 passed + 2 skipped, ruff/ty/build/pre-commit
+  en verde. Evidencia publicada en #11 (comentario).
+- **En vuelo:** PR #52 (`feature/012-hu-011-docker-cpu`), revisión pendiente.
+- **Siguiente:** revisión de la PR y cierre manual de #11 al fusionar; HU-014
+  gana su dependencia Docker.
