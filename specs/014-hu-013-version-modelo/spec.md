@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-12
 
-**Status**: En revisión (PR #54)
+**Status**: Fusionada (PR #54)
 
 **Input**: Issue #13 — «Consultar la versión del modelo utilizado». Asignada a Jesús
 (EP-04, Should Have, M3-S2). Depende de HU-002 y HU-009, ambas fusionadas.

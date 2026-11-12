@@ -60,7 +60,7 @@ description: "Task list for HU-013 — Versión del modelo"
 
 - [ ] T035 Ejecutar `make check` y `uv build`.
 - [x] T036 Abrir PR a `develop` con `Closes #13` y solicitar revisión (PR #54).
-- [ ] T037 Cerrar #13 a mano tras el merge y actualizar el estado.
+- [x] T037 Cerrar #13 a mano tras el merge y actualizar el estado.
 
 ## Notes
 
