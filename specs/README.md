@@ -53,7 +53,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | `011-hu-012-calidad` | Fusionada (PR #49) |
 | `012-hu-009-mlflow` | Fusionada (PR #50) |
 | `013-hu-011-docker-cpu` | Fusionada (PR #52) |
-| `014-hu-013-version-modelo` | Pendiente de crear con Spec Kit |
+| `014-hu-013-version-modelo` | En revisión (PR #54) |
 
 > La numeración es secuencial por orden de creación, no por número de HU: `006`
 > corresponde a HU-004 porque su spec se creó después de `005`. Desde el 12/11/2026

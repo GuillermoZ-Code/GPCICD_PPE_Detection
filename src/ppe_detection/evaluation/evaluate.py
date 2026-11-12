@@ -8,7 +8,6 @@ la configuración, el SHA256 del modelo y las métricas globales y por clase.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import importlib
 import json
 from collections.abc import Mapping, Sequence
@@ -18,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from ppe_detection.contracts import CLASSES
+from ppe_detection.detector_config import sha256_file
 
 DEFAULT_IMGSZ = 640
 DEFAULT_CONF = 0.001
@@ -49,15 +49,6 @@ class EvaluationConfig:
     output: Path = DEFAULT_OUTPUT
     name: str = DEFAULT_NAME
     plots: bool = True
-
-
-def sha256_file(path: Path) -> str:
-    """Calcula el SHA256 de un archivo por bloques."""
-    digest = hashlib.sha256()
-    with path.open("rb") as file:
-        for chunk in iter(lambda: file.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest().upper()
 
 
 def _normalize_names(names: Mapping[int, str] | Sequence[str]) -> dict[int, str]:

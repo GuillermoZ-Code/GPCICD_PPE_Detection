@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from dataclasses import replace
 from time import perf_counter
 from typing import Annotated, cast
 
@@ -15,8 +16,9 @@ from pydantic import BaseModel
 from ppe_detection.contracts import Detection, Detector
 from ppe_detection.detector_config import (
     DetectorNotConfiguredError,
+    ModelIdentity,
     build_detector,
-    default_model_version,
+    default_model_identity,
 )
 from ppe_detection.io import InvalidImageError, validate_image_bytes
 
@@ -39,6 +41,9 @@ class PredictResponse(BaseModel):
     image_width: int
     image_height: int
     model_version: str
+    model_sha256: str | None
+    model_artifact: str | None
+    model_reference: str
     elapsed_ms: float
 
 
@@ -50,8 +55,12 @@ def _build_detector() -> Detector:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
 
 
-def create_app(detector: Detector | None = None, model_version: str | None = None) -> FastAPI:
-    """Crea la aplicación; permite inyectar un detector para pruebas."""
+def create_app(
+    detector: Detector | None = None,
+    model_version: str | None = None,
+    model_identity: ModelIdentity | None = None,
+) -> FastAPI:
+    """Crea la aplicación; permite inyectar un detector y la identidad del modelo."""
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
@@ -77,7 +86,10 @@ def create_app(detector: Detector | None = None, model_version: str | None = Non
         allow_headers=["*"],
     )
     application.state.detector = detector
-    application.state.model_version = model_version or default_model_version()
+    identity = model_identity or default_model_identity()
+    if model_version is not None:
+        identity = replace(identity, version=model_version)
+    application.state.model_identity = identity
 
     def get_detector() -> Detector:
         if application.state.detector is None:
@@ -102,6 +114,7 @@ def create_app(detector: Detector | None = None, model_version: str | None = Non
         started = perf_counter()
         detections: list[Detection] = get_detector().detect(image, conf=conf)
         elapsed_ms = (perf_counter() - started) * 1000
+        identity = cast(ModelIdentity, application.state.model_identity)
         return PredictResponse(
             detections=[
                 DetectionOut(
@@ -116,7 +129,10 @@ def create_app(detector: Detector | None = None, model_version: str | None = Non
             ],
             image_width=image.width,
             image_height=image.height,
-            model_version=str(application.state.model_version),
+            model_version=identity.version,
+            model_sha256=identity.sha256,
+            model_artifact=identity.artifact,
+            model_reference=identity.reference,
             elapsed_ms=round(elapsed_ms, 2),
         )
 

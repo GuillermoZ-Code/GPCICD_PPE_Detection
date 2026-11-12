@@ -7,6 +7,7 @@ from concurrent import futures
 import grpc
 
 from ppe_detection.contracts import Detector
+from ppe_detection.detector_config import ModelIdentity
 from ppe_detection.grpc.protos import ppe_pb2_grpc
 from ppe_detection.grpc.servicer import PpeDetectionServicer
 from ppe_detection.io import MAX_IMAGE_BYTES
@@ -29,14 +30,19 @@ def default_options() -> list[tuple[str, int]]:
 def create_server(
     detector: Detector | None = None,
     model_version: str | None = None,
+    model_identity: ModelIdentity | None = None,
     max_workers: int = DEFAULT_MAX_WORKERS,
 ) -> grpc.Server:
-    """Crea el servidor enlazable; permite inyectar el detector para pruebas."""
+    """Crea el servidor enlazable; permite inyectar detector e identidad."""
     grpc_server = grpc.server(
         futures.ThreadPoolExecutor(max_workers=max_workers),
         options=default_options(),
     )
-    servicer = PpeDetectionServicer(detector=detector, model_version=model_version)
+    servicer = PpeDetectionServicer(
+        detector=detector,
+        model_version=model_version,
+        model_identity=model_identity,
+    )
     ppe_pb2_grpc.add_PpeDetectionServicer_to_server(servicer, grpc_server)
     return grpc_server
 

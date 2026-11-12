@@ -68,7 +68,8 @@ Opciones útiles:
 El payload registra `model_path`, `model_sha256`, `dataset_path`, `dataset_split`,
 `dataset_yaml_sha256`, `imgsz`, `conf`, `iou`, `seed`, `device`, imágenes, instancias,
 métricas globales y métricas por clase. La referencia del modelo es
-`sha256:<hash>`; los pesos no se copian.
+`sha256:<hash>`; los pesos no se copian. Esa misma referencia se expone en REST y gRPC
+como `model_reference` (HU-013), de modo que un run se correlaciona con la inferencia.
 
 ## 4. Consultar y comparar
 

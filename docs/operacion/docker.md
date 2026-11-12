@@ -83,8 +83,9 @@ docker run -d --name ppe-system --rm \
 | Variable | Por omisión | Uso |
 |----------|-------------|-----|
 | `PPE_SERVICES` | `rest,grpc` | `rest`, `grpc` o ambos procesos en el contenedor |
-| `PPE_MODEL_PATH` | — | Ruta del artefacto **dentro** del contenedor (`/models/best.pt`) |
+| `PPE_MODEL_PATH` | - | Ruta del artefacto **dentro** del contenedor (`/models/best.pt`) |
 | `PPE_MODEL_VERSION` | nombre del archivo | Versión reportada en cada respuesta |
+| `PPE_MODEL_SHA256` | calculado del archivo | SHA256 reportado; opcional para fijarlo explícitamente |
 | `PPE_CONF` / `PPE_IOU` / `PPE_IMGSZ` / `PPE_DEVICE` | del detector | Umbrales y dispositivo (`cpu`) |
 | `PPE_API_HOST` / `PPE_API_PORT` | `0.0.0.0` / `8000` | Escucha de la API REST |
 | `PPE_GRPC_HOST` / `PPE_GRPC_PORT` | `0.0.0.0` / `9000` | Escucha de gRPC |
@@ -102,8 +103,8 @@ curl -X POST http://127.0.0.1:8000/predict -F "file=@muestra.jpg"
 ```
 
 Respuesta conforme al contrato (`detections`, dimensiones, `model_version`,
-`elapsed_ms`; cada detección con `class_id`, `class_name`, `confidence` en
-[0,1] y `bbox` xyxy):
+`model_sha256`, `model_artifact`, `model_reference`, `elapsed_ms`; cada detección con
+`class_id`, `class_name`, `confidence` en [0,1] y `bbox` xyxy):
 
 ```json
 {

@@ -39,6 +39,7 @@ open('artifacts/samples/muestra.jpg','wb').write(z.read(name))"
 ```powershell
 $env:PPE_MODEL_PATH = "artifacts/drive/yolo11s_clean/weights/best.pt"
 $env:PPE_MODEL_VERSION = "yolo11s_clean"
+# PPE_MODEL_SHA256 es opcional; si no se define, se calcula del .pt.
 uv run --extra inference python -m ppe_detection.api
 ```
 
@@ -71,9 +72,15 @@ Respuesta real de la demo:
   "image_width": 640,
   "image_height": 640,
   "model_version": "yolo11s_clean",
+  "model_sha256": "E51EB08078F8ABADA1D5F3D15BFB17D94E32DA0C70467D7C79E43C338D7A9959",
+  "model_artifact": "artifacts/drive/yolo11s_clean/weights/best.pt",
+  "model_reference": "sha256:E51EB08078F8ABADA1D5F3D15BFB17D94E32DA0C70467D7C79E43C338D7A9959",
   "elapsed_ms": 77.84
 }
 ```
+
+> `model_sha256` se calcula del artefacto; `model_reference` usa el mismo formato
+> `sha256:<hash>` que el tag de MLflow (HU-009).
 
 ## 3. Frontend (HU-007)
 

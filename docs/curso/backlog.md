@@ -221,7 +221,8 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Referencia verificable de la versión usada en la inferencia.
   - Dos versiones distintas se pueden distinguir.
   - Artefacto identificable fuera de Git.
-- **Spec:** pendiente de crear con Spec Kit (`specs/014-hu-013-version-modelo`).
+- **Spec:** [`specs/014-hu-013-version-modelo`](../../specs/014-hu-013-version-modelo/spec.md) · PR #54.
+- **Estado:** implementada; PR #54 en revisión.
 
 ## M4-S3 — 15/11 a 28/11 (3 SP)
 

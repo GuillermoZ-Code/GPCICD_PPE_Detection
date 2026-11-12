@@ -8,14 +8,63 @@ configuración no requiere detectores independientes (AC-010.2).
 
 from __future__ import annotations
 
+import hashlib
 import os
+import re
+from dataclasses import dataclass
 from pathlib import Path
 
 from ppe_detection.contracts import Detector
 
+SHA256_PATTERN = re.compile(r"[0-9A-Fa-f]{64}")
+
 
 class DetectorNotConfiguredError(RuntimeError):
     """No hay artefacto configurado para construir el detector."""
+
+
+@dataclass(frozen=True, slots=True)
+class ModelIdentity:
+    """Identidad verificable del artefacto que produjo una inferencia."""
+
+    version: str
+    sha256: str | None = None
+    artifact: str | None = None
+
+    @property
+    def reference(self) -> str:
+        """Referencia estable; usa `sha256:<hash>` cuando el hash está disponible."""
+        if self.sha256:
+            return f"sha256:{self.sha256}"
+        if self.artifact:
+            return f"artifact:{self.artifact}"
+        return f"version:{self.version}"
+
+
+def sha256_file(path: Path) -> str:
+    """Calcula el SHA256 de un archivo por bloques, en hexadecimal mayúscula."""
+    digest = hashlib.sha256()
+    with path.open("rb") as file:
+        for chunk in iter(lambda: file.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest().upper()
+
+
+def default_model_identity() -> ModelIdentity:
+    """Construye la identidad desde el entorno y, si hace falta, calcula el SHA256."""
+    version = default_model_version()
+    model_path = os.getenv("PPE_MODEL_PATH")
+    artifact = model_path or None
+    explicit = os.getenv("PPE_MODEL_SHA256")
+    if explicit:
+        if not SHA256_PATTERN.fullmatch(explicit):
+            raise ValueError("PPE_MODEL_SHA256 debe ser un SHA256 hexadecimal de 64 caracteres.")
+        digest: str | None = explicit.upper()
+    elif model_path and Path(model_path).is_file():
+        digest = sha256_file(Path(model_path))
+    else:
+        digest = None
+    return ModelIdentity(version=version, sha256=digest, artifact=artifact)
 
 
 def env_float(name: str, default: float) -> float:
