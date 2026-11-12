@@ -9,27 +9,27 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-12 04:44 UTC
+**Generado:** 2026-11-12 13:30 UTC
 
-**Rama:** `docs/cierre-m3-s2` · limpia · +4/-0 vs `origin/develop`
-**develop:** 76e5b07 (2026-11-11)
+**Rama:** `feature/014-hu-013-version-modelo` · limpia · +2/-0 vs `origin/develop`
+**develop:** bd26930 (2026-11-12)
 
 **Últimos commits:**
+- `0cae6f0 docs(hu-013): registrar la PR #54`
+- `35ab8d1 feat(version): exponer version verificable del modelo (HU-013)`
+- `bd26930 Merge pull request #53 from GuillermoZ-Code/docs/cierre-m3-s2`
+- `f6ed423 docs(estado): registrar cierre de sesion`
 - `7ee5904 docs(pruebas): corregir el conteo real a 218 pruebas`
-- `f6ed249 docs(cierre): sincronizar el estado del M3-S2`
-- `6a2ceb2 docs(pruebas): repartir el plan para superar las 400 pruebas`
-- `a1f54fd docs(specs): renumerar las specs 009-013 sin duplicados`
-- `76e5b07 Merge pull request #52 from GuillermoZ-Code/feature/012-hu-011-docker-cpu`
 
 **Pull requests abiertas (1):**
-- #53 docs(cierre): sincronizar el M3-S2 y plan de 400 pruebas → `develop` · revisión: — · CI: ok
+- #54 feat(version): exponer version verificable del modelo (HU-013) → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 3 · 4 SP**
 - M3-S2 (1 SP): #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** ninguna
-**Siguiente por orden:** #13 HU-013 — Consultar la versión del modelo utilizado
+**En revisión:** #13 (PR #54)
+**Siguiente por orden:** #14 HU-014 — Publicar versiones mediante un pipeline CI/CD con compuertas de calidad
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -134,3 +134,13 @@
 - **En vuelo:** PR #53 (`docs/cierre-m3-s2`), pendiente de revisión.
 - **Siguiente:** fusionar #53; abrir HU-013 con Spec Kit (`specs/014-hu-013-version-modelo`),
   ejecutar el plan de pruebas y preparar el release `develop → main` con tag.
+
+### 2026-11-12 · Jesús (OpenCode) — HU-013
+
+- **Hecho:** HU-013 implementada: `ModelIdentity` (versión, SHA256, artefacto y
+  referencia) en REST/gRPC, `PPE_MODEL_SHA256`, 20 pruebas, proto regenerado y contrato
+  documentado; `make check` 197 passed + 2 skipped, `make frontend-check` 39 passed y
+  `uv build` en verde. Se corrigió la bitácora de HU-009 y el conteo quedó en **238**.
+- **En vuelo:** PR #54 (`feature/014-hu-013-version-modelo`), pendiente de revisión.
+- **Siguiente:** revisar/fusionar #54; cerrar #13; completar las 192 pruebas restantes y
+  preparar el release `develop → main` con tag `m3-entrega`.
