@@ -88,6 +88,9 @@ frontend-check: frontend-lint frontend-test frontend-build ## Verificación comp
 app: ## Levanta API + frontend con el modelo local (Ctrl+C para ambos)
 	uv run python -m ppe_detection.tools.launcher
 
+mlflow-ui: ## Abre la UI local de MLflow (http://localhost:5000)
+	uv run --extra tracking --extra inference mlflow ui --backend-store-uri sqlite:///mlflow.db
+
 arch: ## Regenera el diagrama de arquitectura con Archify
 	node "$(ARCHIFY_BIN)" finalize architecture docs/architecture/arquitectura.json docs/architecture/arquitectura.html --quality showcase
 
