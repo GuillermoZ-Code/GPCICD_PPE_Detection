@@ -242,6 +242,9 @@ file: imagen JPEG o PNG (máximo 10 MB)
   "image_width": 640,
   "image_height": 480,
   "model_version": "yolo11s-clean",
+  "model_sha256": "E51EB08078F8ABADA1D5F3D15BFB17D94E32DA0C70467D7C79E43C338D7A9959",
+  "model_artifact": "artifacts/models/yolo11s_clean/weights/best.pt",
+  "model_reference": "sha256:E51EB08078F8ABADA1D5F3D15BFB17D94E32DA0C70467D7C79E43C338D7A9959",
   "elapsed_ms": 123.4
 }
 ```
@@ -258,10 +261,24 @@ uv run uvicorn ppe_detection.api.app:app --host 0.0.0.0 --port 8000
 uv run python -m ppe_detection.api
 ```
 
-Variables: `PPE_MODEL_PATH`, `PPE_MODEL_VERSION`, `PPE_CONF`, `PPE_IOU`,
-`PPE_IMGSZ`, `PPE_DEVICE`, `PPE_CORS_ORIGINS`, `PPE_API_HOST`, `PPE_API_PORT`.
+Variables: `PPE_MODEL_PATH`, `PPE_MODEL_VERSION`, `PPE_MODEL_SHA256`, `PPE_CONF`,
+`PPE_IOU`, `PPE_IMGSZ`, `PPE_DEVICE`, `PPE_CORS_ORIGINS`, `PPE_API_HOST`,
+`PPE_API_PORT`.
 
-Pruebas: `tests/test_api.py` (AC-006.1..AC-006.4, refs de issue #6).
+### Identidad del modelo (HU-013)
+
+| Campo | Origen | Ejemplo |
+|---|---|---|
+| `model_version` | `PPE_MODEL_VERSION`, o el nombre del artefacto, o `unknown` | `yolo11s-clean` |
+| `model_sha256` | `PPE_MODEL_SHA256` o SHA256 calculado de `PPE_MODEL_PATH` | `E51E…9959` |
+| `model_artifact` | `PPE_MODEL_PATH` | `artifacts/.../best.pt` |
+| `model_reference` | `sha256:<hash>` / `artifact:<ruta>` / `version:<versión>` | `sha256:E51E…9959` |
+
+La referencia `sha256:<hash>` es la misma que usa el tag `model_reference` de MLflow
+(HU-009); los pesos no se copian ni se versionan.
+
+Pruebas: `tests/test_api.py` (AC-006.1..AC-006.4) y `tests/test_model_version.py`
+(AC-013.1..AC-013.3).
 
 ## Servicio gRPC (HU-010)
 
@@ -282,6 +299,9 @@ PredictResponse {
   string model_version = 4;
   double elapsed_ms = 5;
   string message = 6;                  // mensaje de HU-004 ("sin detecciones")
+  string model_sha256 = 7;             // SHA256 del artefacto (vacío si no se conoce)
+  string model_artifact = 8;           // ruta/URI controlada del artefacto
+  string model_reference = 9;          // sha256:<hash> | artifact:<ruta> | version:<v>
 }
 ```
 
@@ -313,8 +333,8 @@ uv run python -m ppe_detection.grpc.client --image ruta/imagen.png
 
 Notas:
 
-- `PpeDetectionServicer` acepta `detector` y `model_version` para inyección en
-  pruebas, igual que la API REST; sin inyección, ambos módulos leen la
+- `PpeDetectionServicer` acepta `detector`, `model_version` y `model_identity` para
+  inyección en pruebas, igual que la API REST; sin inyección, ambos módulos leen la
   configuración compartida de `ppe_detection.detector_config`.
 - El límite de mensaje se sube a `MAX_IMAGE_BYTES + 4096` (en
   `default_options()`), de modo que una imagen de más de 10 MB llega a la

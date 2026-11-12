@@ -49,9 +49,12 @@ message PredictResponse {
   repeated Detection detections = 1;  // detecciones post-NMS, sin clase vacía
   int32 image_width = 2;
   int32 image_height = 3;
-  string model_version = 4;           // versión del artefacto usado
+  string model_version = 4;           // versión legible del artefacto usado
   double elapsed_ms = 5;              // latencia de la inferencia en milisegundos
   string message = 6;                 // resumen del contrato de resultado de HU-004
+  string model_sha256 = 7;            // SHA256 del artefacto (vacío si no se conoce)
+  string model_artifact = 8;          // ruta/URI controlada del artefacto
+  string model_reference = 9;         // sha256:<hash> | artifact:<ruta> | version:<v>
 }
 
 // Servicio de detección de EPP sobre el pipeline compartido con la API REST.

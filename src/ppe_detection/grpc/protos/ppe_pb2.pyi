@@ -6,6 +6,7 @@
 # Si cambia el contrato, actualiza ambos en el mismo commit.
 
 from collections.abc import Sequence
+from typing import Any
 
 
 class BoundingBox:
@@ -65,12 +66,16 @@ class PredictRequest:
 class PredictResponse:
     """Respuesta estructurada espejo del esquema HTTP de HU-006."""
 
+    DESCRIPTOR: Any
     detections: Sequence[Detection]
     image_width: int
     image_height: int
     model_version: str
     elapsed_ms: float
     message: str
+    model_sha256: str
+    model_artifact: str
+    model_reference: str
 
     def __init__(
         self,
@@ -81,6 +86,9 @@ class PredictResponse:
         model_version: str = "",
         elapsed_ms: float = 0.0,
         message: str = "",
+        model_sha256: str = "",
+        model_artifact: str = "",
+        model_reference: str = "",
     ) -> None: ...
 
     @classmethod

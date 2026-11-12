@@ -7,6 +7,7 @@ componente central que la API REST (AC-010.2).
 
 from __future__ import annotations
 
+from dataclasses import replace
 from time import perf_counter
 
 import grpc
@@ -14,8 +15,9 @@ import grpc
 from ppe_detection.contracts import Detection, Detector
 from ppe_detection.detector_config import (
     DetectorNotConfiguredError,
+    ModelIdentity,
     build_detector,
-    default_model_version,
+    default_model_identity,
 )
 from ppe_detection.grpc.protos import ppe_pb2, ppe_pb2_grpc
 from ppe_detection.io import InvalidImageError, validate_image_bytes
@@ -29,10 +31,14 @@ class PpeDetectionServicer(ppe_pb2_grpc.PpeDetectionServicer):
         self,
         detector: Detector | None = None,
         model_version: str | None = None,
+        model_identity: ModelIdentity | None = None,
     ) -> None:
-        """Acepta un detector inyectado (pruebas) y una versión explícita."""
+        """Acepta un detector inyectado (pruebas) y una identidad explícita."""
         self._detector = detector
-        self._model_version = model_version or default_model_version()
+        identity = model_identity or default_model_identity()
+        if model_version is not None:
+            identity = replace(identity, version=model_version)
+        self._identity = identity
 
     def _resolve_detector(self) -> Detector:
         """Devuelve el detector inyectado o lo construye perezosamente."""
@@ -69,7 +75,10 @@ class PpeDetectionServicer(ppe_pb2_grpc.PpeDetectionServicer):
             detections=[_to_proto(detection) for detection in result.detections],
             image_width=image.width,
             image_height=image.height,
-            model_version=self._model_version,
+            model_version=self._identity.version,
+            model_sha256=self._identity.sha256 or "",
+            model_artifact=self._identity.artifact or "",
+            model_reference=self._identity.reference,
             elapsed_ms=round(elapsed_ms, 2),
             message=result.message,
         )

@@ -68,7 +68,8 @@ desarrolla en M3–M4.
 | MLflow (experimentos) | ✅ HU-009 |
 | Contenedor Docker CPU | ✅ HU-011 (#52) |
 | Verificaciones de calidad | ✅ HU-012 (#49) |
-| Suite de pruebas (≥ 400) | 🔍 218 · [plan de cierre](./docs/curso/PLAN-PRUEBAS.md) |
+| Versión del modelo | 🔍 HU-013 · PR pendiente |
+| Suite de pruebas (≥ 400) | 🔍 238 · [plan de cierre](./docs/curso/PLAN-PRUEBAS.md) |
 | CI/CD de despliegue | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 

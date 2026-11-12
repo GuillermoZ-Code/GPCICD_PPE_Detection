@@ -16,5 +16,8 @@ export interface PredictResponse {
   image_width: number
   image_height: number
   model_version?: string
+  model_sha256?: string | null
+  model_artifact?: string | null
+  model_reference?: string
   elapsed_ms?: number
 }

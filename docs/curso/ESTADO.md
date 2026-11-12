@@ -99,7 +99,7 @@
 - **Siguiente:** revisión de Guillermo; tras el merge, HU-011 gana su
   dependencia gRPC.
 
-### 2026-11-10 · Hernán (OpenCode) — HU-012
+### 2026-11-10 · Jesús (OpenCode) — HU-009
 
 - **Hecho:** HU-009 implementada con Spec Kit: extra opcional `tracking` con MLflow
   3.18, módulo `tracking/` (payload, tracker, comparación y CLI), 11 pruebas y runbook

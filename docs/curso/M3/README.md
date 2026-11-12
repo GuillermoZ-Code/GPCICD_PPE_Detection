@@ -33,7 +33,7 @@
 | HU-010 | Consumir inferencias mediante gRPC | 1 | Eliana | HU-006 | ✅ #46 |
 | HU-011 | Ejecutar el sistema en Docker CPU | 2 | Eliana | HU-006, HU-007, HU-010 | ✅ #52 |
 | HU-012 | Verificaciones automatizadas de calidad | 1 | Hernán | Contratos de HU-006/007/010 | ✅ #49 |
-| HU-013 | Consultar la versión del modelo | 1 | Jesús | HU-002, HU-009 | ⏳ pendiente |
+| HU-013 | Consultar la versión del modelo | 1 | Jesús | HU-002, HU-009 | 🔍 PR pendiente |
 
 ## 3. Entregables del M3
 
