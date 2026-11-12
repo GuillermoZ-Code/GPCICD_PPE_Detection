@@ -381,6 +381,7 @@ dependencies = [
 [package.optional-dependencies]
 grpc = [
     { name = "grpcio" },
+    { name = "protobuf" },
 ]
 inference = [
     { name = "torch", version = "2.15.0", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux'" },
@@ -406,6 +407,7 @@ requires-dist = [
     { name = "grpcio", marker = "extra == 'grpc'", specifier = ">=1.85.1" },
     { name = "numpy", specifier = ">=2.5.4" },
     { name = "opencv-python-headless", specifier = ">=5.0.0.93" },
+    { name = "protobuf", marker = "extra == 'grpc'", specifier = ">=7.36.2" },
     { name = "python-multipart", specifier = ">=0.0.33" },
     { name = "torch", marker = "sys_platform == 'linux' and extra == 'inference'", specifier = ">=2.15.0", index = "https://download.pytorch.org/whl/cpu" },
     { name = "torch", marker = "sys_platform != 'linux' and extra == 'inference'", specifier = ">=2.15.0" },

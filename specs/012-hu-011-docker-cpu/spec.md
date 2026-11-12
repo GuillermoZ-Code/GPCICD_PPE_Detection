@@ -106,15 +106,17 @@ repetir la inferencia por REST, gRPC y la interfaz (SPA servida con nginx).
   `README.md`, `LICENSE` y `src/`, y ejecutar `uv sync --frozen --no-dev
   --extra inference --extra grpc`; está prohibido `pip` y `requirements.txt`.
 - **FR-003**: La imagen MUST instalar las bibliotecas del sistema necesarias por
-  OpenCV headless y PyTorch CPU en Debian trixie (`libglib2.0-0t64`,
-  `libgomp1`, `ca-certificates`) con `--no-install-recommends`.
+  OpenCV headless y PyTorch CPU en Debian trixie (`libgl1`, `libglib2.0-0t64`,
+  `libgomp1`, `libquadmath0`, `libxcb1`, `ca-certificates`) con
+  `--no-install-recommends`.
 - **FR-004**: La resolución de PyTorch en Linux MUST usar el índice CPU de
   PyTorch (`pytorch-cpu` en `tool.uv.sources` con el marcador
   `sys_platform == 'linux'`) para que la imagen no contenga CUDA; en Windows y
   macOS la resolución se mantiene en PyPI.
-- **FR-005**: El paquete MUST declarar `grpcio` como dependencia de runtime
-  (extra `grpc`) porque el servidor gRPC de HU-010 forma parte del paquete
-  desplegable; `grpcio-tools` permanece como dependencia de desarrollo.
+- **FR-005**: El paquete MUST declarar `grpcio` y `protobuf` como dependencias
+  de runtime (extra `grpc`) porque el servidor gRPC de HU-010 forma parte del
+  paquete desplegable y los stubs importan `google.protobuf`; `grpcio-tools`
+  permanece como dependencia de desarrollo.
 - **FR-006**: El contenedor MUST exponer REST (8000) y gRPC (9000) y seleccionar
   los servicios con `PPE_SERVICES` (`rest`, `grpc`, `both`; por omisión `rest,grpc`)
   a través de `docker/entrypoint.sh`.

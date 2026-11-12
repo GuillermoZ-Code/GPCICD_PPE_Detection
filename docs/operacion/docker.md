@@ -33,8 +33,11 @@ docker build --target web -t gpcicd-ppe-frontend:local .
 - Torch se instala **CPU**: en Linux el `uv.lock` resuelve `torch 2.15.0+cpu`
   desde el índice `pytorch-cpu` (marcador `sys_platform == 'linux'`), así que la
   imagen no arrastra CUDA.
-- Bibliotecas del sistema en Debian trixie: `libglib2.0-0t64` (glib de OpenCV)
-  y `libgomp1` (OpenMP de torch), con `--no-install-recommends`.
+- Bibliotecas del sistema en Debian trixie: `libgl1`, `libglib2.0-0t64` y
+  `libxcb1` (OpenCV headless); `libgomp1` y `libquadmath0` (torch CPU), con
+  `--no-install-recommends`.
+- `grpcio` + `protobuf` viajan como extra `grpc` (runtime del servidor gRPC de
+  HU-010).
 - Para demostrar un entorno limpio, construye con `docker build --no-cache`.
 
 Comprobación dentro de la imagen (CPU only):

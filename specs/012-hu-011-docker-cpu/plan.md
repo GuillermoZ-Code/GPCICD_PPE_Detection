@@ -59,9 +59,11 @@ torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
 ### 1.4 Bibliotecas del sistema (Debian 13 trixie)
 
 `python:3.13-slim` es Debian trixie: el paquete glib es `libglib2.0-0t64` (la
-transición t64 renombró `libglib2.0-0`; sin candidato en trixie). Se instalan
-`libglib2.0-0t64`, `libgomp1` (OpenMP de torch) y `ca-certificates`, con
-`--no-install-recommends`. OpenCV `*-headless` no necesita libGL.
+transición t64 renombró `libglib2.0-0`; sin candidato en trixie). Se instalan,
+con `--no-install-recommends`: `libgl1` y `libxcb1` (OpenCV headless 5.x),
+`libglib2.0-0t64`, `libgomp1` y `libquadmath0` (torch CPU) y
+`ca-certificates`. La lista completa la fija la prueba
+`test_dockerfile_instala_librerias_del_sistema`.
 
 ### 1.5 Artefacto del modelo: montaje externo (AC-011.3)
 

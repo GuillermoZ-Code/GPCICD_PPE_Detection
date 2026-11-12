@@ -78,9 +78,9 @@ def test_dockerfile_sincroniza_con_uv_lock() -> None:
 
 
 def test_dockerfile_instala_librerias_del_sistema() -> None:
-    """AC-011.1: glib (paquete t64 de Debian trixie) y libgomp para CPU."""
+    """AC-011.1: librerías nativas de OpenCV y torch CPU (Debian trixie)."""
     dockerfile = _read(DOCKERFILE)
-    for library in ("libglib2.0-0t64", "libgomp1"):
+    for library in ("libgl1", "libglib2.0-0t64", "libgomp1", "libquadmath0", "libxcb1"):
         assert library in dockerfile
 
 

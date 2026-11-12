@@ -39,9 +39,11 @@ inference = [
     "torchvision>=0.29.2",
 ]
 # HU-011: el servidor gRPC de HU-010 es parte del paquete desplegable, así que
-# grpcio es dependencia de runtime; grpcio-tools (generación) sigue siendo dev.
+# grpcio y protobuf son dependencias de runtime (los stubs importan
+# google.protobuf); grpcio-tools (generación) sigue siendo dev.
 grpc = [
     "grpcio>=1.85.1",
+    "protobuf>=7.36.2",
 ]
 
 [build-system]

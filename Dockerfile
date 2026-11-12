@@ -28,23 +28,27 @@ ENV UV_PYTHON_DOWNLOADS=never \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-# Bibliotecas del sistema para OpenCV headless y torch CPU en Debian trixie:
-# glib (paquete t64 de trixie) y libgomp (OpenMP de torch).
+# Bibliotecas del sistema en Debian trixie:
+#   OpenCV headless → libgl1, libglib2.0-0t64, libxcb1
+#   torch CPU       → libgomp1 (OpenMP), libquadmath0
+#   TLS del cliente → ca-certificates
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        ca-certificates libglib2.0-0t64 libgomp1 \
+        ca-certificates libgl1 libglib2.0-0t64 libgomp1 libquadmath0 libxcb1 \
     && rm -rf /var/lib/apt/lists/*
 
 # uv como único gestor de dependencias; sin pip ni requirements.txt.
 COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /usr/local/bin/uv
 
 WORKDIR /app
-# Primero los manifiestos y el código: uv resuelve con --frozen el uv.lock.
+# Primero los manifiestos: la capa de dependencias queda cacheada y no se
+# repite cuando cambia el código. uv resuelve con --frozen el uv.lock.
 COPY pyproject.toml uv.lock README.md LICENSE ./
-COPY src ./src
-# --frozen: instala exactamente el uv.lock. Los extras de runtime son
-# `inference` (ultralytics/torch, CPU por el índice pytorch-cpu en Linux) y
+RUN uv sync --frozen --no-dev --no-install-project --extra inference --extra grpc
+# Después el código: el proyecto se instala sobre el entorno ya resuelto.
+# Extras de runtime: `inference` (ultralytics/torch CPU por pytorch-cpu) y
 # `grpc` (servidor gRPC de HU-010). Sin grupo dev.
+COPY src ./src
 RUN uv sync --frozen --no-dev --extra inference --extra grpc
 
 COPY docker/entrypoint.sh /entrypoint.sh
