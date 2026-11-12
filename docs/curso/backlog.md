@@ -186,7 +186,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Artefacto del modelo externo a Git.
   - Documentación de build, configuración y ejecución.
 - **Spec:** [`specs/012-hu-011-docker-cpu`](../../specs/012-hu-011-docker-cpu/spec.md) ·
-  rama `feature/012-hu-011-docker-cpu`.
+  rama `feature/012-hu-011-docker-cpu` · PR #52.
 
 ### HU-012 — Ejecutar verificaciones automatizadas de calidad
 

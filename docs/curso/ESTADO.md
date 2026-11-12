@@ -9,28 +9,27 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-10 04:34 UTC
+**Generado:** 2026-11-12 02:24 UTC
 
-**Rama:** `feature/009-hu-010-consumo-grpc` · 5 archivo(s) sin commit · +7/-0 vs `origin/develop`
-**develop:** a60d579 (2026-11-09)
+**Rama:** `feature/012-hu-011-docker-cpu` · 2 archivo(s) sin commit · +5/-10 vs `origin/develop`
+**develop:** 35b28d5 (2026-11-11)
 
 **Últimos commits:**
-- `695a23a docs(estado): registrar cierre de sesion`
-- `69d6d03 docs(grpc): documentar generación, arranque y consumo`
-- `5bb6728 Merge remote-tracking branch 'origin/develop' into feature/009-hu-010-consumo-grpc`
-- `8d4fe02 feat(grpc): servicio gRPC reutilizando el pipeline compartido (HU-010)`
-- `1f85456 test(grpc): verificar los AC de HU-010 antes de implementar`
+- `180c158 fix(docker): librerias del sistema y protobuf runtime (HU-011)`
+- `f2e4785 docs(operacion): runbook docker de HU-011 y sincronia documental`
+- `f12a465 feat(docker): contenedor cpu con api rest y grpc (HU-011)`
+- `380f943 test(docker): verificar los AC de HU-011 antes de implementar`
+- `1ebfa25 docs(hu-011): agregar spec de docker cpu`
 
-**Pull requests abiertas (3):**
-- #46 feat(grpc): consumir inferencia mediante gRPC (HU-010) → `develop` · revisión: — · CI: ok
-- #45 docs(hu-008): agregar spec e informe de evaluacion → `develop` · revisión: — · CI: ok
-- #44 docs(operacion): runbook de demo local API + frontend → `develop` · revisión: — · CI: ok
+**Pull requests abiertas (2):**
+- #52 feat(docker): ejecutar el sistema en un contenedor CPU (HU-011) → `develop` · revisión: — · CI: —
+- #49 feat(calidad): informe automatizado de verificaciones (HU-012) → `develop` · revisión: aprobada · CI: ok
 
 **Issues abiertas: 8 · 11 SP**
 - M3-S2 (8 SP): #8 #9 #10 #11 #12 #13
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #10 (PR #46)
+**En revisión:** #11 (PR #52), #12 (PR #49)
 **Siguiente por orden:** #8 HU-008 — Evaluar el desempeño del modelo de detección
 <!-- estado:fin -->
 
@@ -100,3 +99,19 @@
   Guillermo.
 - **Siguiente:** revisión de Guillermo; tras el merge, HU-011 gana su
   dependencia gRPC.
+
+### 2026-11-11 · Eliana (OpenCode) — HU-011
+
+- **Hecho:** HU-011 implementada con Spec Kit: Dockerfile multi-stage (`runtime`
+  Python 3.13-slim + uv con extras `inference`/`grpc` y torch CPU vía índice
+  `pytorch-cpu` en Linux; `web` nginx con la SPA), `docker/entrypoint.sh`
+  (`PPE_SERVICES`), `compose.yml` (api/grpc/frontend con modelo montado `:ro`),
+  `.dockerignore`, `.gitattributes` y 9 pruebas (8 estáticas + smoke de Docker);
+  build `--no-cache` verificado, inferencia REST y gRPC dentro del contenedor
+  con `best.pt` (SHA256 `96ba99a7…`), mount `:ro` probado con `Read-only file
+  system`, compose demo verificado (SPA :8080, REST :8000, gRPC :9000); runbook
+  `docs/operacion/docker.md`, 152 passed + 2 skipped, ruff/ty/build/pre-commit
+  en verde. Evidencia publicada en #11 (comentario).
+- **En vuelo:** PR #52 (`feature/012-hu-011-docker-cpu`), revisión pendiente.
+- **Siguiente:** revisión de la PR y cierre manual de #11 al fusionar; HU-014
+  gana su dependencia Docker.
