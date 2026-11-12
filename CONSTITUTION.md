@@ -117,15 +117,17 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 ```text
 GPCICD_PPE_Detection/
 ├── src/ppe_detection/       # paquete (src-layout)
-│   ├── contracts.py         # contrato ImageData / Detection / Detector (previsto)
-│   ├── io/                  # carga y validación (previsto)
+│   ├── contracts.py         # contrato ImageData / Detection / Detector
+│   ├── io/                  # carga y validación (HU-001, HU-005)
 │   ├── preprocessing/       # contrato numérico (previsto)
-│   ├── detection/           # carga del modelo e inferencia (previsto)
+│   ├── detection/           # carga del modelo e inferencia (HU-002)
 │   ├── postprocessing/      # NMS y umbrales (previsto)
-│   ├── api/                 # FastAPI (previsto)
-│   ├── grpc/                # gRPC (previsto)
-│   ├── evaluation/          # métricas y evaluación (HU-008, en revisión)
+│   ├── api/                 # FastAPI (HU-006)
+│   ├── grpc/                # gRPC (HU-010)
+│   ├── evaluation/          # métricas y evaluación (HU-008)
 │   ├── tracking/            # registro y comparación de experimentos (HU-009)
+│   ├── visualization/       # superposición de detecciones (HU-003)
+│   ├── tools/               # estado, calidad y launcher
 │   └── training/            # fine-tuning YOLO (script de Colab)
 ├── frontend/                # SPA React + Vite + TypeScript (HU-007)
 ├── docker/                  # entrypoint y nginx del contenedor (HU-011)
@@ -257,7 +259,9 @@ falsos positivos/negativos y la ausencia de detecciones no son prueba de incumpl
 - La CI debe estar en verde antes de fusionar.
 - No se usa `--no-verify` salvo causa documentada.
 - Las pruebas unitarias no dependen de GPU, dataset completo ni red.
-- **Sin umbral de cobertura por ahora:** se decide en HU-012 con evidencia.
+- **Sin umbral de cobertura:** la entrega del M3 exige **≥ 400 pruebas unitarias**
+  (mínimo, no techo). El conteo y el reparto por integrante viven en
+  [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
 - Toda dependencia nueva entra con `uv add` / `uv add --dev`.
 
 ## 9. Repositorio y Git
@@ -312,7 +316,8 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 - **Test-first:** los AC se convierten en pruebas antes de la implementación;
   `/speckit.analyze` marca error si un AC no tiene prueba. Excepciones: SPI y specs de
   documentación.
-- **Sin umbral de cobertura** por ahora; se decide en HU-012.
+- **Sin umbral de cobertura:** el requisito de la entrega es **≥ 400 pruebas
+  unitarias**; ver [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
 - Hoy se deja **solo** la spec de la TA de contract-first como ejemplo, sin
   implementar.
 
@@ -343,6 +348,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-11-09 | Interfaz web **React + Vite + TypeScript** en `frontend/`; se retiran Streamlit y Tkinter | Se busca un frontend profesional, testeable y desplegable como estático; la API desacopla la UI de Python (ADR 0006) |
 | 2026-11-11 | Contenedor Docker CPU con `uv sync --frozen` y torch desde el índice `pytorch-cpu` (Linux); SPA servida por nginx; modelo montado `:ro` | Reproducibilidad del sistema completo sin CUDA ni pesos en Git (HU-011); en Windows/macOS la resolución sigue siendo PyPI |
 | 2026-11-11 | MLflow como extra opcional `tracking`; registro en `src/ppe_detection/tracking/` | Evita ~150 dependencias en el paquete base y en la CI; el run referencia el modelo por SHA256 sin copiar pesos |
+| 2026-11-12 | Requisito de la entrega: **≥ 400 pruebas unitarias**; se cierra sin umbral de cobertura porcentual | Indicación del docente; el plan y el reparto por integrante viven en `docs/curso/PLAN-PRUEBAS.md` |
 
 ## 12. Roadmap M3–M4
 

@@ -1,6 +1,6 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Actualizado:** 2026-11-11.
+> **Actualizado:** 2026-11-12.
 > **Requisito del curso:** **400 pruebas unitarias o más** (≥ 400) para la entrega
 > (indicación del docente; no constaba en el repositorio hasta este documento).
 
@@ -17,7 +17,7 @@ pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
 `@pytest.mark.docker`); la corrida muestra **152 passed + 2 skipped**.
 
 > Incluye HU-005 (#39, +7 pruebas), HU-006 (#42, +9), HU-010 (#46, +9) y
-> HU-011 (rama, +9 en `tests/test_docker.py`, 8 estáticas + 1 de contenedor).
+> HU-011 (#52, +9 en `tests/test_docker.py`: 8 estáticas + 1 de contenedor).
 
 ## 2. Desglose del backend
 
@@ -67,32 +67,34 @@ correr sin ellas.
 | Concepto | Valor |
 |----------|------:|
 | Requisito | **≥ 400** |
-| Actual | **155** |
-| Brecha | **245** |
+| Actual | **173** (154 pytest + 19 Vitest) |
+| Brecha | **227** |
 
-## 6. Ruta propuesta para llegar a 400 o más
+> El requisito es un **mínimo**: superar 400 no es un problema. El objetivo operativo
+> del plan es **430** para tener margen de descarte en revisión.
 
-| Frente | Pruebas | Enfoque |
-|--------|--------:|---------|
-| HU-005 (#39) | 7 | ✅ aplicado: validación de imágenes |
-| HU-006 (#42) | 9 | ✅ aplicado: API REST |
-| HU-008 evaluación | 60 | IoU, mAP, matrices y métricas por clase |
-| HU-009 MLflow | 30 | Runs, parámetros, métricas y artefactos |
-| HU-010 gRPC (rama) | 9 | ✅ aplicado: contrato, errores y equivalencia con REST |
-| HU-011 Docker CPU | 12 | Build, smoke y ejecución sin GPU |
-| HU-012 calidad | 25 | Regresiones y contratos |
-| HU-013 versión | 20 | Identificación y distinción de versiones |
-| Frontend (ampliación) | 35 | Estados, accesibilidad y API real |
-| Contratos y geometría parametrizados | 40 | Casos borde por clase y formato |
-| **Pendiente** | **248** | → **403 acumuladas** |
+## 6. Plan para llegar a 400 o más
 
-> HU-006 y HU-010 aportaron 9 pruebas cada una, por debajo de lo proyectado. La ruta
-> está recalculada: los frentes pendientes deben cubrir **248 casos** para superar los
-> 400. El requisito se cumple con pruebas que verifican un AC o un FR, no con duplicados.
+El reparto por integrante, los archivos propuestos y los casos concretos viven en
+[`PLAN-PRUEBAS.md`](PLAN-PRUEBAS.md). Resumen:
+
+| Integrante | Frente | Nuevas | Total |
+|------------|--------|-------:|------:|
+| Hernán Estrada | Evaluación, métricas, contratos y geometría | 90 | 110 |
+| Jesús Riveros | MLflow, versión del modelo y trazabilidad | 65 | 82 |
+| Eliana Cardona | API REST, gRPC y Docker | 50 | 69 |
+| Guillermo Zabala | Frontend, visualización y herramientas | 52 | 73 |
+| **Total** | | **257** | **430** |
+
+> Los frentes de HU-005 (#39), HU-006 (#42), HU-010 (#46), HU-011 (PR #52) y
+> HU-012 (PR #49) ya están aplicados y contados en el total actual.
 
 ## 7. Reglas
 
 - Toda prueba nueva referencia su AC o FR en el nombre o en el docstring (test-first).
 - Sin GPU, dataset completo ni red en las pruebas unitarias.
-- Sin umbral de cobertura hasta HU-012.
+- **Sin umbral de cobertura:** el requisito de la entrega es un número de pruebas, no
+  un porcentaje; la decisión se registró al cerrar HU-012.
 - El conteo se actualiza al cerrar cada HU, en el mismo PR (regla de sincronía).
+- No se aceptan pruebas triviales ni duplicadas; ver la definición de terminado en
+  [`PLAN-PRUEBAS.md`](PLAN-PRUEBAS.md) §6.

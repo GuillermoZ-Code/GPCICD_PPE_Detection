@@ -7,6 +7,10 @@
 >
 > **No cambiar títulos, AC ni SP sin aprobación de Jesús** (dueño del backlog).
 
+> **Requisito de pruebas (entrega del M3).** El docente exige **≥ 400 pruebas
+> unitarias**. El conteo vigente y el reparto por integrante viven en
+> [`PRUEBAS.md`](PRUEBAS.md) y [`PLAN-PRUEBAS.md`](PLAN-PRUEBAS.md).
+
 ## Resumen
 
 | Sprint | Fechas | HUs | SP |
@@ -146,8 +150,9 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Métricas globales y por clase (precision, recall, mAP).
   - Análisis de falsos positivos/negativos y limitaciones.
   - Partición de evaluación protegida y documentada.
-- **Spec:** [`specs/009-hu-008-evaluacion`](../../specs/009-hu-008-evaluacion/spec.md).
+- **Spec:** [`specs/009-hu-008-evaluacion`](../../specs/009-hu-008-evaluacion/spec.md) · PR #51.
 - **Informe:** [`docs/evaluation/HU-008.md`](../../docs/evaluation/HU-008.md).
+- **Estado:** implementada y fusionada en `develop` (PR #51); issue #8 cerrada.
 
 ### HU-009 — Consultar y comparar experimentos en MLflow
 
@@ -159,7 +164,8 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Run identificable con parámetros, métricas y referencia al modelo.
   - Dos runs distinguibles.
   - Referencia al artefacto sin almacenar pesos en Git.
-- **Spec:** [`specs/011-hu-009-mlflow`](../../specs/011-hu-009-mlflow/spec.md).
+- **Spec:** [`specs/012-hu-009-mlflow`](../../specs/012-hu-009-mlflow/spec.md) · PR #50.
+- **Estado:** implementada y fusionada en `develop` (PR #50); issue #9 cerrada.
 
 ### HU-010 — Consumir inferencias mediante gRPC
 
@@ -171,7 +177,8 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Solicitud gRPC válida devuelve respuesta estructurada con las 6 clases.
   - REST y gRPC comparten semántica y no duplican el detector.
   - Solicitud inválida devuelve error definido y el servidor sigue disponible.
-- **Spec:** [`specs/009-hu-010-consumo-grpc`](../../specs/009-hu-010-consumo-grpc/spec.md) · PR #46.
+- **Spec:** [`specs/010-hu-010-consumo-grpc`](../../specs/010-hu-010-consumo-grpc/spec.md) · PR #46.
+- **Estado:** implementada y fusionada en `develop` (PR #46); issue #10 cerrada.
 
 ### HU-011 — Ejecutar el sistema en un contenedor Docker CPU
 
@@ -185,8 +192,9 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Inferencia en CPU sin GPU dedicada.
   - Artefacto del modelo externo a Git.
   - Documentación de build, configuración y ejecución.
-- **Spec:** [`specs/012-hu-011-docker-cpu`](../../specs/012-hu-011-docker-cpu/spec.md) ·
+- **Spec:** [`specs/013-hu-011-docker-cpu`](../../specs/013-hu-011-docker-cpu/spec.md) ·
   rama `feature/012-hu-011-docker-cpu` · PR #52.
+- **Estado:** implementada y fusionada en `develop` (PR #52); issue #11 cerrada.
 
 ### HU-012 — Ejecutar verificaciones automatizadas de calidad
 
@@ -199,7 +207,9 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Una regresión deliberada hace fallar la suite.
   - Ruff reporta incumplimientos configurados.
   - Pruebas unitarias sin GPU ni dataset completo.
-- **Spec:** [`specs/010-hu-012-calidad`](../../specs/010-hu-012-calidad/spec.md) · rama `feature/010-hu-012-calidad`.
+- **Spec:** [`specs/011-hu-012-calidad`](../../specs/011-hu-012-calidad/spec.md) ·
+  rama `feature/010-hu-012-calidad` · PR #49.
+- **Estado:** implementada y fusionada en `develop` (PR #49); issue #12 cerrada.
 
 ### HU-013 — Consultar la versión del modelo utilizado
 
@@ -211,7 +221,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Referencia verificable de la versión usada en la inferencia.
   - Dos versiones distintas se pueden distinguir.
   - Artefacto identificable fuera de Git.
-- **Spec:** pendiente de crear con Spec Kit.
+- **Spec:** pendiente de crear con Spec Kit (`specs/014-hu-013-version-modelo`).
 
 ## M4-S3 — 15/11 a 28/11 (3 SP)
 

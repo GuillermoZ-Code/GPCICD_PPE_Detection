@@ -58,6 +58,9 @@
 10. **Sincronía documental:** el PDF se redacta fuera del repo; `backlog.md` debe
     coincidir 1:1 con issues, tablero y specs. Si hay diferencia, se avisa antes de
     continuar.
+11. **Pruebas:** la entrega exige **≥ 400 pruebas unitarias**. El conteo y el reparto
+    por integrante viven en [`PRUEBAS.md`](PRUEBAS.md) y
+    [`PLAN-PRUEBAS.md`](PLAN-PRUEBAS.md).
 
 ## 5. Glosario
 

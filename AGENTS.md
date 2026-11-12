@@ -108,7 +108,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
   con los principios no negociables y se sincroniza en el mismo commit.
 - Spec Kit **v1.2.5** está inicializado en `.specify/`; los comandos viven en
   `.opencode/commands/` y `branch_template` es `feature/{number}-{slug}`.
-- Specs `001`–`006` en `specs/`; las HU se implementan con el flujo anterior.
+- Specs `001`–`013` en `specs/` (HU-001 a HU-012); HU-013 usará la `014`.
 
 ## Comandos
 
@@ -157,7 +157,8 @@ make arch       # regenera el diagrama Archify (si está instalado)
 - **Entrenamiento:** CPU local no es viable; Colab/Kaggle solo como cómputo GPU,
   ejecutando un script versionado con `uv`, sin `.ipynb`.
 - **Test-first:** cada AC tiene una prueba pytest antes de la implementación; sin
-  umbral de cobertura hasta HU-012.
+  umbral de cobertura. La entrega del M3 exige **≥ 400 pruebas unitarias**; el plan y
+  el reparto por integrante están en `docs/curso/PLAN-PRUEBAS.md`.
 - Pesos y dataset fuera de Git; artefacto con SHA256 y versión.
 - Toda inferencia registra semilla, versión del modelo, tamaño de imagen y umbrales.
 
@@ -173,4 +174,6 @@ de las issues y la fuente del Capítulo 5; debe coincidir 1:1 con issues, tabler
 - Mostrar el diff o el plan antes de publicar.
 - No cambiar títulos, AC ni SP de las issues sin aprobación de Jesús.
 - No crear tableros, issues ni releases por iniciativa propia.
+- Al escribir pruebas, seguir el reparto de `docs/curso/PLAN-PRUEBAS.md` y actualizar
+  el conteo de `docs/curso/PRUEBAS.md` en el mismo PR.
 - No versionar secretos, datos, pesos, `.venv` ni archivos pesados.
