@@ -10,3 +10,4 @@ nueva se agrega con su propio número; no se reescribe la historia.
 | [0003](0003-licencia-agpl.md) | Licencia AGPL-3.0-only |
 | [0004](0004-gitflow-spec-kit-merge.md) | Gitflow + Spec Kit + estrategia de merge |
 | [0005](0005-contract-first.md) | Contract-first con detector simulado |
+| [0006](0006-frontend-react.md) | Frontend web React + Vite + TypeScript (sustituye Streamlit/Tkinter) |

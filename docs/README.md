@@ -6,6 +6,8 @@
 | `architecture/` | Diagrama Archify: `arquitectura.json` (fuente) y `arquitectura.html` (artefacto). |
 | `curso/` | Contexto del curso, checklists M2–M4 y `backlog.md` espejo de las issues. |
 | `dataset/` | EDA del dataset: auditoría, duplicados, fuga y baseline ([EDA.md](dataset/EDA.md)). |
+| `evaluation/` | Informes de evaluación del detector ([HU-008.md](evaluation/HU-008.md)). |
+| `operacion/` | Runbooks locales: demo API + frontend y [MLflow](operacion/mlflow.md). |
 | `spikes/` | Investigaciones técnicas acotadas: [SPI-01](spikes/SPI-01-compatibilidad-yolo.md) y [SPI-02](spikes/SPI-02-baseline-evaluacion.md). |
 | `research/` | Notas de investigación y comparativas (si aplica). |
 

@@ -1,0 +1,54 @@
+# =============================================================================
+# HU-011 — aplicación completa local con docker compose
+#   api      → API REST  (http://localhost:8000)
+#   grpc     → gRPC      (127.0.0.1:9000)
+#   frontend → SPA React (http://localhost:8080)
+# El artefacto del modelo se monta read-only desde `$PPE_MODELS_DIR`
+# (PowerShell: `$env:PPE_MODELS_DIR = "C:\ruta\modelos-epp"`; bash:
+# `export PPE_MODELS_DIR=/ruta/modelos-epp`). Debe contener `best.pt`.
+# =============================================================================
+
+name: gpcicd-ppe-detection
+
+x-backend: &backend
+  build:
+    context: .
+    target: runtime
+  image: gpcicd-ppe-detection:local
+  restart: unless-stopped
+  volumes:
+    - ${PPE_MODELS_DIR:-./artifacts}:/models:ro
+
+x-backend-env: &backend-env
+  PPE_MODEL_PATH: /models/best.pt
+  PPE_MODEL_VERSION: ${PPE_MODEL_VERSION:-best}
+
+services:
+  api:
+    <<: *backend
+    ports:
+      - "${PPE_API_PORT:-8000}:8000"
+    environment:
+      <<: *backend-env
+      PPE_SERVICES: rest
+      PPE_CORS_ORIGINS: >-
+        http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173,http://127.0.0.1:5173
+
+  grpc:
+    <<: *backend
+    ports:
+      - "${PPE_GRPC_PORT:-9000}:9000"
+    environment:
+      <<: *backend-env
+      PPE_SERVICES: grpc
+
+  frontend:
+    build:
+      context: .
+      target: web
+      args:
+        VITE_API_URL: http://localhost:8000
+    image: gpcicd-ppe-frontend:local
+    restart: unless-stopped
+    ports:
+      - "${PPE_WEB_PORT:-8080}:80"

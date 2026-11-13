@@ -16,12 +16,38 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Typing :: Typed",
 ]
-dependencies = []
+dependencies = [
+    "fastapi>=0.162.2",
+    "numpy>=2.5.4",
+    "opencv-python-headless>=5.0.0.93",
+    "python-multipart>=0.0.33",
+    "uvicorn>=0.54.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection"
 Repository = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection"
 Issues = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues"
+
+[project.optional-dependencies]
+inference = [
+    "ultralytics>=8.4.195,<9",
+    # HU-011: torch/torchvision se declaran directos para poder fijar el índice
+    # CPU en Linux (tool.uv.sources no aplica a dependencias transitivas); en
+    # Windows/macOS la resolución sigue siendo PyPI (builds CPU de fábrica).
+    "torch>=2.15.0",
+    "torchvision>=0.29.2",
+]
+# HU-011: el servidor gRPC de HU-010 es parte del paquete desplegable, así que
+# grpcio y protobuf son dependencias de runtime (los stubs importan
+# google.protobuf); grpcio-tools (generación) sigue siendo dev.
+grpc = [
+    "grpcio>=1.85.1",
+    "protobuf>=7.36.2",
+]
+tracking = [
+    "mlflow>=3,<4",
+]
 
 [build-system]
 requires = ["uv_build>=0.12.2,<0.14.0"]
@@ -32,6 +58,8 @@ module-name = "ppe_detection"
 
 [dependency-groups]
 dev = [
+    "grpcio-tools>=1.85.1",
+    "httpx2>=2.16.0",
     "pre-commit>=3.7",
     "pytest>=8.0",
     "ruff>=0.6",
@@ -42,7 +70,7 @@ dev = [
 line-length = 100
 target-version = "py313"
 src = ["src", "tests"]
-extend-exclude = [".specify"]
+extend-exclude = [".specify", "src/ppe_detection/grpc/protos"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "C4"]
@@ -53,9 +81,30 @@ known-first-party = ["ppe_detection"]
 [tool.ruff.format]
 quote-style = "double"
 
+# HU-011: en Linux las ruedas de PyPI de torch traen CUDA (paquetes NVIDIA);
+# el índice CPU de PyTorch mantiene el contenedor CPU (Constitución §4/§7).
+# `explicit = true` restringe el índice a torch/torchvision, y el marcador deja
+# intacta la resolución de Windows/macOS (PyPI ya distribuye builds CPU).
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "docker: requiere Docker, la imagen construida y un artefacto local (AC-011.2)",
+]
 
 [tool.ty.src]
 exclude = [".specify"]
+
+# Código generado por protoc: `grpc.experimental` no se importa explícitamente.
+[[tool.ty.overrides]]
+include = ["src/ppe_detection/grpc/protos/*.py"]
+rules = { possibly-missing-submodule = "ignore" }

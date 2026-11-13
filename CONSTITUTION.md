@@ -32,9 +32,9 @@
 | **Guillermo Alexander Zabala Fernández** | [@GuillermoZ-Code](https://github.com/GuillermoZ-Code) | Entorno, arquitectura y repositorio (`src/`, `pyproject.toml`, `uv`, Ruff, pytest, pre-commit, build, CI, Spec Kit), evidencias de comprobaciones y **Code Reviewer**. |
 | **Wilson Jesús Riveros Gómez** | [@jesusriverosUAO](https://github.com/jesusriverosUAO) | Planificación, Gantt, CPM, HU, AC, estimación (Capítulos 3 y 5) y tablero Kanban. |
 
-> Los responsables de las HU se definen en equipo al iniciar el M3. **No hay una tabla
-> de asignación de HU en este repositorio**; el tablero y las issues son la fuente
-> operativa.
+> Los responsables de las HU se definen en equipo al iniciar el M3. La tabla vigente
+> vive en [`docs/curso/backlog.md`](./docs/curso/backlog.md#responsables); el tablero y
+> las issues son la fuente operativa.
 
 ## 2. Propósito y no-propósito
 
@@ -63,7 +63,7 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
   variante exacta en SPI-01), ajustado con el dataset.
 - Postprocesamiento con NMS y umbrales configurables.
 - Visualización de detecciones y respuesta vacía cuando no hay EPP.
-- API REST con FastAPI, servicio gRPC y interfaz Streamlit.
+- API REST con FastAPI, servicio gRPC y interfaz web React (SPA).
 - Evaluación con mAP@0.5, mAP@0.5:0.95, precision, recall y F1 por clase.
 - Registro de experimentos en MLflow.
 - Docker CPU, CI/CD en GitHub Actions y despliegue en Droplet.
@@ -91,7 +91,10 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 | **Pre-commit** | [pre-commit](https://pre-commit.com) |
 | **API REST** | FastAPI + Pydantic |
 | **RPC** | gRPC + Protocol Buffers |
-| **Interfaz** | Streamlit |
+| **Interfaz** | React 19 + Vite 8 + TypeScript 6 (`frontend/`) |
+| **Pruebas del frontend** | Vitest + Testing Library |
+| **Lint del frontend** | ESLint 9/10 + typescript-eslint |
+| **Runtime del frontend** | Node.js 24 + npm |
 | **Visión por computador** | Ultralytics YOLO (nano/small) + PyTorch CPU |
 | **Procesamiento de imagen** | OpenCV + NumPy |
 | **Experiment tracking** | MLflow (local) |
@@ -102,8 +105,9 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 | **Dataset** | [`51ddhesh/PPE_Detection`](https://huggingface.co/datasets/51ddhesh/PPE_Detection) (CC-BY-4.0) |
 | **Licencia** | AGPL-3.0-only |
 
-> ⚠️ **Regla dura:** toda gestión de dependencias pasa por `uv`. Está **prohibido**
-> `pip` y `requirements.txt`.
+> ⚠️ **Regla dura:** la gestión de dependencias de Python pasa por `uv`. Está
+> **prohibido** `pip` y `requirements.txt`. El frontend usa `npm` con
+> `package-lock.json` versionado (ADR 0006).
 
 > La variante exacta de YOLO y la compatibilidad con Python 3.13 + torch CPU se
 > confirman en **SPI-01**; hasta entonces no se fija una versión.
@@ -113,22 +117,29 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 ```text
 GPCICD_PPE_Detection/
 ├── src/ppe_detection/       # paquete (src-layout)
-│   ├── contracts.py         # contrato ImageData / Detection / Detector (previsto)
-│   ├── io/                  # carga y validación (previsto)
+│   ├── contracts.py         # contrato ImageData / Detection / Detector
+│   ├── io/                  # carga y validación (HU-001, HU-005)
 │   ├── preprocessing/       # contrato numérico (previsto)
-│   ├── detection/           # carga del modelo e inferencia (previsto)
+│   ├── detection/           # carga del modelo e inferencia (HU-002)
 │   ├── postprocessing/      # NMS y umbrales (previsto)
-│   ├── api/                 # FastAPI (previsto)
-│   ├── grpc/                # gRPC (previsto)
-│   ├── ui/                  # Streamlit (previsto)
-│   ├── evaluation/          # métricas y MLflow (previsto)
+│   ├── api/                 # FastAPI (HU-006)
+│   ├── grpc/                # gRPC (HU-010)
+│   ├── evaluation/          # métricas y evaluación (HU-008)
+│   ├── tracking/            # registro y comparación de experimentos (HU-009)
+│   ├── visualization/       # superposición de detecciones (HU-003)
+│   ├── tools/               # estado, calidad y launcher
 │   └── training/            # fine-tuning YOLO (script de Colab)
+├── frontend/                # SPA React + Vite + TypeScript (HU-007)
+├── docker/                  # entrypoint y nginx del contenedor (HU-011)
+├── Dockerfile               # imagen CPU multi-stage: uv.lock + nginx (HU-011)
+├── compose.yml              # api + grpc + frontend con modelo :ro (HU-011)
 ├── tests/                   # pytest, patrón AAA
 ├── docs/
-│   ├── adr/                 # ADR 0001–0005
+│   ├── adr/                 # ADR 0001–0006
 │   ├── architecture/        # diagrama Archify (JSON + HTML)
 │   ├── curso/               # contexto, backlog y checklists por módulo
 │   ├── dataset/             # EDA y auditoría del dataset
+│   ├── operacion/           # runbooks locales (demo y MLflow)
 │   └── spikes/              # SPI-01 y SPI-02
 ├── specs/                   # specs de Spec Kit
 ├── .specify/                # Spec Kit v1.2.5 (integrado; no editar a mano)
@@ -163,7 +174,9 @@ crean vacías por adelantado.
 - **Idioma:** documentación, comentarios y commits en español; identificadores de
   código en inglés.
 - **Contratos:** `Detection` usa `bbox` en formato `xyxy`, `confidence` en `[0, 1]` y
-  `class_name` limitado a las seis clases del dataset.
+  `class_name` limitado a las seis clases del dataset. Los nombres canónicos y su orden
+  son los del `data.yaml`: `Gloves, Vest, goggles, helmet, mask, safety_shoe`; la
+  interfaz puede capitalizarlos o traducirlos para mostrarlos.
 - **Rutas:** datos, artefactos y configuración se reciben por CLI o configuración; no
   se codifican rutas absolutas.
 - **Datos y pesos:** nunca se versionan. Se documenta su origen, licencia y SHA256.
@@ -180,7 +193,7 @@ Flujo objetivo:
 
 ```text
 Imagen → validación → preprocesamiento → detector YOLO → postprocesamiento (NMS/umbrales)
-       → API REST / gRPC → Streamlit
+       → API REST / gRPC → SPA React (frontend/)
                                      ↘ MLflow (experimentos y métricas)
 Todo en Docker CPU; CI/CD → Droplet
 ```
@@ -212,7 +225,8 @@ requisito de CPU y necesidad de reproducibilidad.
 
 ### Dataset: hechos y límites
 
-- 6 clases: **Helmet, Vest, Gloves, Goggles, Mask, Safety Shoe**.
+- 6 clases en el orden del `data.yaml`: **Gloves, Vest, goggles, helmet, mask, safety_shoe**
+  (la interfaz puede mostrarlas capitalizadas o traducidas).
 - **16.014 objetos anotados**; el número de imágenes no está publicado.
 - Un solo `PPE.zip` de **668 MB**; estructura YOLO (`train/valid/test`, `data.yaml`).
 - Licencia declarada: **CC-BY-4.0** (requiere atribución).
@@ -232,14 +246,22 @@ falsos positivos/negativos y la ausencia de detecciones no son prueba de incumpl
 | `ty` | Verificación de tipos | `make typecheck` |
 | `pytest` | Pruebas | `make test` |
 | `pre-commit` | Hooks antes de cada commit | `make pre-commit` |
+| `npm` | Dependencias del frontend | `npm ci` |
+| ESLint | Lint del frontend | `make frontend-lint` |
+| Vitest | Pruebas del frontend | `make frontend-test` |
+| Vite | Build del frontend | `make frontend-build` |
 | GitHub Actions | CI en `develop` y `main` | `.github/workflows/ci.yml` |
+| Docker | Imagen CPU con `uv.lock` y modelo montado `:ro` | `make docker-build` |
 | `uv build` | Construcción del paquete | `uv build` |
 
 - `make check` debe estar en verde antes de abrir una PR.
+- `make frontend-check` debe estar en verde si la PR toca `frontend/`.
 - La CI debe estar en verde antes de fusionar.
 - No se usa `--no-verify` salvo causa documentada.
 - Las pruebas unitarias no dependen de GPU, dataset completo ni red.
-- **Sin umbral de cobertura por ahora:** se decide en HU-012 con evidencia.
+- **Sin umbral de cobertura:** la entrega del M3 exige **≥ 400 pruebas unitarias**
+  (mínimo, no techo). El conteo y el reparto por integrante viven en
+  [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
 - Toda dependencia nueva entra con `uv add` / `uv add --dev`.
 
 ## 9. Repositorio y Git
@@ -294,7 +316,8 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 - **Test-first:** los AC se convierten en pruebas antes de la implementación;
   `/speckit.analyze` marca error si un AC no tiene prueba. Excepciones: SPI y specs de
   documentación.
-- **Sin umbral de cobertura** por ahora; se decide en HU-012.
+- **Sin umbral de cobertura:** el requisito de la entrega es **≥ 400 pruebas
+  unitarias**; ver [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
 - Hoy se deja **solo** la spec de la TA de contract-first como ejemplo, sin
   implementar.
 
@@ -320,6 +343,12 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-10-31 | Test-first con trazabilidad AC → prueba | Evitar AC sin verificación y regresiones |
 | 2026-10-31 | Colab/Kaggle solo como cómputo GPU, sin `.ipynb` | CPU local no es viable para entrenar |
 | 2026-10-31 | Sin umbral de cobertura hasta HU-012 | El equipo decide con evidencia |
+| 2026-11-04 | Reestimar el backlog de 67 a 22 SP (HU-001 a HU-015) | Alinear con el documento del M2; las TA/SPI se absorben en la preparación P1–P4 |
+| 2026-11-04 | HU-002 pasa temporalmente de Jesús a Hernán | Jesús no disponible; HU-002 tiene holgura cero y bloquea la ruta crítica |
+| 2026-11-09 | Interfaz web **React + Vite + TypeScript** en `frontend/`; se retiran Streamlit y Tkinter | Se busca un frontend profesional, testeable y desplegable como estático; la API desacopla la UI de Python (ADR 0006) |
+| 2026-11-11 | Contenedor Docker CPU con `uv sync --frozen` y torch desde el índice `pytorch-cpu` (Linux); SPA servida por nginx; modelo montado `:ro` | Reproducibilidad del sistema completo sin CUDA ni pesos en Git (HU-011); en Windows/macOS la resolución sigue siendo PyPI |
+| 2026-11-11 | MLflow como extra opcional `tracking`; registro en `src/ppe_detection/tracking/` | Evita ~150 dependencias en el paquete base y en la CI; el run referencia el modelo por SHA256 sin copiar pesos |
+| 2026-11-12 | Requisito de la entrega: **≥ 400 pruebas unitarias**; se cierra sin umbral de cobertura porcentual | Indicación del docente; el plan y el reparto por integrante viven en `docs/curso/PLAN-PRUEBAS.md` |
 
 ## 12. Roadmap M3–M4
 
@@ -327,26 +356,30 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 
 - Clases: **05/11 FastAPI/REST**, **07/11 MLflow + Streamlit**.
 - Sustentación: **sábado 14/11/2026**.
-- **M3-S1 (31/10–07/11): HU-001 a HU-007 — 28 SP.**
-- **M3-S2 (08/11–14/11): HU-008 a HU-013 — 26 SP.**
+- **M3-S1 (31/10–07/11): HU-001 a HU-007 — 11 SP.**
+- **M3-S2 (08/11–14/11): HU-008 a HU-013 — 8 SP.**
 
 ### M4 — 19/11/2026 a 28/11/2026
 
 - MLOps/despliegue, CI/CD y credenciales.
 - Sustentación: **sábado 28/11/2026**.
-- **M4-S3 (15/11–28/11): HU-014 y HU-015 — 13 SP.**
+- **M4-S3 (15/11–28/11): HU-014 y HU-015 — 3 SP.**
 
-**Total backlog oficial:** 67 SP. Las TA/SPI propuestas (25 SP) están **pendientes de
-validación por Jesús**; no se suman al total hasta que él defina el criterio. Ver
+**Total backlog oficial:** 22 SP (reestimación del 04/11/2026 sobre la planificación del
+documento del M2, aprobada por Jesús). Las actividades de preparación del M3 (P1–P4)
+suman 12 SP y no son issues, por lo que no entran en el total del tablero. Las TA/SPI
+se absorbieron en P1–P4; no se crean como issues salvo decisión expresa de Jesús. Si se
+contaran aparte, serían 25 SP sin TA-EDA y 28 SP con TA-EDA. Ver
 `docs/curso/backlog.md`.
 
 ### Riesgos y decisiones pendientes
 
 | Riesgo / decisión | Responsable sugerido por rol | Acción / fecha |
 |-------------------|------------------------------|----------------|
-| **Entrenamiento en CPU no es viable** | Hernán (modelo) | Colab/Kaggle **solo como cómputo GPU**, ejecutando un script versionado del repo con `uv`, sin `.ipynb`. Documentar la excepción en la Model Card antes de HU-002. |
-| **Python 3.13 + Ultralytics/torch CPU** | Guillermo (entorno/arquitectura) | Validar en **SPI-01, días 1–2 del M3**. Plan B: fijar **3.12** en `.python-version` y `pyproject.toml`. |
-| **EDA y descarga del dataset** | Jesús (planificación/backlog) valida; Hernán ejecuta | TA propuesta **“EDA del dataset”**: conteo de imágenes por split, objetos por clase, desbalance, imágenes sin etiquetas y cajas inválidas; descarga reproducible del ZIP con SHA256 y ruta configurable. Pendiente de validación de Jesús. |
+| **Entrenamiento en CPU no es viable** | Hernán (modelo) | Colab/Kaggle **solo como cómputo GPU**, ejecutando un script versionado del repo con `uv`, sin `.ipynb`. Documentar la excepción en la Model Card. |
+| **Python 3.13 + Ultralytics/torch CPU** | Guillermo (entorno/arquitectura) | **Cerrado en SPI-01:** Ultralytics 8.4.195 + torch 2.15.0+cpu cargan e infieren en Python 3.13.7. Ver [`SPI-01`](docs/spikes/SPI-01-compatibilidad-yolo.md). |
+| **EDA y descarga del dataset** | Hernán (datos) | **Completado:** 12.078 imágenes originales, 10.941 tras limpieza y SHA256 del ZIP registrado. Ver [`EDA`](docs/dataset/EDA.md). |
+| **Latencia en CPU** | Hernán (modelo) + Guillermo (entorno) | SPI-01 midió **136–158 ms** a 640 px en un i5-1235U: decidir si se acepta el tradeoff o se reduce resolución/ONNX antes de HU-011. |
 | **AGPL en el despliegue (M4)** | Guillermo (repo) + Eliana (documento) | La interfaz y la API deben enlazar el código fuente; el dataset CC-BY exige atribución visible. AC propuesto en HU-007 y HU-015, pendiente de validación de Jesús. |
 | **Droplet (M4)** | Guillermo (infra) + Jesús (planificación) | Definir dueño de la cuenta, costo y administración de los secrets de GitHub Actions **antes del 19/11**. |
 | **Repo privado vs. AGPL** | Guillermo + Eliana | Si el servicio se publica, el repo debe ser público o el código debe ofrecerse a los usuarios. Decidir antes del M4. |
@@ -359,6 +392,9 @@ validación por Jesús**; no se suman al total hasta que él defina el criterio.
 - `docs/curso/backlog.md` es el espejo de las issues y la fuente para el Capítulo 5.
   Debe coincidir 1:1 con las issues, el tablero y `specs/`. Si alguien cambia título,
   AC o SP en uno, actualiza los demás en el mismo cambio.
+- `docs/curso/ESTADO.md` registra el estado operativo (rama, PRs, issues y bitácora de
+  sesiones). Se regenera con `make estado-write` y **no** sustituye a issues,
+  tablero, backlog ni specs.
 - Ante una diferencia entre PDF, backlog, issues o specs, **el agente avisa al usuario
   antes de continuar**.
 - Engram y GGA se habilitan en la **Fase 3**; no reemplazan este documento ni los ADR.

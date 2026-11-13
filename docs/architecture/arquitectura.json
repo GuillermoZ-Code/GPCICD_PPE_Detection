@@ -19,8 +19,8 @@
     {
       "id": "ui",
       "type": "frontend",
-      "label": "Streamlit",
-      "sublabel": "Interfaz",
+      "label": "React + Vite",
+      "sublabel": "Interfaz web",
       "pos": [190, 280],
       "size": [110, 64]
     },

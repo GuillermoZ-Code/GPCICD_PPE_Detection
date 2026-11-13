@@ -57,10 +57,20 @@ desarrolla en M3–M4.
 | Gitflow `develop`/`main` y plantilla UAO | ✅ |
 | Dataset seleccionado y documentado | ✅ |
 | Arquitectura objetivo (Archify) | ✅ |
-| Spec Kit inicializado | ✅ v1.2.5 | `.specify/`, `.opencode/commands/` |
-| Detector YOLO y contrato de inferencia | ⏳ M3 |
-| API REST, gRPC y Streamlit | ⏳ M3 |
-| MLflow, Docker CPU y CI/CD | ⏳ M3–M4 |
+| Spec Kit inicializado | ✅ v1.2.5 |
+| Contrato de inferencia y carga de imágenes | ✅ HU-001 |
+| Detector YOLO (inferencia CPU) | ✅ HU-002 |
+| Visualización de detecciones | ✅ HU-003 |
+| Resultado vacío de EPP | ✅ HU-004 |
+| SPA React con Vite y TypeScript | ✅ HU-007 |
+| API REST (FastAPI) | ✅ HU-006 |
+| Servicio gRPC | ✅ HU-010 |
+| MLflow (experimentos) | ✅ HU-009 |
+| Contenedor Docker CPU | ✅ HU-011 (#52) |
+| Verificaciones de calidad | ✅ HU-012 (#49) |
+| Versión del modelo | 🔍 HU-013 · PR #54 en revisión |
+| Suite de pruebas (≥ 400) | 🔍 273 · [plan de cierre](./docs/curso/PLAN-PRUEBAS.md) |
+| CI/CD de despliegue | ⏳ M3–M4 |
 | Sistema desplegado en Droplet | ⏳ M4 |
 
 ## 👥 Equipo y roles
@@ -72,8 +82,8 @@ desarrolla en M3–M4.
 | Guillermo Zabala | [@GuillermoZ-Code](https://github.com/GuillermoZ-Code) | Entorno, arquitectura y repositorio, evidencias y **Code Reviewer** |
 | Jesús Riveros | [@jesusriverosUAO](https://github.com/jesusriverosUAO) | Planificación, Gantt, CPM, HU, AC, estimación, Cap. 3 y 5, tablero Kanban |
 
-> Los responsables de las HU se definen al iniciar el M3; no hay una tabla de
-> asignación de HU en el repositorio.
+> Los responsables de las HU se definen al iniciar el M3; la tabla vigente está en
+> [`docs/curso/backlog.md`](./docs/curso/backlog.md#responsables).
 
 ## 🛠️ Stack tecnológico
 
@@ -88,7 +98,7 @@ desarrolla en M3–M4.
 | **Pre-commit** | [pre-commit](https://pre-commit.com) |
 | **API REST** | FastAPI + Pydantic |
 | **RPC** | gRPC + Protocol Buffers |
-| **Interfaz** | Streamlit |
+| **Interfaz** | React 19 + Vite + TypeScript (`frontend/`) |
 | **Visión** | Ultralytics YOLO (nano/small) + PyTorch CPU |
 | **Experiment tracking** | MLflow |
 | **Contenedor** | Docker CPU |
@@ -126,11 +136,49 @@ uv build     # construye sdist + wheel
 > ⚠️ **Regla del proyecto:** toda gestión de dependencias y entornos pasa por `uv`.
 > Está **prohibido** `pip` y `requirements.txt`.
 
+### Iniciar servicios
+
+```bash
+# API REST (HU-006) — http://localhost:8000/docs
+uv run python -m ppe_detection.api
+
+# Servicio gRPC (HU-010) — 127.0.0.1:9000
+uv run python -m ppe_detection.grpc
+
+# Cliente de prueba del servicio gRPC
+uv run python -m ppe_detection.grpc.client --image ruta/imagen.png
+```
+
+El servidor gRPC y su cliente usan `PPE_GRPC_HOST` / `PPE_GRPC_PORT` (y
+`PPE_GRPC_TARGET` en el cliente); el detector se configura con las mismas
+variables que la API REST (`PPE_MODEL_PATH`, `PPE_MODEL_VERSION`, `PPE_CONF`,
+`PPE_IOU`, `PPE_IMGSZ`, `PPE_DEVICE`). Los mensajes Protocol Buffers se
+regeneran con `make protos`. El detalle del contrato está en
+[`docs/architecture/contracts.md`](./docs/architecture/contracts.md).
+
+### Ejecutar en Docker (HU-011)
+
+```bash
+make docker-build                              # imagen backend CPU (uv.lock)
+docker run -d --name ppe-system --rm \
+  -p 8000:8000 -p 9000:9000 \
+  -v "/ruta/modelos-epp:/models:ro" \
+  -e PPE_MODEL_PATH=/models/best.pt \
+  -e PPE_SERVICES=rest,grpc \
+  gpcicd-ppe-detection:local
+```
+
+El contenedor expone la API REST (8000) y gRPC (9000) sin GPU; el artefacto del
+modelo se monta **read-only** y nunca entra al repositorio ni a la imagen. La
+aplicación completa (REST + gRPC + SPA en nginx) levanta con
+`PPE_MODELS_DIR=/ruta/modelos-epp make docker-up`. El paso a paso y la prueba de
+inferencia están en [`docs/operacion/docker.md`](./docs/operacion/docker.md).
+
 ## 🗺️ Arquitectura
 
 ```text
 Imagen → validación → preprocesamiento → detector YOLO → postprocesamiento (NMS/umbrales)
-       → API REST / gRPC → Streamlit
+       → API REST / gRPC → SPA React
                                      ↘ MLflow (experimentos y métricas)
 Todo en Docker CPU; CI/CD → Droplet
 ```
@@ -159,20 +207,36 @@ El contrato `ImageData → list[Detection]` se define antes del detector real, c
 | `make help` | Lista los objetivos |
 | `make dev` | `uv sync` + hooks |
 | `make check` | Lint + formato + tipos + pruebas |
+| `make calidad` | Informe único de lint, formato, tipos y pruebas |
 | `make lint` / `make format` | Ruff |
 | `make test` | pytest |
+| `make mlflow-ui` | UI local de MLflow (`http://localhost:5000`) |
 | `make arch` | Regenera el diagrama Archify (si está instalado) |
 | `make build` | `uv build` |
+| `make docker-build` | Construye la imagen backend CPU (HU-011) |
+| `make docker-up` / `make docker-down` | Compose: API + gRPC + SPA |
+| `make docker-smoke` | Prueba de inferencia REST+gRPC en el contenedor |
+
+> **Requisito de pruebas:** la entrega del M3 exige **≥ 400 pruebas unitarias**.
+> El conteo vigente y el reparto por integrante están en
+> [`docs/curso/PRUEBAS.md`](./docs/curso/PRUEBAS.md) y
+> [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
 
 ## 📂 Estructura del repositorio
 
 ```text
 GPCICD_PPE_Detection/
 ├── src/ppe_detection/       # paquete (src-layout)
+│   └── tracking/            # MLflow: registro y comparación (HU-009)
 ├── tests/                   # pytest
+├── frontend/                # SPA React + Vite + TypeScript
+├── docker/                  # entrypoint y nginx del contenedor (HU-011)
+├── Dockerfile               # imagen CPU multi-stage (HU-011)
+├── compose.yml              # api + grpc + frontend (HU-011)
 ├── docs/
-│   ├── adr/                 # ADR 0001–0005
+│   ├── adr/                 # ADR 0001–0006
 │   ├── architecture/        # diagrama Archify
+│   ├── operacion/           # runbooks de demo local, MLflow y Docker
 │   └── curso/               # contexto, backlog y checklists M2–M4
 ├── specs/                   # specs de Spec Kit
 ├── .specify/                # Spec Kit v1.2.5 (integrado)
@@ -204,10 +268,10 @@ Ver [`CONTRIBUTING.md`](./CONTRIBUTING.md) para el detalle.
 
 | Sprint | Fechas | HUs | SP |
 |--------|--------|-----|----|
-| **M3-S1** | 31/10–07/11 | HU-001 a HU-007 | 28 |
-| **M3-S2** | 08/11–14/11 | HU-008 a HU-013 | 26 |
-| **M4-S3** | 15/11–28/11 | HU-014 y HU-015 | 13 |
-| **Total** | | | **67** |
+| **M3-S1** | 31/10–07/11 | HU-001 a HU-007 | 11 |
+| **M3-S2** | 08/11–14/11 | HU-008 a HU-013 | 8 |
+| **M4-S3** | 15/11–28/11 | HU-014 y HU-015 | 3 |
+| **Total** | | | **22** |
 
 Sustentaciones: **M3 14/11/2026** y **M4 28/11/2026**. El detalle vive en
 [`docs/curso/backlog.md`](docs/curso/backlog.md).

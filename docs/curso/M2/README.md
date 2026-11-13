@@ -9,8 +9,8 @@
 | Evidencia | Estado | Dónde se verifica |
 |-----------|:------:|-------------------|
 | GitHub Projects compartido | ✅ | <https://github.com/users/GuillermoZ-Code/projects/1> — Project de la cuenta personal, público; usar la URL directa (no aparece en la pestaña *Projects* del repo) |
-| Tablero sincronizado con las 15 HU | ✅ | 15 items · Estimate 67 · columnas Backlog / Ready / In progress / In review / Done |
-| Fibonacci 1:1 coherente (1 SP ≈ 1 día) | ⏳ Jesús | `docs/curso/backlog.md` (§ pendiente de validación) |
+| Tablero sincronizado con las 15 HU | ✅ | 15 items · Estimate 22 (reestimado el 04/11/2026) · columnas Backlog / Ready / In progress / In review / Done |
+| Fibonacci 1:1 coherente (1 SP ≈ 1 día) | ✅ | `docs/curso/backlog.md` (§ Responsables y reestimación) |
 | Labels ML / Backend / Frontend / Testing | ✅ | GitHub Labels + `.github/labels.yml` |
 | Labels de épica y prioridad | ✅ | `ep-01`…`ep-05`, `must-have`, `should-have` |
 | Milestones por sprint | ✅ | `M3-S1`, `M3-S2`, `M4-S3` |
@@ -72,3 +72,7 @@ uv build
 | Issues TA-04, TA-11, SPI-01, TA-02, TA-09, SPI-02, TA-10, TA-EDA | Jesús | Alcance M3 | Son alcance del M3, no criterio de cierre del M2 |
 | AC de AGPL para HU-007 y HU-015 | Jesús + Eliana | Decisión | Propuesta, sin modificar las issues |
 | Aprobación de la PR #20 | Revisor | Proceso | Se registra como incumplimiento, no se corrige a posteriori |
+
+> **Actualización del 04/11/2026:** la reestimación cerró el pendiente de SP de HU-002
+> y absorbió las TA/SPI en P1–P4. Los AC de AGPL siguen pendientes de validación de
+> Jesús. Ver [`docs/curso/backlog.md`](../backlog.md).

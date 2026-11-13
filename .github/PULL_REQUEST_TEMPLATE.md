@@ -73,7 +73,7 @@ Marca las capas que toca esta PR (ajusta los nombres a los módulos reales del p
       (`postprocess.py`)
 - [ ] **Evaluación / métricas** — mAP, precision, recall, F1 y reportes
       (`evaluate.py`, `metrics.py`)
-- [ ] **API / RPC / UI** — FastAPI, gRPC o Streamlit
+- [ ] **API / RPC / UI** — FastAPI, gRPC o la SPA React (`frontend/`)
       (`api/`, `grpc/`, `ui/`)
 - [ ] **Pruebas** (`tests/test_*.py`)
 - [ ] **Infraestructura** (`Dockerfile`, `pyproject.toml`, `uv.lock`, `Makefile`, `.github/workflows/`)
@@ -141,7 +141,8 @@ uv build
 
 > **Test-first:** las pruebas se escriben antes de la implementación. Excepciones:
 > SPI y specs de documentación. `/speckit.analyze` marca como error un AC sin prueba.
-> **Sin umbral de cobertura** por ahora; se decide en HU-012.
+> **Sin umbral de cobertura:** el requisito de la entrega es **≥ 400 pruebas
+> unitarias** (mínimo, no techo). Ver `docs/curso/PLAN-PRUEBAS.md`.
 
 ---
 
@@ -175,6 +176,7 @@ uv build
 - [ ] **Assignee = autor**; **reviewers = otros integrantes**; el autor no se aprueba.
 - [ ] La PR se creó o actualizó con el **MCP de GitHub** y la **cuenta UAO**.
 - [ ] La PR enlaza su issue (`Closes #N`) y su spec.
+- [ ] Actualicé `docs/curso/ESTADO.md` y `AGENTS.md` §0 (`make estado-write` + bitácora); si cambió el stack o el estado, también `README.md` y `CONSTITUTION.md`.
 
 ---
 

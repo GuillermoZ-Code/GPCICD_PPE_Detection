@@ -4,6 +4,52 @@
 > **Lee [`CONSTITUTION.md`](./CONSTITUTION.md) antes de operar.** Si hay conflicto,
 > manda la constitución y se actualiza en el mismo commit.
 
+## 0. Estado actual y protocolo de sesión
+
+> **Este bloque caduca.** Si tiene más de 3 días o no coincide con `git log`, ignóralo
+> y reconstruye el estado con `make estado`.
+
+Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
+
+<!-- estado:inicio -->
+**Actualizado:** 2026-11-13 02:05 UTC
+- **Rama:** `test/frontend-y-herramientas` · +1/-0 vs `origin/develop`
+- **Issues abiertas:** 2 · 3 SP
+- **En vuelo:** #57 test(frontend): ampliar la suite de interfaz y herramientas (PR, revisión: —)
+- **Siguiente:** #14 HU-014 — Publicar versiones mediante un pipeline CI/CD con compuertas de calidad
+<!-- estado:fin -->
+
+- **Detalle:** [`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md).
+
+### 0.1 Protocolo de arranque (obligatorio para OpenCode y Codex)
+
+1. Ejecuta `make estado`. Lee **git, PRs e issues**, no la memoria de este archivo.
+2. Contrasta con `docs/curso/backlog.md` y `docs/curso/ESTADO.md`.
+3. Si dos fuentes difieren, **avisa al usuario antes de continuar**.
+4. Elige la tarea: la del §0 o la siguiente HU abierta del sprint activo.
+5. Una HU sin `specs/<NNN>-.../spec.md` no se implementa: primero Spec Kit.
+
+### 0.2 Protocolo de cierre (obligatorio)
+
+1. `make estado-write` regenera `docs/curso/ESTADO.md` y el bloque del §0.
+2. Si cambió el stack, una decisión o el estado del proyecto, actualiza también
+   `CONSTITUTION.md`, `README.md` y el ADR correspondiente en el mismo PR.
+3. Añade una entrada a la bitácora con: **hecho**, **en vuelo**, **siguiente**.
+4. Commit: `docs(estado): registrar cierre de sesion`.
+5. Si no puedes commitear, deja el archivo modificado y dilo explícitamente.
+
+### 0.3 Precedencia de fuentes
+
+| Nivel | Fuente | Qué manda |
+|-------|--------|-----------|
+| 1 | Código + `git` | El hecho: rama, commits, PRs, CI |
+| 2 | Issues + tablero | Operación del sprint |
+| 3 | `specs/<HU>` | Diseño de esa HU |
+| 4 | `CONSTITUTION.md` | Reglas técnicas |
+| 5 | `AGENTS.md` | Cómo trabajar; el §0 es el nivel más débil |
+| 6 | `docs/curso/backlog.md` | Espejo; si difiere, gana la issue y se corrige el espejo |
+| 7 | `docs/adr/` | Histórico; no se reescribe |
+
 ## Proyecto
 
 Detección de las seis categorías de EPP del dataset
@@ -19,8 +65,8 @@ con visión por computador. Curso **GPCICD M2-M4**. Licencia **AGPL-3.0-only**.
 | Guillermo Zabala | `GuillermoZ-Code` | Entorno, arquitectura y repositorio, evidencias y **Code Reviewer** |
 | Jesús Riveros | `jesusriverosUAO` | Planificación, Gantt, CPM, HU, AC, estimación, Cap. 3 y 5, tablero Kanban |
 
-> Los responsables de las HU se definen al iniciar el M3. No hay tabla de asignación
-> de HU en el repo.
+> Los responsables de las HU se definen al iniciar el M3; la tabla vigente está en
+> [`docs/curso/backlog.md`](./docs/curso/backlog.md#responsables).
 
 ## Flujo de trabajo
 
@@ -36,6 +82,8 @@ con visión por computador. Curso **GPCICD M2-M4**. Licencia **AGPL-3.0-only**.
   que conservar; **release `develop → main` siempre merge commit**.
 - **No hay push directo a `main` ni a `develop`.** La protección es una regla escrita,
   no configuración de GitHub.
+- Al fusionar en `develop`, **cierra la issue a mano**: `Closes #N` solo actúa de forma
+  automática cuando la PR apunta a la rama por defecto (`main`).
 
 ```bash
 git checkout develop && git pull
@@ -60,7 +108,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
   con los principios no negociables y se sincroniza en el mismo commit.
 - Spec Kit **v1.2.5** está inicializado en `.specify/`; los comandos viven en
   `.opencode/commands/` y `branch_template` es `feature/{number}-{slug}`.
-- Hoy solo existe la spec de la TA de contract-first como ejemplo; no se implementa.
+- Specs `001`–`013` en `specs/` (HU-001 a HU-012); HU-013 usará la `014`.
 
 ## Comandos
 
@@ -71,11 +119,17 @@ make check      # lint + formato + tipos + pruebas
 make lint       # Ruff
 make format     # Ruff format
 make test       # pytest
+make frontend-check  # ESLint + Vitest + build del frontend
+make frontend-dev    # levanta la interfaz en http://localhost:5173
+make app             # levanta API + interfaz con el modelo local
+make docker-build    # imagen backend CPU (HU-011)
+make docker-up       # compose: API + gRPC + SPA (modelo en PPE_MODELS_DIR)
+make docker-smoke    # inferencia REST+gRPC dentro del contenedor
 make arch       # regenera el diagrama Archify (si está instalado)
 ```
 
-> ⚠️ Toda dependencia entra con `uv add` / `uv add --dev`. Prohibido `pip` y
-> `requirements.txt`.
+> ⚠️ Toda dependencia de Python entra con `uv add` / `uv add --dev`. Prohibido `pip` y
+> `requirements.txt`. El frontend usa `npm` con `package-lock.json` (ADR 0006).
 
 ## Skills y MCP del equipo
 
@@ -95,7 +149,7 @@ make arch       # regenera el diagrama Archify (si está instalado)
 
 ## Dominio y límites
 
-- 6 clases: Helmet, Vest, Gloves, Goggles, Mask, Safety Shoe.
+- 6 clases en el orden del `data.yaml`: Gloves, Vest, goggles, helmet, mask, safety_shoe.
 - 16.014 objetos anotados; el número de imágenes no está publicado.
 - Dataset CC-BY-4.0; la tarjeta no declara fuente original ni consentimiento.
 - **No hay clase `person` ni `no-EPP`**: se reporta qué EPP aparecen, no cumplimiento.
@@ -103,7 +157,8 @@ make arch       # regenera el diagrama Archify (si está instalado)
 - **Entrenamiento:** CPU local no es viable; Colab/Kaggle solo como cómputo GPU,
   ejecutando un script versionado con `uv`, sin `.ipynb`.
 - **Test-first:** cada AC tiene una prueba pytest antes de la implementación; sin
-  umbral de cobertura hasta HU-012.
+  umbral de cobertura. La entrega del M3 exige **≥ 400 pruebas unitarias**; el plan y
+  el reparto por integrante están en `docs/curso/PLAN-PRUEBAS.md`.
 - Pesos y dataset fuera de Git; artefacto con SHA256 y versión.
 - Toda inferencia registra semilla, versión del modelo, tamaño de imagen y umbrales.
 
@@ -119,4 +174,6 @@ de las issues y la fuente del Capítulo 5; debe coincidir 1:1 con issues, tabler
 - Mostrar el diff o el plan antes de publicar.
 - No cambiar títulos, AC ni SP de las issues sin aprobación de Jesús.
 - No crear tableros, issues ni releases por iniciativa propia.
+- Al escribir pruebas, seguir el reparto de `docs/curso/PLAN-PRUEBAS.md` y actualizar
+  el conteo de `docs/curso/PRUEBAS.md` en el mismo PR.
 - No versionar secretos, datos, pesos, `.venv` ni archivos pesados.

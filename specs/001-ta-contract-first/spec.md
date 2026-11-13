@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-31
 
-**Status**: Draft — pendiente de validación de planificación (Jesús)
+**Status**: Absorbida en P4; contrato implementado con HU-001 (PR #28). Quedan los enlaces desde API/UI/gRPC cuando existan.
 
 **Input**: TA propuesta para definir el contrato de inferencia y un detector simulado,
 de modo que API, interfaz y gRPC avancen en paralelo con el modelo real.
@@ -51,8 +51,9 @@ obtener `list[Detection]` sin instalar YOLO, sin dataset y sin GPU.
   `format` y `source`.
 - **FR-002**: `Detection` MUST exponer `class_id`, `class_name`, `confidence`,
   `bbox` `xyxy`, `image_width` e `image_height`.
-- **FR-003**: `class_name` MUST pertenecer a Helmet, Vest, Gloves, Goggles, Mask o
-  Safety Shoe.
+- **FR-003**: `class_name` MUST pertenecer al catálogo del `data.yaml`, en su orden:
+  `Gloves, Vest, goggles, helmet, mask, safety_shoe`, y MUST coincidir con
+  `CLASSES[class_id]`.
 - **FR-004**: `confidence` MUST ser un número finito en `[0,1]`.
 - **FR-005**: `Detector.detect(image)` MUST devolver `list[Detection]` sin entrenar ni
   descargar pesos.

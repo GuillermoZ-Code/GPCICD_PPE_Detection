@@ -209,6 +209,8 @@ Se usa [Conventional Commits](https://www.conventionalcommits.org/):
 - **Mínimo 1 aprobación** de otro integrante.
 - **Code Reviewer designado:** Guillermo; si él es autor, revisa otro integrante.
 - La PR enlaza su issue (`Closes #N`) y su spec (`specs/...`).
+- Al fusionar en `develop`, **cierra la issue a mano**: GitHub solo cierra
+  automáticamente cuando la PR apunta a la rama por defecto (`main`).
 - La CI debe estar en verde y `make check` debe pasar antes de pedir revisión.
 - No se fusiona con cambios de otros sin resolver; no se fuerza push a `main`.
 
@@ -242,7 +244,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 - Spec Kit **v1.2.5** está inicializado en `.specify/`; los comandos viven en
   `.opencode/commands/` y la rama se crea con `branch_template:
   "feature/{number}-{slug}"`.
-- Hoy solo existe la spec de la TA de contract-first como ejemplo; no se implementa.
+- Specs `001`–`005` en `specs/`; las HU se implementan con el flujo anterior.
 
 ## 🧹 Estándares de código
 
@@ -262,6 +264,13 @@ fuente para el Capítulo 5. Debe coincidir 1:1 con las issues, el tablero y `spe
 
 Si alguien cambia título, AC o SP en uno de esos lugares, actualiza los demás en el
 mismo cambio. Ante una diferencia, **avisa al equipo antes de continuar**.
+
+### Inicio y cierre de sesión de un agente
+
+Todo agente (OpenCode, Codex) empieza ejecutando `make estado` y termina con
+`make estado-write` y una entrada en la bitácora de
+[`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md). El protocolo completo, incluida la
+precedencia de fuentes, vive en [`AGENTS.md`](./AGENTS.md) §0.
 
 ## 📄 Licencia
 

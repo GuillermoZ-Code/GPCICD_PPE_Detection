@@ -1,7 +1,7 @@
 # SPI-02 — Baseline y protocolo de evaluación sin fuga
 
 - **Fecha:** 2026-10-31
-- **Estado:** Baseline inicial y corregido completados; fine-tuning pendiente
+- **Estado:** Baseline inicial y corregido completados; fine-tuning ejecutado por Hernán (04/11/2026), pendiente la evaluación del modelo ajustado
 - **Responsable sugerido:** Hernán (modelo) + Guillermo (entorno)
 - **Habilita:** HU-002, HU-008, ADR 0001, ADR 0002
 - **Timebox:** 2 días
@@ -196,7 +196,8 @@ misma configuración y mismo checkpoint:
 - [x] Rehacer el split con `--distancia-hash 4` + agrupación por nombre base;
       regenerar `test_original_sin_fuga` y recalcular el baseline (`data/ds_base`).
 - [x] Script de entrenamiento versionado (`src/ppe_detection/training/train.py`).
-- [ ] Fine-tuning de YOLOv8n sobre `data/ds_base` en Colab Pro con ese script.
+- [x] Fine-tuning de YOLOv8n sobre `data/ds_base` en Colab Pro con ese script
+      (Hernán, 04/11/2026). Pesos fuera de Git; falta registrar SHA256 y versión.
 - [ ] Evaluar el modelo fine-tuneado en el test limpio (1.094) y en el eval corregido
       (492) para comparar con el preentrenado.
 - [ ] Exportar a ONNX y medir latencia.

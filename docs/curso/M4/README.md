@@ -11,12 +11,12 @@
 - Despliegue en Droplet con Docker CPU.
 - Healthcheck, logs y prueba funcional del sistema desplegado.
 
-## 2. Sprint M4-S3 — 15/11 a 28/11 (13 SP)
+## 2. Sprint M4-S3 — 15/11 a 28/11 (3 SP)
 
-| HU | Título | SP | Dependencias |
-|----|--------|----|--------------|
-| HU-014 | Pipeline CI/CD con compuertas de calidad | 8 | HU-011, HU-012, TA-10 |
-| HU-015 | Comprobar el sistema desplegado | 5 | HU-014 |
+| HU | Título | SP | Responsable | Dependencias |
+|----|--------|----|-------------|--------------|
+| HU-014 | Pipeline CI/CD con compuertas de calidad | 2 | Eliana | HU-011, HU-012, TA-10 |
+| HU-015 | Comprobar el sistema desplegado | 1 | Guillermo | HU-014 |
 
 ## 3. Entregables del M4
 
@@ -28,10 +28,11 @@
 - Demostración de una inferencia real contra el sistema desplegado.
 - Documentación de operación y recuperación.
 
-## 4. Pendiente de validación (Jesús)
+## 4. Decisiones de planificación
 
-- TA-10 (dependencias C++ y Docker CPU).
-- Criterio de SP de TA/SPI y su relación con HU-011/HU-014.
+**Resuelto el 04/11/2026:** TA-10 y el criterio de SP de TA/SPI se absorbieron en las
+actividades de preparación P1–P4 (12 SP); no se crean como issues salvo decisión
+expresa de Jesús.
 
 Ver [`docs/curso/backlog.md`](../backlog.md).
 

@@ -1,0 +1,70 @@
+# HU-011 — el contexto de construcción NO incluye artefactos pesados ni secretos.
+# Pesos y datasets (AC-011.3): se montan read-only al arrancar, nunca en la imagen.
+artifacts/
+data/
+dataset_limpio/
+dataset_original/
+datasets/
+weights/
+*.pt
+*.pth
+*.onnx
+*.h5
+*.safetensors
+*.sqlite
+*.db
+*.zip
+
+# Secretos y entorno local
+.env
+.env.*
+*.pem
+*.key
+
+# Git y metadatos del repositorio
+.git
+.gitignore
+.gitattributes
+.github/
+.opencode/
+.specify/
+.vscode/
+.idea/
+CONSTITUTION.md
+CONTRIBUTING.md
+AGENTS.md
+NOTICE
+Makefile
+
+# Documentación y especificaciones (la imagen no las necesita)
+docs/
+specs/
+
+# Pruebas y cachés de herramientas
+tests/
+*.ipynb
+__pycache__/
+*.py[oc]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+.uv/
+.venv/
+venv/
+
+# Salidas de experimentos
+runs/
+mlruns/
+mlartifacts/
+mlflow.db
+
+# Frontend: se regeneran dentro de la imagen (target frontend-builder)
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+node_modules/
+dist/
+build/
