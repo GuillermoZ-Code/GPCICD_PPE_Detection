@@ -2,8 +2,8 @@
 
 > **Periodo:** 31/10/2026 → 14/11/2026. **Peso:** 25 %.
 > **Sustentación:** sábado **14/11/2026**.
-> **Estado al 12/11/2026:** 13/13 HUs fusionadas. Pendiente el plan de **192 pruebas**
-> y el release `develop → main`.
+> **Estado al 12/11/2026:** 13/13 HUs fusionadas. Pendiente el plan de **10 pruebas**
+> para el mínimo de 400 (40 para el objetivo 430) y el release `develop → main`.
 
 ## 1. Clases y focos
 
