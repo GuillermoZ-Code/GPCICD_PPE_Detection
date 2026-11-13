@@ -23,6 +23,12 @@ Brecha contra el mínimo: **127**. Brecha contra el objetivo operativo (430): **
 > brecha contra el mínimo baja a **85** y contra el objetivo operativo a **115**.
 > El detalle está en [`PRUEBAS.md`](PRUEBAS.md).
 
+> **Actualización del 12/11 (frente de Eliana):** +40 pruebas (15 REST en
+> `test_api_contract.py`, 12 gRPC en `test_grpc_contract.py` y 13 estáticas de
+> Docker en `test_docker_assets.py`). El total vigente es **355** (279 pytest +
+> 76 Vitest); la brecha contra el mínimo baja a **45** y contra el objetivo
+> operativo a **75** (frente de Hernán, PR #58 en revisión).
+
 Comando de conteo:
 
 ```bash
@@ -53,15 +59,16 @@ cd frontend && npm run test
 |------------|------------------|-------:|
 | **Hernán Estrada** | Evaluación, métricas, contratos y geometría | **75** |
 | **Jesús Riveros** | MLflow, versión del modelo y trazabilidad | **0 (completado)** |
-| **Eliana Cardona** | API REST, gRPC y Docker | **40** |
+| **Eliana Cardona** | API REST, gRPC y Docker | **0 (completado, 40)** |
 | **Guillermo Zabala** | Frontend, visualización y herramientas | **0 (completado, 42)** |
-| **Total** | | **115** → **430** |
+| **Total** | | **75** → **430** |
 
 > Jesús completó sus 55 pruebas: 20 de HU-013 (`test_model_version.py`) y 35 de
 > tracking/estado (`test_tracking_mlflow.py` y `test_estado_tools.py`). Guillermo
 > completó sus 42: 37 de frontend (cliente, validación, App, canvas, tabla y
-> `SettingsDrawer`) y 5 de overlay/launcher. El plan restante es 115; el mínimo de
-> 400 exige 85.
+> `SettingsDrawer`) y 5 de overlay/launcher. Eliana completó sus 40: 15 REST, 12
+> gRPC y 13 Docker estáticos. El plan restante es 75 (Hernán, PR #58 en
+> revisión); sin ella, el mínimo de 400 exige 45.
 
 ## 4. Frentes y casos concretos
 
@@ -98,6 +105,13 @@ cd frontend && npm run test
 
 **Nota:** la prueba de contenedor real sigue marcada `@pytest.mark.docker` y no cuenta
 para las 400 si el entorno no tiene Docker; las 13 propuestas son estáticas.
+
+**Estado (12/11): completado.** Los 40 casos están en `tests/test_api_contract.py`,
+`tests/test_grpc_contract.py` y `tests/test_docker_assets.py`, verificados con
+`uv run pytest --collect-only -q` (279 totales). Sustitución anotada: el plan
+mencionaba un *healthcheck* entre los activos Docker, pero ni `Dockerfile` ni
+`compose.yml` definen uno (AC de HU-015); se cubrió en su lugar la selección de
+`PPE_SERVICES` y la validación del artefacto en el `entrypoint`.
 
 ### 4.4 Guillermo — 0 pruebas restantes (frente completo, 42)
 
