@@ -19,13 +19,19 @@
 Brecha contra el mínimo: **127**. Brecha contra el objetivo operativo (430): **157**.
 
 > **Actualización del 12/11 (frente de Guillermo):** +42 pruebas (37 de frontend y 5
-> de overlay/launcher). El total vigente es **315** (239 pytest + 76 Vitest); la
-> brecha contra el mínimo baja a **85** y contra el objetivo operativo a **115**.
+> de overlay/launcher). El total quedó en **315** (239 pytest + 76 Vitest).
 > El detalle está en [`PRUEBAS.md`](PRUEBAS.md).
 >
+> **Actualización del 12/11 (frente de Eliana):** +40 pruebas (15 REST en
+> `test_api_contract.py`, 12 gRPC en `test_grpc_contract.py` y 13 estáticas de
+> Docker en `test_docker_assets.py`); abierta como PR #59 desde `develop`.
+>
 > **Actualización del 13/11 (frente de Hernán):** +75 pruebas de métricas, geometría,
-> informe y casos límite de IO. El total vigente es **390** (314 pytest + 76 Vitest);
-> la brecha contra el mínimo baja a **10** y contra el objetivo operativo a **40**.
+> informe y casos límite de IO; fusionada como PR #58 a `develop`.
+>
+> **Estado final del plan (frentes de Jesús, Guillermo, Hernán y Eliana aplicados):**
+> **430 pruebas** (354 pytest + 76 Vitest). El mínimo de **400** y el objetivo
+> operativo de **430** están **alcanzados**.
 
 Comando de conteo:
 
@@ -57,16 +63,17 @@ cd frontend && npm run test
 |------------|------------------|-------:|
 | **Hernán Estrada** | Evaluación, métricas, contratos y geometría | **75 (completado)** |
 | **Jesús Riveros** | MLflow, versión del modelo y trazabilidad | **0 (completado)** |
-| **Eliana Cardona** | API REST, gRPC y Docker | **40** |
+| **Eliana Cardona** | API REST, gRPC y Docker | **0 (completado, 40)** |
 | **Guillermo Zabala** | Frontend, visualización y herramientas | **0 (completado, 42)** |
-| **Total** | | **40** → **430** |
+| **Total** | | **0 restantes** → **430 alcanzado** |
 
 > Jesús completó sus 55 pruebas: 20 de HU-013 (`test_model_version.py`) y 35 de
 > tracking/estado (`test_tracking_mlflow.py` y `test_estado_tools.py`). Guillermo
 > completó sus 42: 37 de frontend (cliente, validación, App, canvas, tabla y
 > `SettingsDrawer`) y 5 de overlay/launcher. Hernán completó sus 75 en
 > `test_metrics.py`, `test_geometry.py`, `test_evaluation_report.py` y
-> `test_io_edge_cases.py`. El plan restante es 40; el mínimo de 400 exige 10.
+> `test_io_edge_cases.py` (PR #58). Eliana completó sus 40: 15 REST, 12 gRPC y
+> 13 Docker estáticos (PR #59). El plan de 115 nuevas quedó cubierto.
 
 ## 4. Frentes y casos concretos
 
@@ -82,6 +89,8 @@ cd frontend && npm run test
 **Cómo lo ejecuta su IA:** crear los archivos, correr
 `uv run pytest tests/test_metrics.py -q` y luego `make check`; actualizar
 `docs/curso/PRUEBAS.md`; PR `test(eval): ampliar la suite de evaluación y geometría`.
+
+**Estado (13/11): completado (PR #58, fusionada a `develop`).**
 
 ### 4.2 Jesús — 0 pruebas restantes (frente completo)
 
@@ -103,6 +112,14 @@ cd frontend && npm run test
 
 **Nota:** la prueba de contenedor real sigue marcada `@pytest.mark.docker` y no cuenta
 para las 400 si el entorno no tiene Docker; las 13 propuestas son estáticas.
+
+**Estado (13/11): completado (PR #59).** Los 40 casos están en
+`tests/test_api_contract.py`, `tests/test_grpc_contract.py` y
+`tests/test_docker_assets.py`, verificados con `uv run pytest --collect-only -q`
+(354 totales con el frente de Hernán aplicado en `develop`). Sustitución anotada:
+el plan mencionaba un *healthcheck* entre los activos Docker, pero ni
+`Dockerfile` ni `compose.yml` definen uno (AC de HU-015); se cubrió en su lugar
+la selección de `PPE_SERVICES` y la validación del artefacto en el `entrypoint`.
 
 ### 4.4 Guillermo — 0 pruebas restantes (frente completo, 42)
 
