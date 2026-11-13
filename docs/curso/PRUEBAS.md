@@ -1,6 +1,6 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Actualizado:** 2026-11-12, tras el frente de pruebas de Guillermo.
+> **Actualizado:** 2026-11-12, tras los frentes de pruebas de Guillermo y Hernán.
 > **Requisito del curso:** **400 pruebas unitarias o más** (≥ 400) para la entrega
 > (indicación del docente; no constaba en el repositorio hasta este documento).
 
@@ -8,20 +8,21 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend Python | pytest | 21 | **239** | `make test` |
+| Backend Python | pytest | 25 | **314** | `make test` |
 | Frontend | Vitest | 9 | **76** | `make frontend-test` |
-| **Total** | | **30** | **315** | `make check` + `make frontend-check` |
+| **Total** | | **34** | **390** | `make check` + `make frontend-check` |
 
-Dos pruebas se omiten sin hardware o artefactos: `test_real_weights_smoke` (sin
-pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
-`@pytest.mark.docker`); la corrida muestra **237 passed + 2 skipped**.
+Con los extras de inferencia instalados la corrida local muestra **313 passed + 1
+skipped**. Sin pesos locales o sin Docker se pueden omitir hasta dos pruebas
+(`test_real_weights_smoke` y la de contenedor de HU-011).
 
 > Incluye todas las HU del M3 fusionadas hasta el 12/11/2026: HU-005 (#39),
 > HU-006 (#42), HU-007 (SPA), HU-009 (+11 en `test_tracking.py`), HU-010 (#46),
 > HU-011 (#52, +9 en `test_docker.py`), HU-012 (+5 en `test_calidad.py`), HU-013
 > (+20 en `test_model_version.py`), el plan de Jesús (+25 en
-> `test_tracking_mlflow.py` y +10 en `test_estado_tools.py`) y el frente de
-> Guillermo (+42: 37 de frontend y 5 en `test_overlay_launcher.py`).
+> `test_tracking_mlflow.py` y +10 en `test_estado_tools.py`), el frente de
+> Guillermo (+42: 37 de frontend y 5 en `test_overlay_launcher.py`) y el frente de
+> Hernán (+75: métricas, geometría, informe y casos límite de IO).
 
 ## 2. Desglose del backend
 
@@ -33,10 +34,14 @@ pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
 | `tests/test_docker.py` | 9 |
 | `tests/test_estado.py` | 10 |
 | `tests/test_evaluation.py` | 9 |
+| `tests/test_evaluation_report.py` | 10 |
+| `tests/test_geometry.py` | 20 |
 | `tests/test_grpc.py` | 9 |
 | `tests/test_image_loader.py` | 17 |
 | `tests/test_image_validation.py` | 7 |
+| `tests/test_io_edge_cases.py` | 10 |
 | `tests/test_launcher.py` | 5 |
+| `tests/test_metrics.py` | 35 |
 | `tests/test_model_version.py` | 20 |
 | `tests/test_tracking_mlflow.py` | 25 |
 | `tests/test_estado_tools.py` | 10 |
@@ -48,7 +53,7 @@ pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
 | `tests/test_tracking.py` | 11 |
 | `tests/test_training.py` | 7 |
 | `tests/test_yolo_detector.py` | 16 |
-| **Total** | **239** |
+| **Total** | **314** |
 
 ## 3. Desglose del frontend
 

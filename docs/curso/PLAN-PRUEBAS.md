@@ -22,6 +22,10 @@ Brecha contra el mínimo: **127**. Brecha contra el objetivo operativo (430): **
 > de overlay/launcher). El total vigente es **315** (239 pytest + 76 Vitest); la
 > brecha contra el mínimo baja a **85** y contra el objetivo operativo a **115**.
 > El detalle está en [`PRUEBAS.md`](PRUEBAS.md).
+>
+> **Actualización del 13/11 (frente de Hernán):** +75 pruebas de métricas, geometría,
+> informe y casos límite de IO. El total vigente es **390** (314 pytest + 76 Vitest);
+> la brecha contra el mínimo baja a **10** y contra el objetivo operativo a **40**.
 
 Comando de conteo:
 
@@ -51,17 +55,18 @@ cd frontend && npm run test
 
 | Integrante | Frente principal | Nuevas |
 |------------|------------------|-------:|
-| **Hernán Estrada** | Evaluación, métricas, contratos y geometría | **75** |
+| **Hernán Estrada** | Evaluación, métricas, contratos y geometría | **75 (completado)** |
 | **Jesús Riveros** | MLflow, versión del modelo y trazabilidad | **0 (completado)** |
 | **Eliana Cardona** | API REST, gRPC y Docker | **40** |
 | **Guillermo Zabala** | Frontend, visualización y herramientas | **0 (completado, 42)** |
-| **Total** | | **115** → **430** |
+| **Total** | | **40** → **430** |
 
 > Jesús completó sus 55 pruebas: 20 de HU-013 (`test_model_version.py`) y 35 de
 > tracking/estado (`test_tracking_mlflow.py` y `test_estado_tools.py`). Guillermo
 > completó sus 42: 37 de frontend (cliente, validación, App, canvas, tabla y
-> `SettingsDrawer`) y 5 de overlay/launcher. El plan restante es 115; el mínimo de
-> 400 exige 85.
+> `SettingsDrawer`) y 5 de overlay/launcher. Hernán completó sus 75 en
+> `test_metrics.py`, `test_geometry.py`, `test_evaluation_report.py` y
+> `test_io_edge_cases.py`. El plan restante es 40; el mínimo de 400 exige 10.
 
 ## 4. Frentes y casos concretos
 
