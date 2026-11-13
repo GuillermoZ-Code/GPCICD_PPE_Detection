@@ -9,20 +9,20 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-12 18:32 UTC
+**Generado:** 2026-11-13 02:05 UTC
 
-**Rama:** `docs/estado-post-54` · 1 archivo(s) sin commit · +1/-0 vs `origin/develop`
-**develop:** 6496621 (2026-11-12)
+**Rama:** `test/frontend-y-herramientas` · 1 archivo(s) sin commit · +1/-0 vs `origin/develop`
+**develop:** 3306ad6 (2026-11-12)
 
 **Últimos commits:**
-- `7d16381 docs(estado): cerrar HU-013 y actualizar el M3`
-- `6496621 Merge pull request #54 from GuillermoZ-Code/feature/014-hu-013-version-modelo`
-- `993805a docs(estado): registrar cierre de sesion`
-- `0cae6f0 docs(hu-013): registrar la PR #54`
-- `35ab8d1 feat(version): exponer version verificable del modelo (HU-013)`
+- `b77c960 test(frontend): ampliar la suite de interfaz y herramientas`
+- `3306ad6 Merge pull request #56 from GuillermoZ-Code/test/tracking-estado`
+- `111c08a Merge branch 'develop' into test/tracking-estado`
+- `4b8293c Merge pull request #55 from GuillermoZ-Code/docs/estado-post-54`
+- `524b614 test(tracking): ampliar cobertura de MLflow y estado`
 
 **Pull requests abiertas (1):**
-- #55 docs(estado): cerrar HU-013 y actualizar el M3 → `develop` · revisión: — · CI: ok
+- #57 test(frontend): ampliar la suite de interfaz y herramientas → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 2 · 3 SP**
 - M4-S3 (3 SP): #14 #15
@@ -150,3 +150,12 @@
   specs y estado sincronizados; conteo **238/400** y plan de **192 pruebas**.
 - **En vuelo:** PR #55 (`docs/estado-post-54`), pendiente de revisión.
 - **Siguiente:** abrir ramas `test/*` y ejecutar las 192 pruebas restantes; release M3.
+
+### 2026-11-12 · Guillermo (OpenCode) — frente de pruebas
+
+- **Hecho:** 42 pruebas nuevas (37 de frontend y 5 de overlay/launcher); corregido
+  `MockDetectorClient` para no compartir `bbox` entre llamadas; `make check`
+  237 passed + 2 skipped y `make frontend-check` 76 passed + build; conteo **315/400**.
+- **En vuelo:** PR #57 (`test/frontend-y-herramientas`), revisión de Eliana y Hernán.
+- **Siguiente:** completar los frentes de Hernán (75) y Eliana (40); release M3;
+  evaluar MLflow para el M4.
