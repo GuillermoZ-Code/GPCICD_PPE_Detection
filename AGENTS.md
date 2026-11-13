@@ -12,10 +12,10 @@
 Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-12 13:30 UTC
-- **Rama:** `feature/014-hu-013-version-modelo` · +2/-0 vs `origin/develop`
-- **Issues abiertas:** 3 · 4 SP
-- **En vuelo:** #54 feat(version): exponer version verificable del modelo (HU-013) (PR, revisión: —)
+**Actualizado:** 2026-11-12 18:32 UTC
+- **Rama:** `docs/estado-post-54` · +1/-0 vs `origin/develop`
+- **Issues abiertas:** 2 · 3 SP
+- **En vuelo:** #55 docs(estado): cerrar HU-013 y actualizar el M3 (PR, revisión: —)
 - **Siguiente:** #14 HU-014 — Publicar versiones mediante un pipeline CI/CD con compuertas de calidad
 <!-- estado:fin -->
 

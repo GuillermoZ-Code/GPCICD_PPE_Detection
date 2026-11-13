@@ -222,7 +222,7 @@ Las actividades de preparación no son issues; su alcance y evidencia viven en
   - Dos versiones distintas se pueden distinguir.
   - Artefacto identificable fuera de Git.
 - **Spec:** [`specs/014-hu-013-version-modelo`](../../specs/014-hu-013-version-modelo/spec.md) · PR #54.
-- **Estado:** implementada; PR #54 en revisión.
+- **Estado:** implementada y fusionada en `develop` (PR #54); issue #13 cerrada.
 
 ## M4-S3 — 15/11 a 28/11 (3 SP)
 

@@ -9,26 +9,25 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-12 13:30 UTC
+**Generado:** 2026-11-12 18:32 UTC
 
-**Rama:** `feature/014-hu-013-version-modelo` · limpia · +2/-0 vs `origin/develop`
-**develop:** bd26930 (2026-11-12)
+**Rama:** `docs/estado-post-54` · 1 archivo(s) sin commit · +1/-0 vs `origin/develop`
+**develop:** 6496621 (2026-11-12)
 
 **Últimos commits:**
+- `7d16381 docs(estado): cerrar HU-013 y actualizar el M3`
+- `6496621 Merge pull request #54 from GuillermoZ-Code/feature/014-hu-013-version-modelo`
+- `993805a docs(estado): registrar cierre de sesion`
 - `0cae6f0 docs(hu-013): registrar la PR #54`
 - `35ab8d1 feat(version): exponer version verificable del modelo (HU-013)`
-- `bd26930 Merge pull request #53 from GuillermoZ-Code/docs/cierre-m3-s2`
-- `f6ed423 docs(estado): registrar cierre de sesion`
-- `7ee5904 docs(pruebas): corregir el conteo real a 218 pruebas`
 
 **Pull requests abiertas (1):**
-- #54 feat(version): exponer version verificable del modelo (HU-013) → `develop` · revisión: — · CI: ok
+- #55 docs(estado): cerrar HU-013 y actualizar el M3 → `develop` · revisión: — · CI: ok
 
-**Issues abiertas: 3 · 4 SP**
-- M3-S2 (1 SP): #13
+**Issues abiertas: 2 · 3 SP**
 - M4-S3 (3 SP): #14 #15
 
-**En revisión:** #13 (PR #54)
+**En revisión:** ninguna
 **Siguiente por orden:** #14 HU-014 — Publicar versiones mediante un pipeline CI/CD con compuertas de calidad
 <!-- estado:fin -->
 
@@ -144,3 +143,10 @@
 - **En vuelo:** PR #54 (`feature/014-hu-013-version-modelo`), pendiente de revisión.
 - **Siguiente:** revisar/fusionar #54; cerrar #13; completar las 192 pruebas restantes y
   preparar el release `develop → main` con tag `m3-entrega`.
+
+### 2026-11-12 · Jesús (OpenCode) — cierre documental post-#54
+
+- **Hecho:** PR #54 fusionada y #13 cerrada; M3 con **13/13 HUs**; README, M3, backlog,
+  specs y estado sincronizados; conteo **238/400** y plan de **192 pruebas**.
+- **En vuelo:** PR #55 (`docs/estado-post-54`), pendiente de revisión.
+- **Siguiente:** abrir ramas `test/*` y ejecutar las 192 pruebas restantes; release M3.
