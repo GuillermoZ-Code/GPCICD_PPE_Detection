@@ -1,3 +1,5 @@
+/** AC-005.1 y AC-005.2 — validación de archivos antes del envío. */
+
 import { describe, expect, it } from 'vitest'
 
 import { FORMAT_ERROR, MAX_BYTES, validateFile } from './validate'
@@ -44,5 +46,25 @@ describe('validateFile', () => {
     expect(validateFile(fileOf(MAX_BYTES + 1, 'image/png'))).toBe(
       'La imagen supera los 10 MB. Usa una imagen más pequeña.',
     )
+  })
+
+  it('acepta un archivo que pesa exactamente el máximo', () => {
+    expect(validateFile(fileOf(MAX_BYTES, 'image/png'))).toBeNull()
+  })
+
+  it('acepta una extensión en mayúsculas cuando el tipo viene vacío', () => {
+    expect(validateFile(fileOf(2048, '', 'FOTO.JPG'))).toBeNull()
+  })
+
+  it('acepta .jpeg cuando el navegador deja el tipo vacío', () => {
+    expect(validateFile(fileOf(2048, '', 'retrato.jpeg'))).toBeNull()
+  })
+
+  it('rechaza una extensión desconocida si el tipo viene vacío', () => {
+    expect(validateFile(fileOf(2048, '', 'mapa.bmp'))).toBe(FORMAT_ERROR)
+  })
+
+  it('prioriza el MIME admitido sobre una extensión engañosa', () => {
+    expect(validateFile(fileOf(2048, 'image/png', 'dibujo.txt'))).toBeNull()
   })
 })

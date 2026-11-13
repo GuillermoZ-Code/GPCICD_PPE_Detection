@@ -1,6 +1,6 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Actualizado:** 2026-11-12.
+> **Actualizado:** 2026-11-12, tras el frente de pruebas de Guillermo.
 > **Requisito del curso:** **400 pruebas unitarias o más** (≥ 400) para la entrega
 > (indicación del docente; no constaba en el repositorio hasta este documento).
 
@@ -8,19 +8,20 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend Python | pytest | 20 | **234** | `make test` |
-| Frontend | Vitest | 8 | **39** | `make frontend-test` |
-| **Total** | | **28** | **273** | `make check` + `make frontend-check` |
+| Backend Python | pytest | 21 | **239** | `make test` |
+| Frontend | Vitest | 9 | **76** | `make frontend-test` |
+| **Total** | | **30** | **315** | `make check` + `make frontend-check` |
 
 Dos pruebas se omiten sin hardware o artefactos: `test_real_weights_smoke` (sin
 pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
-`@pytest.mark.docker`); la corrida muestra **232 passed + 2 skipped**.
+`@pytest.mark.docker`); la corrida muestra **237 passed + 2 skipped**.
 
 > Incluye todas las HU del M3 fusionadas hasta el 12/11/2026: HU-005 (#39),
 > HU-006 (#42), HU-007 (SPA), HU-009 (+11 en `test_tracking.py`), HU-010 (#46),
 > HU-011 (#52, +9 en `test_docker.py`), HU-012 (+5 en `test_calidad.py`), HU-013
-> (+20 en `test_model_version.py`) y el plan de Jesús (+25 en
-> `test_tracking_mlflow.py` y +10 en `test_estado_tools.py`).
+> (+20 en `test_model_version.py`), el plan de Jesús (+25 en
+> `test_tracking_mlflow.py` y +10 en `test_estado_tools.py`) y el frente de
+> Guillermo (+42: 37 de frontend y 5 en `test_overlay_launcher.py`).
 
 ## 2. Desglose del backend
 
@@ -40,27 +41,29 @@ pesos locales) y la de contenedor de HU-011 (sin Docker/imagen/artefacto,
 | `tests/test_tracking_mlflow.py` | 25 |
 | `tests/test_estado_tools.py` | 10 |
 | `tests/test_overlay.py` | 7 |
+| `tests/test_overlay_launcher.py` | 5 |
 | `tests/test_predict.py` | 16 |
 | `tests/test_results.py` | 10 |
 | `tests/test_smoke.py` | 1 |
 | `tests/test_tracking.py` | 11 |
 | `tests/test_training.py` | 7 |
 | `tests/test_yolo_detector.py` | 16 |
-| **Total** | **234** |
+| **Total** | **239** |
 
 ## 3. Desglose del frontend
 
 | Archivo | Pruebas |
 |---------|--------:|
-| `src/App.test.tsx` | 8 |
-| `src/api/client.test.ts` | 7 |
+| `src/App.test.tsx` | 16 |
+| `src/api/client.test.ts` | 17 |
 | `src/config.test.ts` | 5 |
 | `src/download.test.ts` | 3 |
 | `src/filter.test.ts` | 3 |
-| `src/validate.test.ts` | 9 |
-| `src/components/AnnotatedCanvas.test.tsx` | 2 |
-| `src/components/DetectionTable.test.tsx` | 2 |
-| **Total** | **39** |
+| `src/validate.test.ts` | 14 |
+| `src/components/AnnotatedCanvas.test.tsx` | 6 |
+| `src/components/DetectionTable.test.tsx` | 7 |
+| `src/components/SettingsDrawer.test.tsx` | 5 |
+| **Total** | **76** |
 
 ## 4. Cómo se cuentan
 
@@ -81,9 +84,9 @@ correr sin ellas.
 | Concepto | Valor |
 |----------|------:|
 | Requisito | **≥ 400** |
-| Actual | **273** (234 pytest + 39 Vitest) |
-| Brecha mínima | **127** |
-| Objetivo operativo | **430** (157 nuevas) |
+| Actual | **315** (239 pytest + 76 Vitest) |
+| Brecha mínima | **85** |
+| Objetivo operativo | **430** (115 nuevas) |
 
 > El requisito es un **mínimo**: superar 400 no es un problema. El objetivo operativo
 > del plan es **430** para tener margen de descarte en revisión.
@@ -98,11 +101,11 @@ El reparto por integrante, los archivos propuestos y los casos concretos viven e
 | Hernán Estrada | Evaluación, métricas, contratos y geometría | 75 |
 | Jesús Riveros | MLflow, versión del modelo y trazabilidad | 0 (completado) |
 | Eliana Cardona | API REST, gRPC y Docker | 40 |
-| Guillermo Zabala | Frontend, visualización y herramientas | 42 |
-| **Total** | | **157** → **430** |
+| Guillermo Zabala | Frontend, visualización y herramientas | 0 (completado, 42) |
+| **Total** | | **115** → **430** |
 
-> Jesús completó sus 55 pruebas: 20 de HU-013 y 35 de tracking/estado. El plan
-> restante es 157; el mínimo de 400 exige al menos 127.
+> Jesús completó sus 55 pruebas y Guillermo sus 42 (37 de frontend y 5 de
+> overlay/launcher). El plan restante es 115; el mínimo de 400 exige al menos 85.
 
 > Los frentes de HU-005 (#39), HU-006 (#42), HU-010 (#46), HU-011 (PR #52) y
 > HU-012 (PR #49) ya están aplicados y contados en el total actual.

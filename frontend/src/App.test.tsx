@@ -1,4 +1,6 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+/** AC-007.1, AC-007.3 y AC-007.4 — flujo completo de la interfaz. */
+
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 
@@ -36,6 +38,47 @@ class SpyClient implements DetectorClient {
       model_version: 'spy-1.0',
       elapsed_ms: 1,
     }
+  }
+}
+
+const helmet: PredictResponse['detections'][number] = {
+  class_id: 3,
+  class_name: 'helmet',
+  confidence: 0.9,
+  bbox: [1, 2, 30, 40],
+  image_width: 100,
+  image_height: 100,
+}
+
+class DeferredClient implements DetectorClient {
+  private pending: Array<(response: PredictResponse) => void> = []
+
+  detect(): Promise<PredictResponse> {
+    return new Promise<PredictResponse>((resolve) => {
+      this.pending.push(resolve)
+    })
+  }
+
+  resolve(response: PredictResponse): void {
+    this.pending.shift()?.(response)
+  }
+}
+
+class FailingClient implements DetectorClient {
+  async detect(): Promise<PredictResponse> {
+    throw new Error('la API no responde')
+  }
+}
+
+class FlakyClient implements DetectorClient {
+  calls = 0
+
+  async detect(): Promise<PredictResponse> {
+    this.calls += 1
+    if (this.calls === 1) {
+      throw new Error('fallo temporal')
+    }
+    return { detections: [helmet], image_width: 100, image_height: 100 }
   }
 }
 
@@ -148,5 +191,136 @@ describe('App', () => {
       'https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection',
     )
     expect(screen.getByText(/CC-BY-4.0/)).toBeInTheDocument()
+  })
+
+  it('muestra el estado de carga mientras espera la inferencia', async () => {
+    // Arrange
+    const user = userEvent.setup()
+    const client = new DeferredClient()
+    render(<App client={client} />)
+
+    // Act
+    await analyze(user)
+
+    // Assert
+    expect(screen.getByRole('status')).toHaveTextContent('Analizando imagen…')
+    await act(async () => {
+      client.resolve({ detections: [], image_width: 100, image_height: 100 })
+    })
+    expect(await screen.findByText(/No se detectaron EPP/)).toBeInTheDocument()
+  })
+
+  it('muestra el error del cliente y deja la interfaz disponible', async () => {
+    // Arrange
+    const user = userEvent.setup()
+    render(<App client={new FailingClient()} />)
+
+    // Act
+    await analyze(user)
+
+    // Assert
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'No se pudo completar el análisis. la API no responde',
+    )
+    expect(screen.getByLabelText('Archivo')).not.toBeDisabled()
+  })
+
+  it('permite reintentar el análisis después de un error', async () => {
+    // Arrange
+    const user = userEvent.setup()
+    const client = new FlakyClient()
+    render(<App client={client} />)
+
+    // Act
+    await analyze(user)
+    expect(await screen.findByRole('alert')).toHaveTextContent('fallo temporal')
+    await user.click(screen.getByRole('button', { name: 'Analizar imagen' }))
+
+    // Assert
+    expect(await screen.findByRole('table')).toBeInTheDocument()
+    expect(client.calls).toBe(2)
+  })
+
+  it('avisa cuando las detecciones no pasan los filtros visuales', async () => {
+    // Arrange
+    const user = userEvent.setup()
+    render(<App client={new MockDetectorClient()} />)
+    await user.click(screen.getByRole('button', { name: 'Abrir configuración' }))
+    fireEvent.change(screen.getAllByRole('slider')[1], { target: { value: '99' } })
+
+    // Act
+    await user.click(screen.getByRole('button', { name: 'Cerrar' }))
+    await analyze(user)
+
+    // Assert
+    expect(
+      await screen.findByText(/Hay detecciones, pero ninguna pasa los filtros/),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('table')).not.toBeInTheDocument()
+  })
+
+  it('analiza automáticamente al seleccionar si está configurado', async () => {
+    // Arrange
+    const user = userEvent.setup()
+    render(<App client={new MockDetectorClient()} />)
+    await user.click(screen.getByRole('button', { name: 'Abrir configuración' }))
+    await user.click(screen.getAllByRole('checkbox')[2])
+    await user.click(screen.getByRole('button', { name: 'Cerrar' }))
+
+    // Act
+    await user.upload(screen.getByLabelText('Archivo'), pngFile())
+
+    // Assert
+    expect(await screen.findByRole('table')).toBeInTheDocument()
+  })
+
+  it('cierra la configuración con la tecla Escape', async () => {
+    // Arrange
+    const user = userEvent.setup()
+    render(<App client={new MockDetectorClient()} />)
+    await user.click(screen.getByRole('button', { name: 'Abrir configuración' }))
+    expect(screen.getByRole('dialog', { name: 'Configuración' })).toBeInTheDocument()
+
+    // Act
+    await user.keyboard('{Escape}')
+
+    // Assert
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog', { name: 'Configuración' })).not.toBeInTheDocument(),
+    )
+  })
+
+  it('vuelve al tema inicial al alternar dos veces', async () => {
+    // Arrange
+    const user = userEvent.setup()
+    render(<App client={new MockDetectorClient()} />)
+    const initial = document.documentElement.dataset.theme
+
+    // Act
+    await user.click(screen.getByRole('button', { name: 'Cambiar tema' }))
+    const changed = document.documentElement.dataset.theme
+    await user.click(screen.getByRole('button', { name: 'Cambiar tema' }))
+
+    // Assert
+    expect(changed).not.toBe(initial)
+    expect(document.documentElement.dataset.theme).toBe(initial)
+  })
+
+  it('habilita las descargas solo cuando hay resultados', async () => {
+    // Arrange
+    const user = userEvent.setup()
+    render(<App client={new MockDetectorClient()} />)
+    await user.click(screen.getByRole('button', { name: 'Abrir configuración' }))
+    expect(screen.getByRole('button', { name: 'JSON' })).toBeDisabled()
+
+    // Act
+    await user.click(screen.getByRole('button', { name: 'Cerrar' }))
+    await analyze(user)
+    await user.click(screen.getByRole('button', { name: 'Abrir configuración' }))
+
+    // Assert
+    expect(screen.getByRole('button', { name: 'JSON' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'CSV' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'PNG' })).toBeEnabled()
   })
 })

@@ -41,7 +41,10 @@ export class MockDetectorClient implements DetectorClient {
     return Promise.resolve({
       detections: this.detections
         .filter((detection) => detection.confidence >= threshold)
-        .map((detection) => ({ ...detection })),
+        .map((detection) => ({
+          ...detection,
+          bbox: [...detection.bbox] as Detection['bbox'],
+        })),
       image_width: 640,
       image_height: 480,
       model_version: 'mock-1.0.0',

@@ -18,6 +18,11 @@
 
 Brecha contra el mínimo: **127**. Brecha contra el objetivo operativo (430): **157**.
 
+> **Actualización del 12/11 (frente de Guillermo):** +42 pruebas (37 de frontend y 5
+> de overlay/launcher). El total vigente es **315** (239 pytest + 76 Vitest); la
+> brecha contra el mínimo baja a **85** y contra el objetivo operativo a **115**.
+> El detalle está en [`PRUEBAS.md`](PRUEBAS.md).
+
 Comando de conteo:
 
 ```bash
@@ -49,12 +54,14 @@ cd frontend && npm run test
 | **Hernán Estrada** | Evaluación, métricas, contratos y geometría | **75** |
 | **Jesús Riveros** | MLflow, versión del modelo y trazabilidad | **0 (completado)** |
 | **Eliana Cardona** | API REST, gRPC y Docker | **40** |
-| **Guillermo Zabala** | Frontend, visualización y herramientas | **42** |
-| **Total** | | **157** → **430** |
+| **Guillermo Zabala** | Frontend, visualización y herramientas | **0 (completado, 42)** |
+| **Total** | | **115** → **430** |
 
 > Jesús completó sus 55 pruebas: 20 de HU-013 (`test_model_version.py`) y 35 de
-> tracking/estado (`test_tracking_mlflow.py` y `test_estado_tools.py`). El plan
-> restante es 157; el mínimo de 400 exige 127.
+> tracking/estado (`test_tracking_mlflow.py` y `test_estado_tools.py`). Guillermo
+> completó sus 42: 37 de frontend (cliente, validación, App, canvas, tabla y
+> `SettingsDrawer`) y 5 de overlay/launcher. El plan restante es 115; el mínimo de
+> 400 exige 85.
 
 ## 4. Frentes y casos concretos
 
@@ -92,24 +99,36 @@ cd frontend && npm run test
 **Nota:** la prueba de contenedor real sigue marcada `@pytest.mark.docker` y no cuenta
 para las 400 si el entorno no tiene Docker; las 13 propuestas son estáticas.
 
-### 4.4 Guillermo — 42 pruebas
+### 4.4 Guillermo — 0 pruebas restantes (frente completo, 42)
 
-| Archivo propuesto | Casos | Qué debe cubrir | AC/FR |
-|-------------------|------:|-----------------|-------|
-| `frontend/src/api/client.test.ts` | 10 | Multipart, `conf`, errores HTTP, timeout, respuesta vacía, tipos de detección, cliente simulado | AC-007.1, AC-007.4 |
-| `frontend/src/validate.test.ts` | 5 | JPEG/PNG/JFIF, tamaño, vacío, MIME falso, extensión vs contenido | AC-005.1, AC-005.2 |
-| `frontend/src/App.test.tsx` | 8 | Estados cargando/error/vacío/resultado; reintento; mensaje sin EPP; cambio de tema | AC-007.1, AC-007.3, AC-007.4 |
-| `frontend/src/components/AnnotatedCanvas.test.tsx` | 4 | Escalado proporcional, sin detecciones, cajas fuera de límites, DPR | AC-003.2, AC-003.3 |
-| `frontend/src/components/DetectionTable.test.tsx` | 4 | Orden por confianza, confianza formateada, seis clases, vacío | AC-007.2 |
-| `frontend/src/components/SettingsPanel.test.tsx` | 5 | Tema claro/oscuro/sistema, umbral válido e inválido, persistencia | FR de configuración |
-| `tests/test_overlay_launcher.py` | 6 | Etiquetas en español, color por clase, imagen sin cajas, argumentos del launcher | AC-003.1 |
+| Archivo entregado | Casos | Qué cubre | AC/FR |
+|-------------------|------:|-----------|-------|
+| `frontend/src/api/client.test.ts` | **10** | Detecciones personalizadas, copia profunda de `bbox`, umbral inclusivo y máximo, `conf` omitido, URL normalizada, error 422, identidad del modelo, URL vacía y `VITE_API_URL` | AC-007.1, AC-007.4 |
+| `frontend/src/validate.test.ts` | **5** | Peso exacto de 10 MB, extensión en mayúsculas, `.jpeg` sin MIME, extensión desconocida y MIME que prevalece sobre la extensión | AC-005.1, AC-005.2 |
+| `frontend/src/App.test.tsx` | **8** | Carga, error del cliente, reintento, filtros visuales, auto-análisis, cierre con Escape, alternancia de tema y descargas habilitadas | AC-007.1, AC-007.3, AC-007.4 |
+| `frontend/src/components/AnnotatedCanvas.test.tsx` | **4** | Escalado proporcional, cero cajas, etiquetas desactivadas y etiqueta en el borde superior | AC-003.2, AC-003.3 |
+| `frontend/src/components/DetectionTable.test.tsx` | **5** | Seis clases traducidas, confianza redondeada con barra, caja redondeada, orden recibido y tabla vacía | AC-007.2 |
+| `frontend/src/components/SettingsDrawer.test.tsx` | **5** | Panel cerrado, tema, chips de clase, umbral del modelo y descargas | FR de configuración |
+| `tests/test_overlay_launcher.py` | **5** | Etiquetas en español, colores distintos, argumentos del launcher y entorno del frontend | AC-003.1 |
+| **Total** | **42** | | |
+
+**Notas de ejecución:**
+
+- El plan proponía `SettingsPanel.test.tsx`, pero el componente real es
+  `SettingsDrawer`; la prueba se creó sobre el componente vigente.
+- `DetectionTable` no reordena: conserva el orden de la API. La prueba fija ese
+  contrato en lugar de exigir un orden por confianza que el componente no implementa.
+- «Imagen sin cajas» ya estaba cubierta por `tests/test_overlay.py`
+  (`test_empty_detections_return_unchanged_image`); no se duplicó.
+- La prueba de copia profunda encontró un defecto real: `MockDetectorClient`
+  compartía el arreglo `bbox` entre llamadas. Se corrigió en `client.ts`.
 
 ## 5. Calendario de la entrega
 
 | Fecha | Hito |
 |-------|------|
-| **12/11** | HU-013 + 35 de tracking/estado completadas (+55 de Jesús); cada integrante abre su rama `test/*` |
-| **13/11** | Cada frente en verde y `PRUEBAS.md` actualizado; PRs a `develop` |
+| **12/11** | HU-013 y los frentes de Jesús (+55) y Guillermo (+42) completos: **315** pruebas |
+| **13/11** | Frentes de Hernán (75) y Eliana (40) en verde y `PRUEBAS.md` actualizado; PRs a `develop` |
 | **14/11 (mañana)** | `make calidad` + `make frontend-check`; conteo final ≥ 400; release del M3 |
 | **14/11 (sustentación)** | Evidencia del conteo y de la suite en verde |
 
