@@ -1,6 +1,8 @@
+/** AC-007.1 y AC-007.4 — cliente HTTP y simulado de inferencia. */
+
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import type { PredictResponse } from '../types'
+import type { Detection, PredictResponse } from '../types'
 import {
   createClient,
   HttpDetectorClient,
@@ -29,7 +31,18 @@ function pngFile(): File {
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
 })
+
+function stubFetch(payload: PredictResponse, status = 200): ReturnType<typeof vi.fn> {
+  const fetchMock = vi.fn().mockResolvedValue({
+    ok: status < 400,
+    status,
+    json: () => Promise.resolve(payload),
+  })
+  vi.stubGlobal('fetch', fetchMock)
+  return fetchMock
+}
 
 describe('MockDetectorClient', () => {
   it('devuelve las detecciones por defecto', async () => {
@@ -57,6 +70,62 @@ describe('MockDetectorClient', () => {
     const result = await client.detect(pngFile(), 0.8)
 
     expect(result.detections.map((detection) => detection.class_name)).toEqual(['helmet'])
+  })
+
+  it('usa las detecciones personalizadas que recibe', async () => {
+    // Arrange
+    const custom: Detection[] = [
+      {
+        class_id: 4,
+        class_name: 'mask',
+        confidence: 0.66,
+        bbox: [10, 10, 40, 40],
+        image_width: 320,
+        image_height: 240,
+      },
+    ]
+
+    // Act
+    const result = await new MockDetectorClient(custom).detect(pngFile())
+
+    // Assert
+    expect(result.detections).toEqual(custom)
+  })
+
+  it('copia cada detección para no compartir las cajas', async () => {
+    // Arrange
+    const original = structuredClone(MOCK_DETECTIONS)
+    const client = new MockDetectorClient()
+    const first = await client.detect(pngFile())
+
+    // Act
+    first.detections[0].bbox[0] = -1
+
+    // Assert
+    const second = await client.detect(pngFile())
+    expect(second.detections).toEqual(original)
+  })
+
+  it('conserva la detección cuando la confianza iguala el umbral', async () => {
+    // Arrange
+    const client = new MockDetectorClient()
+
+    // Act
+    const result = await client.detect(pngFile(), 0.92)
+
+    // Assert
+    expect(result.detections.map((detection) => detection.class_name)).toEqual(['helmet'])
+  })
+
+  it('devuelve una respuesta vacía con el umbral máximo', async () => {
+    // Arrange
+    const client = new MockDetectorClient()
+
+    // Act
+    const result = await client.detect(pngFile(), 1)
+
+    // Assert
+    expect(result.detections).toEqual([])
   })
 })
 
@@ -91,6 +160,64 @@ describe('HttpDetectorClient', () => {
 
     await expect(client.detect(pngFile())).rejects.toThrow('La API respondió con estado 500.')
   })
+
+  it('omite el campo conf cuando no se indica umbral', async () => {
+    // Arrange
+    const fetchMock = stubFetch(response)
+    const client = new HttpDetectorClient('http://api.local')
+
+    // Act
+    await client.detect(pngFile())
+
+    // Assert
+    const body = fetchMock.mock.calls[0][1].body as FormData
+    expect(body.has('conf')).toBe(false)
+    expect(body.get('file')).toBeInstanceOf(File)
+  })
+
+  it('normaliza las barras finales de la URL base', async () => {
+    // Arrange
+    const fetchMock = stubFetch(response)
+    const client = new HttpDetectorClient('http://api.local///')
+
+    // Act
+    await client.detect(pngFile())
+
+    // Assert
+    expect(fetchMock.mock.calls[0][0]).toBe('http://api.local/predict')
+  })
+
+  it('propaga el estado HTTP de un error de cliente', async () => {
+    // Arrange
+    stubFetch(response, 422)
+    const client = new HttpDetectorClient('http://api.local')
+
+    // Act / Assert
+    await expect(client.detect(pngFile())).rejects.toThrow(
+      'La API respondió con estado 422.',
+    )
+  })
+
+  it('conserva la identidad del modelo en la respuesta', async () => {
+    // Arrange
+    const payload: PredictResponse = {
+      ...response,
+      model_version: 'yolo11s_clean',
+      model_sha256: 'A'.repeat(64),
+      model_reference: `sha256:${'A'.repeat(64)}`,
+      elapsed_ms: 87,
+    }
+    stubFetch(payload)
+    const client = new HttpDetectorClient('http://api.local')
+
+    // Act
+    const result = await client.detect(pngFile())
+
+    // Assert
+    expect(result.model_version).toBe('yolo11s_clean')
+    expect(result.model_reference).toBe(`sha256:${'A'.repeat(64)}`)
+    expect(result.elapsed_ms).toBe(87)
+  })
 })
 
 describe('createClient', () => {
@@ -100,5 +227,17 @@ describe('createClient', () => {
 
   it('usa el cliente HTTP con URL', () => {
     expect(createClient('http://api.local')).toBeInstanceOf(HttpDetectorClient)
+  })
+
+  it('ignora una URL con solo espacios', () => {
+    expect(createClient('   ')).toBeInstanceOf(MockDetectorClient)
+  })
+
+  it('usa VITE_API_URL cuando no recibe argumento', () => {
+    // Arrange
+    vi.stubEnv('VITE_API_URL', 'http://env.local')
+
+    // Act / Assert
+    expect(createClient()).toBeInstanceOf(HttpDetectorClient)
   })
 })
