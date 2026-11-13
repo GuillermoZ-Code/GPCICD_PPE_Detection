@@ -9,26 +9,25 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-13 02:05 UTC
+**Generado:** 2026-11-13 03:39 UTC
 
-**Rama:** `test/frontend-y-herramientas` · 1 archivo(s) sin commit · +1/-0 vs `origin/develop`
-**develop:** 3306ad6 (2026-11-12)
+**Rama:** `docs/cierre-m3-entrega` · 1 archivo(s) sin commit · +1/-0 vs `origin/develop`
+**develop:** c30d628 (2026-11-12)
 
 **Últimos commits:**
-- `b77c960 test(frontend): ampliar la suite de interfaz y herramientas`
-- `3306ad6 Merge pull request #56 from GuillermoZ-Code/test/tracking-estado`
-- `111c08a Merge branch 'develop' into test/tracking-estado`
-- `4b8293c Merge pull request #55 from GuillermoZ-Code/docs/estado-post-54`
-- `524b614 test(tracking): ampliar cobertura de MLflow y estado`
+- `4b5f270 docs(cierre): actualizar el estado de la entrega del M3`
+- `c30d628 Merge pull request #59 from GuillermoZ-Code/test/api-grpc-docker`
+- `2650b54 Merge remote-tracking branch 'origin/develop' into test/api-grpc-docker`
+- `e80ae51 test(api-grpc-docker): sumar 40 pruebas REST, gRPC y Docker`
+- `6f976e0 Merge pull request #58 from GuillermoZ-Code/test/cobertura-hernan`
 
 **Pull requests abiertas (1):**
-- #57 test(frontend): ampliar la suite de interfaz y herramientas → `develop` · revisión: — · CI: ok
+- #60 docs(cierre): actualizar el estado de la entrega del M3 → `develop` · revisión: — · CI: ok
 
-**Issues abiertas: 2 · 3 SP**
-- M4-S3 (3 SP): #14 #15
+**Issues abiertas: 0 · 0 SP**
 
 **En revisión:** ninguna
-**Siguiente por orden:** #14 HU-014 — Publicar versiones mediante un pipeline CI/CD con compuertas de calidad
+**Siguiente por orden:** sin issues abiertas
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -159,3 +158,13 @@
 - **En vuelo:** PR #57 (`test/frontend-y-herramientas`), revisión de Eliana y Hernán.
 - **Siguiente:** completar los frentes de Hernán (75) y Eliana (40); release M3;
   evaluar MLflow para el M4.
+
+### 2026-11-13 · Guillermo (OpenCode) — cierre del M3
+
+- **Hecho:** `develop` en `c30d628` con #57, #58 y #59 fusionadas; suite **430**
+  (354 pytest + 76 Vitest; 352 passed + 2 skipped); README y M3 sincronizados con el
+  conteo; PR #60 de cierre documental abierta.
+- **En vuelo:** PR #60 (`docs/cierre-m3-entrega`); release `develop → main` preparado
+  con tag `m3-entrega`.
+- **Siguiente:** fusionar #60, publicar el release y reabrir #14/#15 para el M4
+  (cerradas por error manual).
