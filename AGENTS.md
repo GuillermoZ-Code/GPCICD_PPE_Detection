@@ -12,11 +12,11 @@
 Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-13 02:05 UTC
-- **Rama:** `test/frontend-y-herramientas` · +1/-0 vs `origin/develop`
-- **Issues abiertas:** 2 · 3 SP
-- **En vuelo:** #57 test(frontend): ampliar la suite de interfaz y herramientas (PR, revisión: —)
-- **Siguiente:** #14 HU-014 — Publicar versiones mediante un pipeline CI/CD con compuertas de calidad
+**Actualizado:** 2026-11-13 03:39 UTC
+- **Rama:** `docs/cierre-m3-entrega` · +1/-0 vs `origin/develop`
+- **Issues abiertas:** 0 · 0 SP
+- **En vuelo:** #60 docs(cierre): actualizar el estado de la entrega del M3 (PR, revisión: —)
+- **Siguiente:** sin issues abiertas
 <!-- estado:fin -->
 
 - **Detalle:** [`docs/curso/ESTADO.md`](./docs/curso/ESTADO.md).
