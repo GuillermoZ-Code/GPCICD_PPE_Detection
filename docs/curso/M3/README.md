@@ -46,7 +46,9 @@
 - MLflow con runs consultables.
 - Docker CPU reproducible.
 - Suite de pruebas deterministas y `make check` en verde.
-- **≥ 400 pruebas unitarias** para la entrega; conteo y reparto en
+- **430 pruebas unitarias** para la entrega (354 pytest + 76 Vitest; 352 passed +
+  2 skipped sin Docker ni pesos locales), con el detalle en
+  [`docs/curso/PRUEBAS.md`](../PRUEBAS.md) y el reparto por integrante en
   [`docs/curso/PLAN-PRUEBAS.md`](../PLAN-PRUEBAS.md).
 - Evidencias y documentación de arquitectura actualizadas.
 - Runbook de la demo local API + frontend: [`docs/operacion/demo-local.md`](../../operacion/demo-local.md).
