@@ -12,10 +12,10 @@
 Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-13 03:39 UTC
-- **Rama:** `docs/cierre-m3-entrega` · +1/-0 vs `origin/develop`
+**Actualizado:** 2026-11-14 03:38 UTC
+- **Rama:** `docs/estado-release-m3` · +0/-0 vs `origin/develop`
 - **Issues abiertas:** 0 · 0 SP
-- **En vuelo:** #60 docs(cierre): actualizar el estado de la entrega del M3 (PR, revisión: —)
+- **En vuelo:** ninguna
 - **Siguiente:** sin issues abiertas
 <!-- estado:fin -->
 
