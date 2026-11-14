@@ -47,7 +47,8 @@ uv run --extra inference python -m ppe_detection.api
 - **Primera petición:** ~27 s, porque carga torch y los pesos.
 - **Peticiones siguientes:** ~78 ms en CPU con `imgsz=640`.
 - OpenAPI interactivo: <http://127.0.0.1:8000/docs>.
-- `/health` todavía no existe: llega con HU-015.
+- `/health` ya está disponible: devuelve el estado del componente, la identidad del
+  modelo y `degraded` si el detector no está cargado.
 
 Prueba rápida:
 
@@ -111,4 +112,5 @@ Resultado de la prueba: `Chaleco 74 %` sobre
   (`yolov11/summary.md`).
 - Latencia en caliente medida aquí: **77.84 ms**. SPI-01 había medido 136–158 ms en
   otro equipo; conviene repetir la medición en el hardware de la sustentación.
-- HU-015 añadirá `/health` y registros técnicos sin secretos.
+- `/health` ya está implementado (estado + identidad del modelo); HU-015 añadirá el
+  registro de eventos técnicos sin secretos.

@@ -3,7 +3,7 @@
 > **Periodo:** 31/10/2026 → 14/11/2026. **Peso:** 25 %.
 > **Sustentación:** sábado **14/11/2026**.
 > **Estado al 13/11/2026:** 13/13 HUs fusionadas y plan de pruebas **completo:
-> 430** (mínimo de 400 alcanzado). Pendiente el release `develop → main`.
+> 451** (mínimo de 400 alcanzado). Release `m3-entrega` publicado.
 
 ## 1. Clases y focos
 
@@ -46,7 +46,7 @@
 - MLflow con runs consultables.
 - Docker CPU reproducible.
 - Suite de pruebas deterministas y `make check` en verde.
-- **430 pruebas unitarias** para la entrega (354 pytest + 76 Vitest; 352 passed +
+- **451 pruebas unitarias** para la entrega (375 pytest + 76 Vitest; 373 passed +
   2 skipped sin Docker ni pesos locales), con el detalle en
   [`docs/curso/PRUEBAS.md`](../PRUEBAS.md) y el reparto por integrante en
   [`docs/curso/PLAN-PRUEBAS.md`](../PLAN-PRUEBAS.md).

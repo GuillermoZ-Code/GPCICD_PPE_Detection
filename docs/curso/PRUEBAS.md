@@ -8,11 +8,11 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend Python | pytest | 28 | **354** | `make test` |
+| Backend Python | pytest | 30 | **375** | `make test` |
 | Frontend | Vitest | 9 | **76** | `make frontend-test` |
-| **Total** | | **37** | **430** | `make check` + `make frontend-check` |
+| **Total** | | **39** | **451** | `make check` + `make frontend-check` |
 
-Sin pesos locales ni Docker la corrida muestra **352 passed + 2 skipped** (354
+Sin pesos locales ni Docker la corrida muestra **373 passed + 2 skipped** (375
 recolectadas): se omiten `test_real_weights_smoke` y la de contenedor de HU-011;
 con los extras de inferencia instalados la omisión puede bajar a una.
 
@@ -24,6 +24,9 @@ con los extras de inferencia instalados la omisión puede bajar a una.
 > Guillermo (+42: 37 de frontend y 5 en `test_overlay_launcher.py`), el frente de
 > Hernán (+75: métricas, geometría, informe y casos límite de IO, PR #58) y el
 > frente de Eliana (+40: 15 REST, 12 gRPC y 13 Docker estáticos, PR #59).
+>
+> **Añadido el 13/11:** +21 pruebas —`test_health.py` (6, healthcheck) y
+> `test_tracking_benchmark.py` (15, benchmark de inferencia y Model Registry)—.
 
 ## 2. Desglose del backend
 

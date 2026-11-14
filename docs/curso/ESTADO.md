@@ -9,20 +9,20 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-13 03:39 UTC
+**Generado:** 2026-11-14 03:38 UTC
 
-**Rama:** `docs/cierre-m3-entrega` · 1 archivo(s) sin commit · +1/-0 vs `origin/develop`
-**develop:** c30d628 (2026-11-12)
+**Rama:** `docs/estado-release-m3` · limpia · +0/-0 vs `origin/develop`
+**develop:** 9486439 (2026-11-13)
 
 **Últimos commits:**
-- `4b5f270 docs(cierre): actualizar el estado de la entrega del M3`
-- `c30d628 Merge pull request #59 from GuillermoZ-Code/test/api-grpc-docker`
-- `2650b54 Merge remote-tracking branch 'origin/develop' into test/api-grpc-docker`
-- `e80ae51 test(api-grpc-docker): sumar 40 pruebas REST, gRPC y Docker`
-- `6f976e0 Merge pull request #58 from GuillermoZ-Code/test/cobertura-hernan`
+- `9486439 Merge pull request #68 from GuillermoZ-Code/docs/ficha-m3`
+- `7eb23c9 docs(mlflow): corregir la ruta del almacen de artefactos`
+- `5bb7bff docs(entrega): agregar ficha del M3 y actualizar runbook`
+- `dc707f3 Merge pull request #67 from GuillermoZ-Code/docs/readme-profesional`
+- `8c791bb Merge pull request #66 from GuillermoZ-Code/docs/model-card`
 
-**Pull requests abiertas (1):**
-- #60 docs(cierre): actualizar el estado de la entrega del M3 → `develop` · revisión: — · CI: ok
+**Pull requests abiertas (0):**
+- ninguna
 
 **Issues abiertas: 0 · 0 SP**
 
@@ -168,3 +168,14 @@
   con tag `m3-entrega`.
 - **Siguiente:** fusionar #60, publicar el release y reabrir #14/#15 para el M4
   (cerradas por error manual).
+
+### 2026-11-13 · Guillermo (OpenCode) — cierre de la rúbrica del M3
+
+- **Hecho:** fusionadas #64–#68: healthcheck `/health` con la identidad del modelo
+  (+6 pruebas), benchmark de inferencia y Model Registry de MLflow (+15 pruebas),
+  Model Card, README reescrito y ficha de entrega. `make check` **373 passed + 2
+  skipped** y `make frontend-check` 76 passed (451 con Vitest); 3 runs en
+  `ppe-detection-inference` y `ppe-detection` v1 con alias `production`; tags de
+  equipo, licencia, ambiente y commit en los runs y en el modelo.
+- **En vuelo:** release `develop → main` con el cierre de la rúbrica.
+- **Siguiente:** sustentación del M3 (14/11); en M4, HU-014 y HU-015.

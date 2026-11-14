@@ -24,7 +24,8 @@ uv sync --all-extras
 
 ## 2. Backend local
 
-El comando usa por defecto `sqlite:///mlflow.db`, con artefactos en `mlartifacts/`.
+El comando usa por defecto `sqlite:///mlflow.db`, con artefactos en `mlruns/`
+(almacén local por omisión de MLflow).
 Ambos están cubiertos por `.gitignore`:
 
 ```text
@@ -90,19 +91,74 @@ uv run --extra tracking --extra inference mlflow ui \
 Abre <http://localhost:5000>, entra al experimento `ppe-detection-eval` y consulta los
 runs por nombre o por `run_id`.
 
-## 5. Evidencia local (2026-11-11)
+## 4.1 Medir una sesión de inferencia
 
-Backend: `sqlite:///mlflow.db` · experimento: `ppe-detection-eval`.
+La rúbrica del M3 pide runs **comparables** con calidad y latencia. El comando
+`benchmark` mide latencia media, p95 y throughput sobre imágenes locales y registra
+parámetros, métricas, tags y artefactos (`latency_samples.csv`, `summary.md`):
+
+```bash
+export PPE_MODEL_PATH=artifacts/drive/yolo11s_clean/weights/best.pt
+uv run --extra tracking --extra inference python -m ppe_detection.tracking benchmark \
+  --model "$PPE_MODEL_PATH" --images artifacts/samples \
+  --iterations 30 --imgsz 640 --conf 0.25
+```
+
+Opciones: `--imgsz`, `--conf`, `--iou`, `--device`, `--iterations`, `--experiment`
+(por omisión `ppe-detection-inference`) y `--run-name`. La medición excluye el
+calentamiento y no depende de la red.
+
+## 4.2 Registrar el modelo
+
+`register` empaqueta la identidad del artefacto (SHA256, versión y ruta), la Model
+Card y, opcionalmente, los pesos; lo adjunta al run y crea una versión en el Model
+Registry con alias (`production` por omisión):
+
+```bash
+uv run --extra tracking python -m ppe_detection.tracking register \
+  --run-id <run_id> \
+  --model "$PPE_MODEL_PATH" \
+  --model-card docs/model-card.md
+```
+
+La versión registrada apunta a `runs:/<run_id>/model` y lleva los tags
+`model_reference`, `model_sha256` y `model_version`, de modo que coincide con lo que
+publica `/health` y con lo que carga el backend.
+
+## 5. Evidencia local (2026-11-13)
+
+### 5.1 Sesiones de inferencia (2026-11-13)
+
+Backend: `sqlite:///mlflow.db` · experimento: **`ppe-detection-inference`**.
+Mismo modelo (`sha256:E51EB080…D7A9959`), 2 imágenes de `artifacts/samples`,
+20 iteraciones por run.
+
+| Run | `run_id` | `imgsz` | `conf` | Latencia media | p95 | Throughput |
+|-----|----------|--------:|-------:|---------------:|----:|-----------:|
+| `infer-640-conf0.25` | `bf930b6f1633487dbe6f645edd5adb44` | 640 | 0.25 | 82,37 ms | 90,32 ms | 12,14 fps |
+| `infer-640-conf0.4` | `83827402ec2e4593aff298e7b28f8fa4` | 640 | 0.40 | 77,95 ms | 88,12 ms | 12,83 fps |
+| `infer-416-conf0.25` | `f2eb13651ed14bf6bb827cebed7f7207` | 416 | 0.25 | 41,45 ms | 44,42 ms | 24,13 fps |
+
+Cada run registra `latency_samples.csv` y `summary.md`. El run base contiene además el
+paquete del modelo.
+
+**Model Registry:** `ppe-detection` versión **1**, alias **`production`**, origen
+`runs:/bf930b6f1633487dbe6f645edd5adb44/model`, con `model_identity.json`,
+`MODEL_CARD.md`, `README.md` y `best.pt`. Tags: `model_reference`,
+`model_sha256` y `model_version = yolo11s_clean`.
+
+### 5.2 Evaluaciones históricas (2026-11-11)
+
+Registradas en una base local anterior (no versionada). Se conservan como referencia
+de las particiones evaluadas en HU-008.
 
 | Run | `run_id` | Partición | Imágenes | P | R | mAP50 | mAP50-95 |
 |-----|----------|-----------|---------:|---:|---:|---:|---:|
 | `eval492` | `b4187e62c6784effbae5552abac02468` | eval sin fuga (492) | 492 | 0.8738 | 0.6445 | 0.7259 | 0.4239 |
 | `test1094` | `00771caaba4f444685bdd65e2b67f87c` | test limpio (1.094) | 1.094 | 0.7998 | 0.7672 | 0.8101 | 0.5162 |
 
-Ambos runs comparten el modelo
-`sha256:E51EB08078F8ABADA1D5F3D15BFB17D94E32DA0C70467D7C79E43C338D7A9959` y registran
-solo `summary.json` y `summary.md` como artefactos. La consulta con
-`MlflowClient.list_artifacts` devolvió esos dos archivos y ningún `.pt`.
+Ambos runs compartían el modelo y registraban `summary.json` y `summary.md` como
+artefactos.
 
 > La clave `dataset_split` es la del YAML de evaluación. El YAML del eval sin fuga
 > mapea `test` a `test_original_sin_fuga`; por eso los dos runs muestran `test` ahí.
@@ -110,11 +166,14 @@ solo `summary.json` y `summary.md` como artefactos. La consulta con
 
 ## 6. Política de artefactos
 
-- **No se registran pesos** (`.pt`, `.pth`, `.onnx`, `.safetensors`, `.h5`) ni datasets
-  (`.zip`). `log` los rechaza antes de llamar a MLflow.
-- La referencia del modelo es el SHA256 y su ruta; los pesos siguen fuera de Git y de
-  MLflow.
-- Los resúmenes y gráficos sí se registran como artefactos del run.
+- **Los pesos no se versionan en Git.** El comando `log` rechaza `.pt`, `.pth`,
+  `.onnx`, `.safetensors`, `.h5` y datasets `.zip`.
+- El **Model Registry local** puede contener una copia del artefacto en el almacén
+  local de MLflow (`mlruns/`, ignorado por Git) para que la versión registrada
+  sea autocontenida; se omite con `--no-weights`.
+- La referencia estable sigue siendo el SHA256; el backend carga los pesos desde
+  `PPE_MODEL_PATH`, fuera del repositorio.
+- Los resúmenes, muestras de latencia y gráficos sí se registran como artefactos.
 - `mlflow.db`, `mlruns/` y `mlartifacts/` no se versionan.
 
 ## 7. Reproducción
