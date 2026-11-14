@@ -301,9 +301,15 @@ def test_contenedor_sirve_inferencia_rest_y_grpc() -> None:
             "image_width",
             "image_height",
             "model_version",
+            "model_sha256",
+            "model_artifact",
+            "model_reference",
             "elapsed_ms",
         }
         assert payload["model_version"] == "best", "debe derivarse del artefacto montado"
+        assert len(payload["model_sha256"]) == 64
+        assert payload["model_artifact"].endswith("best.pt")
+        assert payload["model_reference"] == f"sha256:{payload['model_sha256']}"
         assert payload["image_width"] > 0 and payload["image_height"] > 0
         assert payload["elapsed_ms"] >= 0
         for detection in payload["detections"]:
