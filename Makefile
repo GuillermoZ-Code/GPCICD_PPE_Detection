@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -90,6 +90,14 @@ app: ## Levanta API + frontend con el modelo local (Ctrl+C para ambos)
 
 mlflow-ui: ## Abre la UI local de MLflow (http://localhost:5000)
 	uv run --extra tracking --extra inference mlflow ui --backend-store-uri sqlite:///mlflow.db
+
+mlflow-benchmark: ## Mide latencia/throughput y registra el run (modelo en PPE_MODEL_PATH)
+	uv run --extra tracking --extra inference python -m ppe_detection.tracking benchmark \
+		--model "$(PPE_MODEL_PATH)" --images artifacts/samples --iterations 30 --imgsz 640
+
+mlflow-register: ## Registra el modelo en el Model Registry (RUN_ID=... PPE_MODEL_PATH=...)
+	uv run --extra tracking python -m ppe_detection.tracking register \
+		--run-id "$(RUN_ID)" --model "$(PPE_MODEL_PATH)" --model-card docs/model-card.md
 
 # --- Docker CPU (HU-011) ------------------------------------------------------
 docker-build: ## Construye la imagen backend CPU desde uv.lock (HU-011)
