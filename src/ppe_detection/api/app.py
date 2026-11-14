@@ -1,4 +1,4 @@
-"""API REST de inferencia (HU-006)."""
+"""API REST de inferencia y healthcheck (HU-006 y rúbrica del M3)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from dataclasses import replace
 from time import perf_counter
-from typing import Annotated, cast
+from typing import Annotated, Literal, cast
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -45,6 +45,18 @@ class PredictResponse(BaseModel):
     model_artifact: str | None
     model_reference: str
     elapsed_ms: float
+
+
+class HealthResponse(BaseModel):
+    """Estado del servicio y contrato publicado en `GET /health`."""
+
+    status: Literal["ok", "degraded"]
+    api_version: str
+    model_loaded: bool
+    model_version: str
+    model_reference: str
+    model_sha256: str | None
+    model_artifact: str | None
 
 
 def _build_detector() -> Detector:
@@ -98,6 +110,25 @@ def create_app(
             except RuntimeError as exc:
                 raise HTTPException(status_code=503, detail=str(exc)) from exc
         return cast(Detector, application.state.detector)
+
+    @application.get("/health", response_model=HealthResponse)
+    async def health() -> HealthResponse:
+        """Informa el estado del componente y la identidad del modelo cargado.
+
+        No construye el detector: si aún no está cargado responde `degraded`, de
+        modo que el chequeo nunca bloquea ni provoca una carga accidental.
+        """
+        identity = cast(ModelIdentity, application.state.model_identity)
+        loaded = application.state.detector is not None
+        return HealthResponse(
+            status="ok" if loaded else "degraded",
+            api_version=str(application.version),
+            model_loaded=loaded,
+            model_version=identity.version,
+            model_reference=identity.reference,
+            model_sha256=identity.sha256,
+            model_artifact=identity.artifact,
+        )
 
     @application.post("/predict", response_model=PredictResponse)
     async def predict(
