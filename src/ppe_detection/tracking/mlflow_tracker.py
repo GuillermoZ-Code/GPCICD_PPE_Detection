@@ -8,10 +8,12 @@ las pruebas unitarias funcionan con un tracker inyectado; MLflow vive en el extr
 from __future__ import annotations
 
 import argparse
+import contextlib
 import importlib
 import json
 import math
 import re
+import shutil
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -19,6 +21,9 @@ from typing import Any, Protocol
 
 DEFAULT_TRACKING_URI = "sqlite:///mlflow.db"
 DEFAULT_EXPERIMENT = "ppe-detection-eval"
+DEFAULT_BENCHMARK_EXPERIMENT = "ppe-detection-inference"
+DEFAULT_MODEL_NAME = "ppe-detection"
+DEFAULT_MODEL_ALIAS = "production"
 
 WEIGHT_SUFFIXES: frozenset[str] = frozenset({".pt", ".pth", ".onnx", ".safetensors", ".h5"})
 DATASET_SUFFIXES: frozenset[str] = frozenset({".zip"})
@@ -222,6 +227,129 @@ def build_run_payload(
     )
 
 
+@dataclass(frozen=True, slots=True)
+class LatencyStats:
+    """Resumen de latencias de inferencia (ms) y throughput derivado."""
+
+    mean_ms: float
+    p95_ms: float
+    max_ms: float
+    throughput_fps: float
+
+
+def latency_stats(samples_ms: Sequence[float]) -> LatencyStats:
+    """Resume latencias con p95 por rango más cercano y throughput en fps.
+
+    Las muestras deben ser finitas y positivas; el p95 usa el rango más cercano
+    (índice ``ceil(0.95 * n) - 1``), que es el criterio conservador para muestras
+    pequeñas.
+    """
+    values = [float(value) for value in samples_ms]
+    if not values:
+        raise TrackingError("Se requiere al menos una muestra de latencia.")
+    if any(not math.isfinite(value) or value <= 0 for value in values):
+        raise TrackingError("Las latencias deben ser finitas y positivas.")
+    ordered = sorted(values)
+    index = max(0, math.ceil(0.95 * len(ordered)) - 1)
+    mean = sum(ordered) / len(ordered)
+    return LatencyStats(
+        mean_ms=mean,
+        p95_ms=ordered[index],
+        max_ms=ordered[-1],
+        throughput_fps=1000.0 / mean,
+    )
+
+
+def build_benchmark_payload(
+    *,
+    model_path: str,
+    model_sha256: str,
+    samples_ms: Sequence[float],
+    imgsz: int,
+    conf: float,
+    iou: float,
+    device: str,
+    images: int,
+    iterations: int,
+    seed: int = 42,
+    detections_total: int = 0,
+    warmup: int = 1,
+) -> RunPayload:
+    """Construye el payload de una sesión de inferencia medida (rúbrica M3).
+
+    Es una medición de servicio: parámetros reproducibles, latencia media/p95,
+    throughput y conteo de detecciones. No registra hiperparámetros de
+    entrenamiento porque el proyecto no entrena en el M3.
+    """
+    if not MODEL_SHA_PATTERN.fullmatch(model_sha256):
+        raise TrackingError("'model_sha256' debe ser un SHA256 hexadecimal de 64 caracteres.")
+    if images < 1:
+        raise TrackingError("Se requiere al menos una imagen para la medición.")
+    if iterations < 1:
+        raise TrackingError("Se requiere al menos una iteración para la medición.")
+    stats = latency_stats(samples_ms)
+    metrics = {
+        "latency_mean_ms": round(stats.mean_ms, 4),
+        "latency_p95_ms": round(stats.p95_ms, 4),
+        "latency_max_ms": round(stats.max_ms, 4),
+        "throughput_fps": round(stats.throughput_fps, 4),
+        "detections_total": float(detections_total),
+        "detections_per_image": round(detections_total / images, 4),
+    }
+    params = {
+        "model_path": model_path,
+        "model_sha256": model_sha256,
+        "imgsz": str(imgsz),
+        "conf": str(conf),
+        "iou": str(iou),
+        "device": device,
+        "seed": str(seed),
+        "images": str(images),
+        "iterations": str(iterations),
+        "warmup": str(warmup),
+    }
+    tags = {
+        "source": "ppe_detection.benchmark",
+        "experiment_kind": "inference",
+        "model_reference": f"sha256:{model_sha256}",
+        "model_sha256": model_sha256,
+        "backend": device,
+    }
+    return RunPayload(params=params, metrics=metrics, tags=tags)
+
+
+def build_model_bundle(
+    directory: Path,
+    *,
+    identity: Mapping[str, Any],
+    model_path: Path,
+    model_card: Path | None = None,
+    include_weights: bool = True,
+) -> Path:
+    """Prepara el paquete de modelo que se registra como versión en MLflow.
+
+    Incluye la identidad verificable, la Model Card y, opcionalmente, los pesos.
+    Los pesos quedan en el almacén local de artefactos de MLflow, nunca en Git.
+    """
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / "model_identity.json").write_text(
+        json.dumps(dict(identity), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    (directory / "README.md").write_text(
+        "# Paquete de modelo — GPCICD PPE Detection\n\n"
+        "Versión registrada desde un run de MLflow. La identidad se verifica por\n"
+        "SHA256; los pesos no se versionan en Git y viven en el almacén local de\n"
+        "artefactos de MLflow.\n",
+        encoding="utf-8",
+    )
+    if model_card is not None and model_card.is_file():
+        shutil.copy2(model_card, directory / "MODEL_CARD.md")
+    if include_weights:
+        shutil.copy2(model_path, directory / model_path.name)
+    return directory
+
+
 def default_run_name(summary: Mapping[str, Any]) -> str:
     """Nombre determinista: partición y prefijo del SHA256 del modelo."""
     dataset = _section(summary, "dataset")
@@ -357,6 +485,34 @@ class MlflowTracker:
                 self._mlflow.log_artifact(str(artifact))
             return str(run.info.run_id)
 
+    def log_artifacts(self, run_id: str, directory: Path, artifact_path: str = "model") -> None:
+        """Adjunta un directorio de artefactos a un run existente."""
+        with self._mlflow.start_run(run_id=run_id):
+            self._mlflow.log_artifacts(str(directory), artifact_path=artifact_path)
+
+    def register_model_version(
+        self,
+        name: str,
+        run_id: str,
+        *,
+        artifact_path: str = "model",
+        alias: str | None = None,
+        tags: Mapping[str, str] | None = None,
+    ) -> str:
+        """Registra una versión del modelo apuntando al artefacto del run."""
+        with contextlib.suppress(Exception):
+            # Si el modelo ya existe, se reutiliza; es el caso normal al re-registrar.
+            self._client.create_registered_model(name)
+        version = self._client.create_model_version(
+            name=name,
+            source=f"runs:/{run_id}/{artifact_path}",
+            run_id=run_id,
+            tags=dict(tags or {}),
+        )
+        if alias:
+            self._client.set_registered_model_alias(name, alias, version.version)
+        return str(version.version)
+
     def get_run(self, run_id: str) -> RunView:
         """Consulta un run por identificador."""
         try:
@@ -391,12 +547,185 @@ def build_parser() -> argparse.ArgumentParser:
     compare_parser = subparsers.add_parser("compare", help="Compara dos o más runs.")
     compare_parser.add_argument("--tracking-uri", default=DEFAULT_TRACKING_URI)
     compare_parser.add_argument("--run-id", action="append", required=True)
+
+    benchmark_parser = subparsers.add_parser(
+        "benchmark", help="Mide latencia y throughput de inferencia y lo registra."
+    )
+    benchmark_parser.add_argument("--model", type=Path, required=True)
+    benchmark_parser.add_argument(
+        "--images",
+        type=Path,
+        action="append",
+        required=True,
+        help="Archivo o carpeta con imágenes JPEG/PNG; se puede repetir.",
+    )
+    benchmark_parser.add_argument("--iterations", type=int, default=30)
+    benchmark_parser.add_argument("--imgsz", type=int, default=640)
+    benchmark_parser.add_argument("--conf", type=float, default=0.25)
+    benchmark_parser.add_argument("--iou", type=float, default=0.7)
+    benchmark_parser.add_argument("--device", default="cpu")
+    benchmark_parser.add_argument("--seed", type=int, default=42)
+    benchmark_parser.add_argument("--tracking-uri", default=DEFAULT_TRACKING_URI)
+    benchmark_parser.add_argument("--experiment", default=DEFAULT_BENCHMARK_EXPERIMENT)
+    benchmark_parser.add_argument("--run-name", default=None)
+
+    register_parser = subparsers.add_parser(
+        "register", help="Registra el modelo y su identidad en el Model Registry."
+    )
+    register_parser.add_argument("--run-id", required=True)
+    register_parser.add_argument("--model", type=Path, required=True)
+    register_parser.add_argument("--name", default=DEFAULT_MODEL_NAME)
+    register_parser.add_argument("--version", default=None)
+    register_parser.add_argument("--alias", default=DEFAULT_MODEL_ALIAS)
+    register_parser.add_argument("--model-card", type=Path, default=Path("docs/model-card.md"))
+    register_parser.add_argument("--no-weights", action="store_true")
+    register_parser.add_argument("--tracking-uri", default=DEFAULT_TRACKING_URI)
     return parser
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parsea los argumentos de la CLI."""
     return build_parser().parse_args(argv)
+
+
+IMAGE_SUFFIXES: frozenset[str] = frozenset({".jpg", ".jpeg", ".png"})
+
+
+def _collect_images(paths: Sequence[Path]) -> list[Path]:
+    """Recolecta imágenes JPEG/PNG de archivos o carpetas, sin duplicados."""
+    files: list[Path] = []
+    for path in paths:
+        if path.is_dir():
+            files.extend(sorted(p for p in path.iterdir() if p.suffix.lower() in IMAGE_SUFFIXES))
+        elif path.is_file() and path.suffix.lower() in IMAGE_SUFFIXES:
+            files.append(path)
+        else:
+            raise TrackingError(f"Ruta de imágenes no válida: {path}")
+    unique = list(dict.fromkeys(files))
+    if not unique:
+        raise TrackingError("No se encontraron imágenes JPEG/PNG para medir.")
+    return unique
+
+
+def _default_model_version(model_path: Path) -> str:
+    """Deduce un nombre legible del artefacto: `run/weights/best.pt` → `run`."""
+    if model_path.parent.name == "weights" and model_path.parent.parent.name:
+        return model_path.parent.parent.name
+    return model_path.stem
+
+
+def _run_benchmark(args: argparse.Namespace) -> int:
+    """Mide latencia de inferencia y registra la sesión como run."""
+    import tempfile
+    from dataclasses import replace
+    from time import perf_counter
+
+    from ppe_detection.detection.yolo import YoloDetector
+    from ppe_detection.detector_config import sha256_file
+    from ppe_detection.io import load_image
+
+    files = _collect_images(args.images)
+    images = [load_image(path) for path in files]
+    detector = YoloDetector(
+        args.model,
+        conf=args.conf,
+        iou=args.iou,
+        imgsz=args.imgsz,
+        device=args.device,
+    )
+    detector.detect(images[0], conf=args.conf)  # calentamiento fuera de la medición
+    samples: list[float] = []
+    detections_total = 0
+    for index in range(args.iterations):
+        image = images[index % len(images)]
+        started = perf_counter()
+        detections = detector.detect(image, conf=args.conf)
+        samples.append((perf_counter() - started) * 1000.0)
+        detections_total += len(detections)
+    payload = build_benchmark_payload(
+        model_path=str(args.model),
+        model_sha256=sha256_file(args.model),
+        samples_ms=samples,
+        imgsz=args.imgsz,
+        conf=args.conf,
+        iou=args.iou,
+        device=args.device,
+        images=len(images),
+        iterations=args.iterations,
+        seed=args.seed,
+        detections_total=detections_total,
+    )
+    run_name = args.run_name or f"infer-{args.imgsz}-conf{args.conf}"
+    with tempfile.TemporaryDirectory(prefix="ppe-bench-") as tmp:
+        directory = Path(tmp)
+        samples_csv = directory / "latency_samples.csv"
+        rows = "\n".join(f"{index},{value:.4f}" for index, value in enumerate(samples, start=1))
+        samples_csv.write_text(f"iteration,latency_ms\n{rows}\n", encoding="utf-8")
+        summary = directory / "summary.md"
+        summary.write_text(
+            "# Sesión de inferencia — GPCICD PPE Detection\n\n"
+            f"- Referencia del modelo: `{payload.tags['model_reference']}`\n"
+            f"- Imágenes: {len(images)} · iteraciones: {args.iterations}\n"
+            f"- Configuración: imgsz={args.imgsz}, conf={args.conf}, iou={args.iou}, "
+            f"device={args.device}\n"
+            f"- Latencia media: {payload.metrics['latency_mean_ms']} ms · "
+            f"p95: {payload.metrics['latency_p95_ms']} ms · "
+            f"throughput: {payload.metrics['throughput_fps']} fps\n",
+            encoding="utf-8",
+        )
+        payload = replace(payload, artifacts=(samples_csv, summary))
+        tracker = MlflowTracker(args.tracking_uri, args.experiment)
+        run_id = tracker.log_run(run_name, payload)
+    print(f"run_id={run_id}")
+    print(f"latency_mean_ms={payload.metrics['latency_mean_ms']}")
+    print(f"latency_p95_ms={payload.metrics['latency_p95_ms']}")
+    print(f"throughput_fps={payload.metrics['throughput_fps']}")
+    return 0
+
+
+def _run_register(args: argparse.Namespace) -> int:
+    """Registra el paquete del modelo y su identidad en el Model Registry."""
+    import tempfile
+
+    from ppe_detection.detector_config import sha256_file
+
+    if not args.model.is_file():
+        raise TrackingError(f"No existe el artefacto del modelo: {args.model}")
+    digest = sha256_file(args.model)
+    version = args.version or _default_model_version(args.model)
+    identity = {
+        "name": args.name,
+        "version": version,
+        "sha256": digest,
+        "artifact": str(args.model),
+        "reference": f"sha256:{digest}",
+        "run_id": args.run_id,
+    }
+    tracker = MlflowTracker(args.tracking_uri)
+    with tempfile.TemporaryDirectory(prefix="ppe-model-") as tmp:
+        bundle = build_model_bundle(
+            Path(tmp) / "model",
+            identity=identity,
+            model_path=args.model,
+            model_card=args.model_card,
+            include_weights=not args.no_weights,
+        )
+        tracker.log_artifacts(args.run_id, bundle, "model")
+    registered = tracker.register_model_version(
+        args.name,
+        args.run_id,
+        alias=args.alias,
+        tags={
+            "model_reference": identity["reference"],
+            "model_sha256": digest,
+            "model_version": version,
+        },
+    )
+    print(f"model={args.name}")
+    print(f"version={registered}")
+    print(f"alias={args.alias}")
+    print(f"model_reference={identity['reference']}")
+    return 0
 
 
 def _run(argv: Sequence[str] | None) -> int:
@@ -424,6 +753,10 @@ def _run(argv: Sequence[str] | None) -> int:
         tracker = MlflowTracker(args.tracking_uri)
         print(render_comparison(compare_runs(args.run_id, tracker)))
         return 0
+    if args.command == "benchmark":
+        return _run_benchmark(args)
+    if args.command == "register":
+        return _run_register(args)
     raise TrackingError(f"Comando no soportado: {args.command}")
 
 
