@@ -24,7 +24,8 @@ uv sync --all-extras
 
 ## 2. Backend local
 
-El comando usa por defecto `sqlite:///mlflow.db`, con artefactos en `mlartifacts/`.
+El comando usa por defecto `sqlite:///mlflow.db`, con artefactos en `mlruns/`
+(almacén local por omisión de MLflow).
 Ambos están cubiertos por `.gitignore`:
 
 ```text
@@ -168,7 +169,7 @@ artefactos.
 - **Los pesos no se versionan en Git.** El comando `log` rechaza `.pt`, `.pth`,
   `.onnx`, `.safetensors`, `.h5` y datasets `.zip`.
 - El **Model Registry local** puede contener una copia del artefacto en el almacén
-  local de MLflow (`mlartifacts/`, ignorado por Git) para que la versión registrada
+  local de MLflow (`mlruns/`, ignorado por Git) para que la versión registrada
   sea autocontenida; se omite con `--no-weights`.
 - La referencia estable sigue siendo el SHA256; el backend carga los pesos desde
   `PPE_MODEL_PATH`, fuera del repositorio.
