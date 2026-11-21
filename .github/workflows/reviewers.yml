@@ -6,7 +6,7 @@ name: Revisores
 
 on:
   pull_request:
-    types: [opened, ready_for_review, reopened]
+    types: [opened, ready_for_review, reopened, synchronize]
 
 permissions:
   pull-requests: write
@@ -20,6 +20,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           AUTHOR: ${{ github.event.pull_request.user.login }}
           PR: ${{ github.event.pull_request.number }}
         run: |
