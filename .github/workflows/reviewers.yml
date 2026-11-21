@@ -26,6 +26,8 @@ jobs:
         run: |
           set -euo pipefail
 
+          gh pr edit "$PR" --add-assignee "$AUTHOR"
+
           existing=$(gh pr view "$PR" --json reviewRequests \
             --jq '[.reviewRequests[].login] | join(" ")')
           if [ -n "$existing" ]; then
