@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build ownership-check codeowners estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -64,6 +64,12 @@ protos: ## Regenera los módulos protobuf de HU-010 (grpcio-tools)
 
 estado-write: ## Actualiza el bloque generado de docs/curso/ESTADO.md
 	uv run python -m ppe_detection.tools.estado --write
+
+ownership-check: ## Verifica que el cambio no toque archivos bloqueados de otro (HU-082)
+	uv run python -m ppe_detection.tools.ownership --base $${BASE:-origin/develop}
+
+codeowners: ## Regenera .github/CODEOWNERS desde docs/curso/propiedad.toml (HU-082)
+	uv run python -m ppe_detection.tools.ownership --write-codeowners
 
 frontend-install: ## Instala las dependencias del frontend (npm ci)
 	cd frontend && npm ci
