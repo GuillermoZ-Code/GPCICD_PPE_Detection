@@ -1,0 +1,152 @@
+# =============================================================================
+# Manifiesto de propiedad — GPCICD PPE Detection (M4)
+#
+# FUENTE ÚNICA de quién posee cada ruta. De aquí se generan:
+#   - .github/CODEOWNERS        (make codeowners)
+#   - la compuerta de CI        (make ownership-check)
+#
+# No editar CODEOWNERS a mano: se sobrescribe.
+#
+# Cómo se evalúa un archivo:
+#   1. Si coincide con [locked] y el dueño no es el autor -> FALLA el PR.
+#   2. Si tiene dueño en [[owner]] y no es el autor        -> ADVERTENCIA.
+#      La revisión la pide CODEOWNERS; no bloquea.
+#   3. Si no coincide con nada                             -> libre, sin aviso.
+#
+# En empate de patrones gana el más específico: más carpetas, menos comodines.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Archivos de un solo escritor. Nadie más los toca, ni con revisión.
+# Los genera una herramienta o los actualiza su dueño al cierre.
+# -----------------------------------------------------------------------------
+[[locked]]
+path = "docs/curso/ESTADO.md"
+owner = "jesusriverosUAO"
+motivo = "Regenerado por make estado-write al cierre de sesión"
+
+[[locked]]
+path = "docs/curso/backlog.md"
+owner = "jesusriverosUAO"
+motivo = "Espejo 1:1 de las issues; solo el dueño del backlog"
+
+[[locked]]
+path = "docs/curso/PRUEBAS.md"
+owner = "jesusriverosUAO"
+motivo = "Conteo de pruebas; una sola fuente"
+
+[[locked]]
+path = "AGENTS.md"
+owner = "GuillermoZ-Code"
+motivo = "Contexto de agentes y bloque de estado (mismo dueño que la plataforma)"
+
+[[locked]]
+path = "Makefile"
+owner = "jesusriverosUAO"
+motivo = "Punto de entrada único; evita carreras entre agentes"
+
+[[locked]]
+path = "uv.lock"
+owner = "GuillermoZ-Code"
+motivo = "Una dependencia a la vez: el dueño corre uv add y avisa"
+
+[[locked]]
+path = "frontend/package-lock.json"
+owner = "GuillermoZ-Code"
+motivo = "Una dependencia a la vez: el dueño corre npm install y avisa"
+
+[[locked]]
+path = "tests/conftest.py"
+owner = "GuillermoZ-Code"
+motivo = "Fixtures compartidas: punto caliente de conflictos"
+
+# -----------------------------------------------------------------------------
+# Dueños por ruta.
+# -----------------------------------------------------------------------------
+[[owner]]
+github = "GuillermoZ-Code"
+nombre = "Guillermo Zabala"
+paths = [
+  # plataforma y entrega
+  ".github/",
+  ".gitlab-ci.yml",
+  "Dockerfile",
+  "compose.yml",
+  "compose.*.yml",
+  "deploy/",
+  "docker/",
+  "opencode.json",
+  ".opencode/",
+  # paquete y entorno
+  "pyproject.toml",
+  "uv.lock",
+  ".pre-commit-config.yaml",
+  # interfaz
+  "frontend/",
+  # gobierno técnico
+  "CONSTITUTION.md",
+  "AGENTS.md",
+  "docs/adr/",
+  "docs/architecture/",
+  "docs/curso/propiedad.toml",
+  "docs/curso/M4/ASIGNACION.md",
+  # herramientas de plataforma dentro del paquete
+  "src/ppe_detection/tools/ownership.py",
+  "tests/test_ownership.py",
+]
+
+[[owner]]
+github = "HestradaUAO"
+nombre = "Hernán Estrada"
+paths = [
+  "src/ppe_detection/detection/",
+  "src/ppe_detection/preprocessing/",
+  "src/ppe_detection/postprocessing/",
+  "src/ppe_detection/evaluation/",
+  "src/ppe_detection/training/",
+  "src/ppe_detection/contracts.py",
+  "models.lock",
+  "configs/",
+  "docs/evaluation/",
+  "docs/dataset/",
+  "docs/spikes/",
+  "docs/model-card.md",
+  "tests/test_detection*.py",
+  "tests/test_evaluation*.py",
+  "tests/test_preprocessing*.py",
+]
+
+[[owner]]
+github = "ElianaCardona"
+nombre = "Eliana Cardona"
+paths = [
+  "src/ppe_detection/api/",
+  "src/ppe_detection/grpc/",
+  "src/ppe_detection/io/",
+  "src/ppe_detection/visualization/",
+  "docker/Caddyfile",
+  ".env.example",
+  "docs/operacion/",
+  "docs/maas/",
+  "docs/manual/",
+  "docs/entrega/",
+  "README.md",
+  "tests/test_api*.py",
+  "tests/test_grpc*.py",
+  "tests/test_io*.py",
+]
+
+[[owner]]
+github = "jesusriverosUAO"
+nombre = "Jesús Riveros"
+paths = [
+  "src/ppe_detection/tracking/",
+  "src/ppe_detection/tools/",
+  "docs/curso/",
+  "docs/operacion/mlflow.md",
+  "specs/",
+  ".github/ISSUE_TEMPLATE/",
+  "tests/test_tracking*.py",
+  "tests/test_estado*.py",
+  "tests/test_tools*.py",
+]
