@@ -2,7 +2,7 @@
 # No editar a mano: se sobrescribe.
 
 uv.lock @GuillermoZ-Code
-Makefile @jesusriverosUAO
+Makefile @GuillermoZ-Code
 AGENTS.md @GuillermoZ-Code
 README.md @ElianaCardona
 Dockerfile @GuillermoZ-Code

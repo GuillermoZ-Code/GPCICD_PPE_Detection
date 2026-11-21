@@ -20,9 +20,12 @@
 
 ## Archivos que no son tuyos aunque parezcan libres
 
-`AGENTS.md`, `CONSTITUTION.md`, `Makefile`, `uv.lock`, `frontend/package-lock.json`,
-`tests/conftest.py`, `docs/curso/ESTADO.md`, `docs/curso/backlog.md`,
-`docs/curso/PRUEBAS.md`. Todos están en `[[locked]]`.
+`docs/curso/ESTADO.md`, `docs/curso/backlog.md`, `docs/curso/PRUEBAS.md`,
+`uv.lock` y `frontend/package-lock.json`. Todos están en `[[locked]]`.
+
+Los compartidos con dueño (`AGENTS.md`, `CONSTITUTION.md`, `Makefile`,
+`tests/conftest.py`) sí se pueden tocar, pero generan aviso y revisión
+obligatoria. En el `Makefile`, añade objetivos; no reordenes lo existente.
 
 ## Git
 

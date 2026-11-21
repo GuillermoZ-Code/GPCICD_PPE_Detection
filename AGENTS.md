@@ -58,9 +58,13 @@ Cuatro integrantes con sus agentes trabajan a la vez. Reglas duras:
 5. **Reparto vigente:** [`docs/curso/M4/ASIGNACION.md`](./docs/curso/M4/ASIGNACION.md).
    Es el contrato: si no está ahí, no es tu tarea.
 6. **Archivos de un solo escritor:** `ESTADO.md`, `backlog.md`, `PRUEBAS.md`,
-   `Makefile`, `AGENTS.md`, `uv.lock`, `package-lock.json`, `tests/conftest.py`.
-   Si necesitas un cambio, pídelo en el issue; no lo edites.
-7. **Una HU por PR.** Nada de arreglos colaterales: se abren en su propia HU.
+   `uv.lock` y `package-lock.json`. Son generados o los bloquea un gestor de
+   dependencias; si necesitas un cambio, pídelo en el issue.
+7. **Archivos compartidos con dueño** (`AGENTS.md`, `CONSTITUTION.md`,
+   `Makefile`, `tests/conftest.py`): puedes tocarlos, pero la revisión la pide
+   CODEOWNERS. En el `Makefile`, añade objetivos; no reordenes lo existente.
+8. **Una HU por PR.** Nada de arreglos colaterales: se abren en su propia HU.
+
 
 
 ### 0.3 Precedencia de fuentes

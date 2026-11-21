@@ -36,16 +36,6 @@ owner = "jesusriverosUAO"
 motivo = "Conteo de pruebas; una sola fuente"
 
 [[locked]]
-path = "AGENTS.md"
-owner = "GuillermoZ-Code"
-motivo = "Contexto de agentes y bloque de estado (mismo dueño que la plataforma)"
-
-[[locked]]
-path = "Makefile"
-owner = "jesusriverosUAO"
-motivo = "Punto de entrada único; evita carreras entre agentes"
-
-[[locked]]
 path = "uv.lock"
 owner = "GuillermoZ-Code"
 motivo = "Una dependencia a la vez: el dueño corre uv add y avisa"
@@ -77,6 +67,7 @@ paths = [
   "docker/",
   "opencode.json",
   ".opencode/",
+  "Makefile",
   # paquete y entorno
   "pyproject.toml",
   "uv.lock",
