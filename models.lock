@@ -1,0 +1,7 @@
+# Manifiesto canónico del modelo (HU-025).
+# Los pesos NO se versionan; solo se registra su ubicación y su integridad.
+# HU-024 reemplazará `url` por el paquete de GitLab cuando esté publicado.
+name = "ppe-detection"
+version = "yolo11s-clean"
+sha256 = "E51EB08078F8ABADA1D5F3D15BFB17D94E32DA0C70467D7C79E43C338D7A9959"
+url = "file:///models/best.pt"

@@ -81,9 +81,14 @@ def test_health_exposes_the_published_model_identity() -> None:
     assert body["model_artifact"].endswith("best.pt")
 
 
-def test_health_default_identity_is_explicitly_unknown(monkeypatch) -> None:
+def test_health_default_identity_is_explicitly_unknown(tmp_path, monkeypatch) -> None:
     """AC-015.1: sin configuración la referencia no inventa un artefacto."""
     # Arrange
+    monkeypatch.setattr(
+        "ppe_detection.detector_config.DEFAULT_MANIFEST_PATH",
+        tmp_path / "missing-models.lock",
+    )
+    monkeypatch.delenv("PPE_MODEL_MANIFEST", raising=False)
     monkeypatch.delenv("PPE_MODEL_PATH", raising=False)
     monkeypatch.delenv("PPE_MODEL_VERSION", raising=False)
     monkeypatch.delenv("PPE_MODEL_SHA256", raising=False)
