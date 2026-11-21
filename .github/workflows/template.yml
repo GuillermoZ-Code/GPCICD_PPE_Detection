@@ -1,0 +1,63 @@
+name: Plantilla
+
+# Regla del equipo: toda PR usa .github/PULL_REQUEST_TEMPLATE.md.
+# GitHub solo inyecta la plantilla al abrir la PR desde la web; las que se crean
+# por `gh` o por el MCP llegan con el cuerpo que escriba el agente. Este job lo
+# verifica en cada PR y dice exactamente qué sección falta.
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  plantilla:
+    name: Plantilla
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar secciones obligatorias
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          body=$(gh pr view "$PR" --json body --jq '.body')
+
+          # Secciones que el autor debe llenar. La 2 (título) se omite porque el
+          # título va en el campo de la PR; la 9 y la 10 son del revisor.
+          required=(
+            "## 1. Identificación de la Pull Request"
+            "## 3. Tipo de cambio"
+            "## 4. Capas del pipeline y archivos afectados"
+            "## 5. Descripción de los cambios"
+            "## 6. Evidencia de pruebas"
+            "## 7. Checklist obligatorio pre-PR"
+            "## 8. Impacto y riesgos"
+          )
+
+          missing=()
+          for section in "${required[@]}"; do
+            if ! grep -qF -- "$section" <<<"$body"; then
+              missing+=("$section")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "::error::La PR no sigue .github/PULL_REQUEST_TEMPLATE.md"
+            echo
+            echo "Falta:"
+            printf '  - %s\n' "${missing[@]}"
+            echo
+            echo "Copia la plantilla completa y ajusta el cuerpo:"
+            echo "  gh pr edit $PR --body-file <archivo.md>"
+            exit 1
+          fi
+
+          echo "La PR sigue la plantilla UAO."

@@ -66,6 +66,9 @@ Cuatro integrantes con sus agentes trabajan a la vez. Reglas duras:
    `Makefile`, `tests/conftest.py`): puedes tocarlos, pero la revisión la pide
    CODEOWNERS. En el `Makefile`, añade objetivos; no reordenes lo existente.
 8. **Una HU por PR.** Nada de arreglos colaterales: se abren en su propia HU.
+9. **Plantilla obligatoria.** Toda PR usa `.github/PULL_REQUEST_TEMPLATE.md`,
+   también las que se crean por `gh` o por el MCP. El job `Plantilla` falla si
+   falta una sección del autor (1, 3, 4, 5, 6, 7 y 8).
 
 
 
