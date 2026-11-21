@@ -54,7 +54,9 @@ Cuatro integrantes con sus agentes trabajan a la vez. Reglas duras:
 3. **WIP 1:** antes del primer commit, mueve tu HU a *In progress* en el tablero.
    Si ya está ocupada, toma la siguiente. El assignee es el candado.
 4. **Sin push directo** a `develop` ni a `main`. Todo entra por PR con la
-   aprobación de otra persona; el autor nunca se autoaprueba.
+   aprobación de otra persona; el autor nunca se autoaprueba. Toda PR lleva como
+   revisor a **uno de los otros tres integrantes**: el workflow `Revisores` lo
+   asigna por turno según el número de PR. Si la elección no encaja, se cambia a mano.
 5. **Reparto vigente:** [`docs/curso/M4/ASIGNACION.md`](./docs/curso/M4/ASIGNACION.md).
    Es el contrato: si no está ahí, no es tu tarea.
 6. **Archivos de un solo escritor:** `ESTADO.md`, `backlog.md`, `PRUEBAS.md`,
