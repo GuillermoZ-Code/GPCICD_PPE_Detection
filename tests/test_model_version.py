@@ -61,6 +61,15 @@ def _identity(
     return ModelIdentity(version=version, sha256=sha256, artifact=artifact)
 
 
+def _without_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Aísla las pruebas de HU-013 del manifiesto versionado de HU-025."""
+    monkeypatch.setattr(
+        "ppe_detection.detector_config.DEFAULT_MANIFEST_PATH",
+        tmp_path / "missing-models.lock",
+    )
+    monkeypatch.delenv("PPE_MODEL_MANIFEST", raising=False)
+
+
 def _client(identity: ModelIdentity) -> TestClient:
     return TestClient(
         create_app(
@@ -169,6 +178,7 @@ def test_default_model_identity_computes_sha_from_path(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     # Arrange
+    _without_manifest(monkeypatch, tmp_path)
     artifact = tmp_path / "best.pt"
     artifact.write_bytes(b"pesos")
     monkeypatch.setenv("PPE_MODEL_PATH", str(artifact))
@@ -197,9 +207,10 @@ def test_default_model_identity_rejects_invalid_sha_env(
 
 
 def test_default_model_identity_without_path_has_no_sha(
-    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     # Arrange
+    _without_manifest(monkeypatch, tmp_path)
     monkeypatch.delenv("PPE_MODEL_PATH", raising=False)
     monkeypatch.delenv("PPE_MODEL_VERSION", raising=False)
     monkeypatch.delenv("PPE_MODEL_SHA256", raising=False)
@@ -215,9 +226,10 @@ def test_default_model_identity_without_path_has_no_sha(
 
 
 def test_default_model_identity_reads_version_and_artifact(
-    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     # Arrange
+    _without_manifest(monkeypatch, tmp_path)
     monkeypatch.setenv("PPE_MODEL_VERSION", MODEL_VERSION)
     monkeypatch.setenv("PPE_MODEL_PATH", "C:/models/yolo11s-clean/best.pt")
     monkeypatch.delenv("PPE_MODEL_SHA256", raising=False)
