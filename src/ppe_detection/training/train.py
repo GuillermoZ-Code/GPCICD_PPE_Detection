@@ -33,6 +33,33 @@ from typing import Any
 
 SPLITS = ("train", "valid", "test")
 DEFAULT_MODEL = "yolov8n.pt"
+TRAIN_CONFIG_KEYS = frozenset(
+    {
+        "data",
+        "eval_data",
+        "model",
+        "epochs",
+        "imgsz",
+        "batch",
+        "device",
+        "project",
+        "name",
+        "seed",
+        "patience",
+        "workers",
+        "save_period",
+        "resume",
+        "export_onnx",
+        "backup_dir",
+        "mlflow_uri",
+        "mlflow_experiment",
+        "cache",
+        "amp",
+        "eval_split",
+        "skip_eval",
+        "dry_run",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -61,71 +88,108 @@ class TrainConfig:
     amp: bool
     eval_split: str
     skip_eval: bool
+    dry_run: bool = False
+
+
+def _load_train_config(path: Path) -> dict[str, Any]:
+    """Carga un YAML de entrenamiento y rechaza claves desconocidas."""
+    if not path.is_file():
+        raise FileNotFoundError(f"No existe el YAML de entrenamiento: {path}")
+    yaml = _import_optional("yaml")
+    try:
+        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except Exception as exc:  # PyYAML expone su propia jerarquía de errores.
+        raise ValueError(f"{path} no es un YAML válido: {exc}") from exc
+    if not isinstance(raw, Mapping):
+        raise ValueError(f"{path} debe contener un objeto YAML")
+    unknown = set(raw) - TRAIN_CONFIG_KEYS
+    if unknown:
+        names = ", ".join(sorted(str(key) for key in unknown))
+        raise ValueError(f"Claves desconocidas en {path}: {names}")
+    return dict(raw)
 
 
 def parse_args(argv: Sequence[str] | None = None) -> TrainConfig:
-    """Parsea la CLI y deriva el YAML de evaluación si existe."""
+    """Parsea CLI + YAML y deriva el YAML de evaluación si existe."""
     parser = argparse.ArgumentParser(
         prog="ppe-train",
         description="Fine-tuning de YOLO para detección de EPP (Colab Pro / GPU).",
     )
-    parser.add_argument("--data", type=Path, required=True, help="data.yaml de entrenamiento")
+    parser.add_argument("--config", type=Path, default=None, help="YAML de hiperparámetros")
+    parser.add_argument("--data", type=Path, default=None, help="data.yaml de entrenamiento")
     parser.add_argument("--eval-data", type=Path, default=None, help="data.yaml del eval sin fuga")
-    parser.add_argument("--model", default=DEFAULT_MODEL, help="pesos base (COCO o checkpoint)")
-    parser.add_argument("--epochs", type=int, default=100)
-    parser.add_argument("--imgsz", type=int, default=640)
-    parser.add_argument("--batch", type=int, default=-1, help="-1 = AutoBatch")
+    parser.add_argument("--model", default=None, help="pesos base (COCO o checkpoint)")
+    parser.add_argument("--epochs", type=int, default=None)
+    parser.add_argument("--imgsz", type=int, default=None)
+    parser.add_argument("--batch", type=int, default=None, help="-1 = AutoBatch")
     parser.add_argument("--device", default=None, help="0, cpu, mps; vacío = automático")
-    parser.add_argument("--project", type=Path, default=Path("runs/train"))
-    parser.add_argument("--name", default="yolov8n_clean")
-    parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--patience", type=int, default=20)
-    parser.add_argument("--workers", type=int, default=2)
-    parser.add_argument("--save-period", type=int, default=5)
-    parser.add_argument("--resume", action="store_true", help="reanuda desde last.pt")
-    parser.add_argument("--export-onnx", action="store_true")
+    parser.add_argument("--project", type=Path, default=None)
+    parser.add_argument("--name", default=None)
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--patience", type=int, default=None)
+    parser.add_argument("--workers", type=int, default=None)
+    parser.add_argument("--save-period", type=int, default=None)
+    parser.add_argument("--resume", action="store_true", default=None, help="reanuda desde last.pt")
+    parser.add_argument("--export-onnx", action="store_true", default=None)
     parser.add_argument("--backup-dir", type=Path, default=None, help="copia de artefactos (Drive)")
     parser.add_argument("--mlflow-uri", default=None, help="tracking URI de MLflow")
-    parser.add_argument("--mlflow-experiment", default="ppe-detection")
-    parser.add_argument("--cache", action="store_true", help="cachear imágenes en RAM")
-    parser.add_argument("--amp", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--eval-split", choices=SPLITS, default="test")
-    parser.add_argument("--skip-eval", action="store_true")
+    parser.add_argument("--mlflow-experiment", default=None)
+    parser.add_argument(
+        "--cache", action="store_true", default=None, help="cachear imágenes en RAM"
+    )
+    parser.add_argument("--amp", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--eval-split", choices=SPLITS, default=None)
+    parser.add_argument("--skip-eval", action="store_true", default=None)
+    parser.add_argument("--dry-run", action="store_true", default=None)
     args = parser.parse_args(argv)
 
-    eval_data = args.eval_data
-    if eval_data is None and not args.skip_eval:
-        candidate = args.data.parent / "data_eval_preentrenados.yaml"
+    values = _load_train_config(args.config) if args.config is not None else {}
+
+    def pick(name: str, default: Any) -> Any:
+        value = getattr(args, name)
+        return values.get(name, default) if value is None else value
+
+    data_value = pick("data", None)
+    if data_value is None:
+        parser.error("--data es obligatorio si el YAML no lo define.")
+    data = Path(data_value)
+    eval_value = pick("eval_data", None)
+    eval_data = Path(eval_value) if eval_value is not None else None
+    skip_eval = bool(pick("skip_eval", False))
+    if eval_data is None and not skip_eval:
+        candidate = data.parent / "data_eval_preentrenados.yaml"
         if candidate.is_file():
             eval_data = candidate
 
-    device = args.device.strip() if isinstance(args.device, str) else args.device
-    if device == "":
-        device = None
+    device = pick("device", None)
+    if isinstance(device, str):
+        device = device.strip() or None
+    backup_value = pick("backup_dir", None)
 
     return TrainConfig(
-        data=args.data,
+        data=data,
         eval_data=eval_data,
-        model=args.model,
-        epochs=args.epochs,
-        imgsz=args.imgsz,
-        batch=args.batch,
+        model=str(pick("model", DEFAULT_MODEL)),
+        epochs=int(pick("epochs", 100)),
+        imgsz=int(pick("imgsz", 640)),
+        batch=int(pick("batch", -1)),
         device=device,
-        project=args.project,
-        name=args.name,
-        seed=args.seed,
-        patience=args.patience,
-        workers=args.workers,
-        save_period=args.save_period,
-        resume=args.resume,
-        export_onnx=args.export_onnx,
-        backup_dir=args.backup_dir,
-        mlflow_uri=args.mlflow_uri,
-        mlflow_experiment=args.mlflow_experiment,
-        cache=args.cache,
-        amp=args.amp,
-        eval_split=args.eval_split,
-        skip_eval=args.skip_eval,
+        project=Path(pick("project", Path("runs/train"))),
+        name=str(pick("name", "yolov8n_clean")),
+        seed=int(pick("seed", 42)),
+        patience=int(pick("patience", 20)),
+        workers=int(pick("workers", 2)),
+        save_period=int(pick("save_period", 5)),
+        resume=bool(pick("resume", False)),
+        export_onnx=bool(pick("export_onnx", False)),
+        backup_dir=Path(backup_value) if backup_value is not None else None,
+        mlflow_uri=pick("mlflow_uri", None),
+        mlflow_experiment=str(pick("mlflow_experiment", "ppe-detection")),
+        cache=bool(pick("cache", False)),
+        amp=bool(pick("amp", True)),
+        eval_split=str(pick("eval_split", "test")),
+        skip_eval=skip_eval,
+        dry_run=bool(pick("dry_run", False)),
     )
 
 
@@ -569,10 +633,13 @@ def _validate_config(config: TrainConfig) -> None:
 def main(argv: Sequence[str] | None = None) -> int:
     """Orquesta entrenamiento, evaluación, exportación y respaldo."""
     config = parse_args(argv)
-    _validate_config(config)
-    started_at = datetime.now(UTC).isoformat()
     print("Configuración:")
     print(json.dumps(_jsonable(asdict(config)), indent=2, ensure_ascii=False))
+    if config.dry_run:
+        return 0
+
+    _validate_config(config)
+    started_at = datetime.now(UTC).isoformat()
 
     run_dir, best = train_model(config)
     print(f"Entrenamiento terminado: {run_dir}")
