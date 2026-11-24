@@ -1,6 +1,6 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Generado:** 2026-11-24 01:55 UTC · `make pruebas`
+> **Generado:** 2026-11-24 07:23 UTC · `make pruebas`
 > **Requisito del curso:** ≥ 400 pruebas unitarias (mínimo, no techo).
 > **Fuente:** casos recolectados por pytest y por Vitest; no se edita a mano.
 
@@ -8,9 +8,9 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend | pytest | 39 | 457 | `make test` |
+| Backend | pytest | 50 | 544 | `make test` |
 | Frontend | Vitest | 9 | 76 | `make frontend-test` |
-| **Total** | | **48** | **533** | `make check` + `make frontend-check` |
+| **Total** | | **59** | **620** | `make check` + `make frontend-check` |
 
 ## 2. Desglose por archivo
 
@@ -19,11 +19,14 @@
 | tests/test_api.py | pytest | 12 | Eliana Cardona |
 | tests/test_api_contract.py | pytest | 15 | Eliana Cardona |
 | tests/test_artifact_fetch.py | pytest | 8 | sin dueño |
+| tests/test_backlog_mirror.py | pytest | 4 | sin dueño |
 | tests/test_calidad.py | pytest | 5 | sin dueño |
 | tests/test_contracts.py | pytest | 28 | sin dueño |
 | tests/test_docker.py | pytest | 9 | sin dueño |
 | tests/test_docker_assets.py | pytest | 13 | sin dueño |
+| tests/test_docs_readme.py | pytest | 4 | sin dueño |
 | tests/test_dor_dod.py | pytest | 4 | sin dueño |
+| tests/test_engram_config.py | pytest | 8 | sin dueño |
 | tests/test_estado.py | pytest | 10 | Jesús Riveros |
 | tests/test_estado_tools.py | pytest | 10 | Jesús Riveros |
 | tests/test_evaluation.py | pytest | 9 | Hernán Estrada |
@@ -42,16 +45,24 @@
 | tests/test_metrics_golden.py | pytest | 9 | sin dueño |
 | tests/test_model_manifest.py | pytest | 10 | sin dueño |
 | tests/test_model_version.py | pytest | 21 | sin dueño |
+| tests/test_onnx_backend.py | pytest | 9 | sin dueño |
 | tests/test_overlay.py | pytest | 7 | sin dueño |
 | tests/test_overlay_launcher.py | pytest | 5 | sin dueño |
 | tests/test_ownership.py | pytest | 17 | Guillermo Zabala |
 | tests/test_plan_pruebas.py | pytest | 4 | sin dueño |
 | tests/test_predict.py | pytest | 16 | sin dueño |
 | tests/test_results.py | pytest | 10 | sin dueño |
+| tests/test_retro_m4.py | pytest | 4 | sin dueño |
+| tests/test_riesgos_m4.py | pytest | 4 | sin dueño |
 | tests/test_smoke.py | pytest | 1 | sin dueño |
+| tests/test_tools_check_specs.py | pytest | 13 | Jesús Riveros |
 | tests/test_tools_pruebas.py | pytest | 6 | Jesús Riveros |
+| tests/test_tools_rubrica.py | pytest | 8 | Jesús Riveros |
+| tests/test_tools_trazabilidad.py | pytest | 17 | Jesús Riveros |
 | tests/test_tracking.py | pytest | 11 | Jesús Riveros |
 | tests/test_tracking_benchmark.py | pytest | 15 | Jesús Riveros |
+| tests/test_tracking_comparison.py | pytest | 8 | Jesús Riveros |
+| tests/test_tracking_latency_run.py | pytest | 8 | Jesús Riveros |
 | tests/test_tracking_mlflow.py | pytest | 25 | Jesús Riveros |
 | tests/test_training.py | pytest | 15 | sin dueño |
 | tests/test_yolo_detector.py | pytest | 20 | sin dueño |
@@ -72,8 +83,8 @@
 | Eliana Cardona | 58 | 0 | 58 |
 | Guillermo Zabala | 17 | 76 | 93 |
 | Hernán Estrada | 19 | 0 | 19 |
-| Jesús Riveros | 77 | 0 | 77 |
-| sin dueño | 286 | 0 | 286 |
+| Jesús Riveros | 131 | 0 | 131 |
+| sin dueño | 319 | 0 | 319 |
 
 ## 4. Cómo se actualiza
 
