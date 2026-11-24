@@ -1,0 +1,31 @@
+name: Specs
+
+# Validador de specs SDD (HU-096): exige spec.md, plan.md y tasks.md, las secciones
+# obligatorias y cada AC con evidencia resoluble.
+on:
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  specs:
+    name: Specs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Sincronizar entorno
+        run: uv sync --all-groups
+
+      - name: Validar specs
+        run: uv run python -m ppe_detection.tools.check_specs --check

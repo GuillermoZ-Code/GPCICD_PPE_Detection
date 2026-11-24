@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build ownership-check codeowners estado protos estado-write pruebas pruebas-write trazabilidad trazabilidad-write trazabilidad-check frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build ownership-check codeowners estado protos estado-write pruebas pruebas-write trazabilidad trazabilidad-write trazabilidad-check specs-check frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -79,6 +79,9 @@ trazabilidad-write: ## Regenera docs/curso/TRAZABILIDAD.md (HU-093)
 
 trazabilidad-check: ## Falla si una HU cerrada no tiene spec o pruebas (HU-093)
 	uv run python -m ppe_detection.tools.trazabilidad --check
+
+specs-check: ## Valida las specs SDD del repositorio (HU-096)
+	uv run python -m ppe_detection.tools.check_specs --check
 
 ownership-check: ## Verifica que el cambio no toque archivos bloqueados de otro (HU-082)
 	uv run python -m ppe_detection.tools.ownership --base $${BASE:-origin/develop}
