@@ -16,6 +16,7 @@ import re
 import shutil
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -528,6 +529,42 @@ def render_comparison(runs: Sequence[RunView]) -> str:
             "",
         ]
     )
+    return "\n".join(lines)
+
+
+def _format_metric(value: float | None) -> str:
+    """Formatea una métrica o devuelve un guion si falta."""
+    return "—" if value is None else f"{value:.3f}"
+
+
+def render_comparison_report(
+    runs: Sequence[RunView], *, tracking_uri: str, generated_at: str | None = None
+) -> str:
+    """Informe Markdown con la tabla y los enlaces a cada run (HU-099)."""
+    stamp = generated_at or datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
+    base = tracking_uri.rstrip("/")
+    lines = [
+        "# Comparación de runs",
+        "",
+        f"> **Generado:** {stamp}",
+        f"> **Tracking URI:** `{tracking_uri}`",
+        "> **Fuente:** runs registrados en MLflow; el artefacto se referencia por SHA256.",
+        "",
+        "| Run | mAP50 | mAP50-95 | Precision | Recall | Artefacto | Enlace |",
+        "|---|---:|---:|---:|---:|---|---|",
+    ]
+    for run in runs:
+        artifact = run.params.get("model_path", "—")
+        reference = run.tags.get("model_reference", "")
+        link = f"[{run.run_name}]({base}/#/runs/{run.run_id})"
+        lines.append(
+            f"| {run.run_name} | {_format_metric(run.metrics.get('map50'))} | "
+            f"{_format_metric(run.metrics.get('map50_95'))} | "
+            f"{_format_metric(run.metrics.get('precision'))} | "
+            f"{_format_metric(run.metrics.get('recall'))} | "
+            f"`{artifact}` {reference} | {link} |"
+        )
+    lines.append("")
     return "\n".join(lines)
 
 
