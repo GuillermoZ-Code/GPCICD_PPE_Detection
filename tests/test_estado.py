@@ -112,9 +112,9 @@ def test_parse_backlog_sp_matches_real_backlog() -> None:
     points = parse_backlog_sp(text)
 
     # Assert
-    assert len(points) == 15
+    assert len(points) == 113
     assert points["HU-015"] == 1
-    assert sum(points.values()) == 22
+    assert sum(points.values()) == 219
 
 
 def test_render_summarizes_prs_issues_and_next() -> None:
