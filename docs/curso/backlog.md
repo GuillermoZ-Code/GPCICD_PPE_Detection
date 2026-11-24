@@ -164,9 +164,9 @@ El reparto, las dependencias y las olas son los de
 | HU-090 | [#146](../../issues/146) | Tablero con Fibonacci y olas | `ep-14` | 2 | P0 | 2 | 091 | abierta |
 | HU-092 | [#148](../../issues/148) | Sincronizar `backlog.md` con las 113 HU | `ep-14` | 2 | P0 | 2 | [093](../../specs/093-hu-092-backlog-espejo/) | abierta |
 | HU-093 | [#149](../../issues/149) | Matriz de trazabilidad HU → issue → spec → PR | `ep-14` | 5 | P0 | 2 | [094](../../specs/094-hu-093-matriz-trazabilidad/) | abierta |
-| HU-096 | [#152](../../issues/152) | Validador de specs SDD | `ep-14` | 3 | P1 | 2 | 097 | abierta |
-| HU-101 | [#157](../../issues/157) | Engram: memoria de los agentes | `ep-12` | 2 | P0 | 2 | [102](../../specs/102-hu-101-engram/) | abierta |
-| HU-104 | [#160](../../issues/160) | Registro de riesgos del M4 | `ep-14` | 1 | P1 | 2 | 105 | abierta |
+| HU-096 | [#152](../../issues/152) | Validador de specs SDD | `ep-14` | 3 | P1 | 2 | [097](../../specs/097-hu-096-validador-specs/) | abierta |
+| HU-101 | [#157](../../issues/157) | Engram: memoria de los agentes | `ep-12` | 2 | P0 | 2 | 102 | abierta |
+| HU-104 | [#160](../../issues/160) | Registro de riesgos del M4 | `ep-14` | 1 | P1 | 2 | [105](../../specs/105-hu-104-riesgos/) | abierta |
 | HU-097 | [#153](../../issues/153) | Runs de YOLO26 y YOLO11s en MLflow | `ep-14` | 2 | P0 | 3 | 098 | abierta |
 | HU-098 | [#154](../../issues/154) | Model Registry con champion/challenger | `ep-14` | 2 | P1 | 3 | 099 | abierta |
 | HU-099 | [#155](../../issues/155) | Informe comparativo de runs | `ep-14` | 1 | P1 | 3 | 100 | abierta |
