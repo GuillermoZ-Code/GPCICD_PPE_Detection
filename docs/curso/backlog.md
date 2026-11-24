@@ -140,7 +140,7 @@ El reparto, las dependencias y las olas son los de
 | HU-019 | [#75](../../issues/75) | Evaluación YOLO26 vs. YOLO11s | `ep-09` | 3 | P0 | 3 | [020](../../specs/020-hu-019-comparar-yolo26-yolo11/) | cerrada |
 | HU-020 | [#76](../../issues/76) | Benchmark de latencia por resolución | `ep-09` | 3 | P1 | 3 | [021](../../specs/021-hu-020-benchmark-latencia/) | cerrada |
 | HU-021 | [#77](../../issues/77) | Adaptar el detector a YOLO26 | `ep-09` | 3 | P0 | 3 | [022](../../specs/022-hu-021-detector-nms-free/) | cerrada |
-| HU-022 | [#78](../../issues/78) | Exportación ONNX y backend opcional | `ep-09` | 5 | P2 | 3 | 023 | abierta |
+| HU-022 | [#78](../../issues/78) | Exportación ONNX y backend opcional | `ep-09` | 5 | P2 | 3 | [023](../../specs/023-hu-022-export-onnx/) | abierta |
 | HU-023 | [#79](../../issues/79) | ADR: modelo productivo | `ep-09` | 1 | P0 | 3 | [024](../../specs/024-hu-023-adr-modelo-productivo/) | cerrada |
 | HU-029 | [#85](../../issues/85) | Calibración de umbrales por clase | `ep-09` | 2 | P1 | 3 | 030 | abierta |
 | HU-030 | [#86](../../issues/86) | Análisis de falsos positivos y negativos | `ep-09` | 2 | P1 | 3 | 031 | abierta |
