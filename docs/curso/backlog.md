@@ -171,7 +171,7 @@ El reparto, las dependencias y las olas son los de
 | HU-098 | [#154](../../issues/154) | Model Registry con champion/challenger | `ep-14` | 2 | P1 | 3 | 099 | abierta |
 | HU-099 | [#155](../../issues/155) | Informe comparativo de runs | `ep-14` | 1 | P1 | 3 | 100 | abierta |
 | HU-100 | [#156](../../issues/156) | Latencia del benchmark en MLflow | `ep-14` | 1 | P2 | 3 | [101](../../specs/101-hu-100-latencia-mlflow/) | abierta |
-| HU-102 | [#158](../../issues/158) | Protocolo de Engram y ADR | `ep-12` | 2 | P1 | 3 | 103 | abierta |
+| HU-102 | [#158](../../issues/158) | Protocolo de Engram y ADR | `ep-12` | 2 | P1 | 3 | [103](../../specs/103-hu-102-protocolo-engram/) | abierta |
 | HU-103 | [#159](../../issues/159) | Informe de sprint y burndown | `ep-14` | 2 | P1 | 3 | 104 | abierta |
 | HU-106 | [#162](../../issues/162) | `make estado` con el pipeline de GitLab | `ep-14` | 3 | P2 | 3 | 107 | abierta |
 | HU-108 | [#164](../../issues/164) | Retrospectiva y lecciones | `ep-15` | 1 | P2 | 3 | [109](../../specs/109-hu-108-retrospectiva/) | abierta |
