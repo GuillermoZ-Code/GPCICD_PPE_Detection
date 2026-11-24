@@ -43,6 +43,14 @@ def _export_dependencies_available() -> bool:
     return all(importlib.util.find_spec(name) is not None for name in ("onnx", "onnxslim"))
 
 
+def _package_version(name: str) -> str:
+    """Versión instalada o 'unknown' si el entorno no la tiene (CI base)."""
+    try:
+        return importlib.metadata.version(name)
+    except importlib.metadata.PackageNotFoundError:
+        return "unknown"
+
+
 def _load_yolo() -> Any:
     try:
         return importlib.import_module("ultralytics").YOLO
@@ -114,8 +122,8 @@ def export_onnx(
                 "onnx_sha256": onnx_sha,
                 "imgsz": imgsz,
                 "opset": opset,
-                "ultralytics": importlib.metadata.version("ultralytics"),
-                "torch": importlib.metadata.version("torch"),
+                "ultralytics": _package_version("ultralytics"),
+                "torch": _package_version("torch"),
             },
             indent=2,
             ensure_ascii=False,
