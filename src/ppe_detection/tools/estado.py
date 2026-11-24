@@ -28,6 +28,7 @@ HU_HEADING = re.compile(r"^### (HU-\d{3})\b")
 ANY_HEADING = re.compile(r"^#{1,4} ")
 HU_IN_TITLE = re.compile(r"HU-(\d{3})")
 SP_VALUE = re.compile(r"\*\*SP:\*\*\s*(\d+)")
+BACKLOG_ROW = re.compile(r"^\|\s*(HU-\d{3})\s*\|\s*\[#\d+\]\([^)]*\)\s*\|")
 LINKED_ISSUE = re.compile(r"closes\s+#(\d+)", re.IGNORECASE)
 
 FAILED_STATES = frozenset({"FAILURE", "CANCELLED", "TIMED_OUT", "ACTION_REQUIRED", "ERROR"})
@@ -102,8 +103,9 @@ def run(command: Sequence[str]) -> str | None:
 def parse_backlog_sp(text: str) -> dict[str, int]:
     """Extrae los SP por HU del backlog espejo.
 
-    Solo toma el primer ``**SP:**`` de cada sección ``### HU-xxx``. Cualquier otro
-    encabezado cierra la sección, para no confundir las tablas de TA/SPI con HUs.
+    Acepta el formato de tablas (HU-092) y el anterior de secciones ``### HU-xxx``
+    con ``**SP:**``. En las tablas, la columna de SP es la cuarta en M3 y la quinta
+    en M4; las filas de dependencias no se cuentan porque no enlazan una issue.
     """
     points: dict[str, int] = {}
     current: str | None = None
@@ -111,6 +113,14 @@ def parse_backlog_sp(text: str) -> dict[str, int]:
         if ANY_HEADING.match(line):
             heading = HU_HEADING.match(line)
             current = heading.group(1) if heading else None
+            continue
+        table_row = BACKLOG_ROW.match(line)
+        if table_row:
+            cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+            for index in (3, 4):
+                if index < len(cells) and cells[index].isdigit():
+                    points[table_row.group(1)] = int(cells[index])
+                    break
             continue
         if current is None or current in points or "**SP:**" not in line:
             continue
