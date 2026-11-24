@@ -140,7 +140,7 @@ El reparto, las dependencias y las olas son los de
 | HU-019 | [#75](../../issues/75) | Evaluación YOLO26 vs. YOLO11s | `ep-09` | 3 | P0 | 3 | [020](../../specs/020-hu-019-comparar-yolo26-yolo11/) | cerrada |
 | HU-020 | [#76](../../issues/76) | Benchmark de latencia por resolución | `ep-09` | 3 | P1 | 3 | [021](../../specs/021-hu-020-benchmark-latencia/) | cerrada |
 | HU-021 | [#77](../../issues/77) | Adaptar el detector a YOLO26 | `ep-09` | 3 | P0 | 3 | [022](../../specs/022-hu-021-detector-nms-free/) | cerrada |
-| HU-022 | [#78](../../issues/78) | Exportación ONNX y backend opcional | `ep-09` | 5 | P2 | 3 | 023 | abierta |
+| HU-022 | [#78](../../issues/78) | Exportación ONNX y backend opcional | `ep-09` | 5 | P2 | 3 | [023](../../specs/023-hu-022-export-onnx/) | abierta |
 | HU-023 | [#79](../../issues/79) | ADR: modelo productivo | `ep-09` | 1 | P0 | 3 | [024](../../specs/024-hu-023-adr-modelo-productivo/) | cerrada |
 | HU-029 | [#85](../../issues/85) | Calibración de umbrales por clase | `ep-09` | 2 | P1 | 3 | 030 | abierta |
 | HU-030 | [#86](../../issues/86) | Análisis de falsos positivos y negativos | `ep-09` | 2 | P1 | 3 | 031 | abierta |
@@ -163,7 +163,7 @@ El reparto, las dependencias y las olas son los de
 | HU-089 | [#145](../../issues/145) | Crear las 100 issues | `ep-14` | 3 | P0 | 2 | 090 | cerrada |
 | HU-090 | [#146](../../issues/146) | Tablero con Fibonacci y olas | `ep-14` | 2 | P0 | 2 | 091 | abierta |
 | HU-092 | [#148](../../issues/148) | Sincronizar `backlog.md` con las 113 HU | `ep-14` | 2 | P0 | 2 | [093](../../specs/093-hu-092-backlog-espejo/) | abierta |
-| HU-093 | [#149](../../issues/149) | Matriz de trazabilidad HU → issue → spec → PR | `ep-14` | 5 | P0 | 2 | 094 | abierta |
+| HU-093 | [#149](../../issues/149) | Matriz de trazabilidad HU → issue → spec → PR | `ep-14` | 5 | P0 | 2 | [094](../../specs/094-hu-093-matriz-trazabilidad/) | abierta |
 | HU-096 | [#152](../../issues/152) | Validador de specs SDD | `ep-14` | 3 | P1 | 2 | 097 | abierta |
 | HU-101 | [#157](../../issues/157) | Engram: memoria de los agentes | `ep-12` | 2 | P0 | 2 | 102 | abierta |
 | HU-104 | [#160](../../issues/160) | Registro de riesgos del M4 | `ep-14` | 1 | P1 | 2 | 105 | abierta |

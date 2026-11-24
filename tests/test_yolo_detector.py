@@ -1,4 +1,4 @@
-"""Pruebas del adaptador YOLO con modelo falso (sin ultralytics)."""
+"""Pruebas del adaptador YOLO con modelo falso (HU-002 y HU-021, sin ultralytics)."""
 
 from __future__ import annotations
 
