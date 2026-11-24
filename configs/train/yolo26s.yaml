@@ -1,0 +1,24 @@
+# Configuración de entrenamiento YOLO26s (HU-017).
+# Solo se ejecutará si el equipo acepta el costo de latencia de YOLO26s.
+data: /content/data_colab.yaml
+eval_data: /content/data_eval_colab.yaml
+model: yolo26s.pt
+epochs: 100
+imgsz: 640
+batch: -1
+device: "0"
+project: /content/runs/train
+name: yolo26s_clean
+seed: 42
+patience: 20
+workers: 2
+save_period: 5
+resume: false
+export_onnx: true
+backup_dir: /content/drive/MyDrive/ppe/runs
+mlflow_uri: file:/content/drive/MyDrive/ppe/mlruns
+mlflow_experiment: ppe-detection
+cache: false
+amp: true
+eval_split: test
+skip_eval: false
