@@ -95,7 +95,7 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 | **Pruebas del frontend** | Vitest + Testing Library |
 | **Lint del frontend** | ESLint 9/10 + typescript-eslint |
 | **Runtime del frontend** | Node.js 24 + npm |
-| **Visión por computador** | Ultralytics YOLO (nano/small) + PyTorch CPU |
+| **Visión por computador** | Ultralytics YOLO26n (nano) + ONNX Runtime; PyTorch CPU para evaluación |
 | **Procesamiento de imagen** | OpenCV + NumPy |
 | **Experiment tracking** | MLflow (local) |
 | **Contenedor** | Docker CPU (sin CUDA) |
@@ -109,8 +109,9 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 > **prohibido** `pip` y `requirements.txt`. El frontend usa `npm` con
 > `package-lock.json` versionado (ADR 0006).
 
-> La variante exacta de YOLO y la compatibilidad con Python 3.13 + torch CPU se
-> confirman en **SPI-01**; hasta entonces no se fija una versión.
+> La variante productiva seleccionada es **YOLO26n + ONNX 640** (ADR 0009);
+> YOLO11s queda como rollback. La compatibilidad con Python 3.13 + torch CPU se
+> verificó en **SPI-01** y **SPI-03**.
 
 ## 5. Estructura del repositorio
 
@@ -218,7 +219,7 @@ Con un `FakeDetector` determinista, las HU de API (HU-006), interfaz (HU-007) y 
 |-------|---------|---------------------|
 | 1 — Frontera | LLM/VLM general | Latencia y costo altos; no requiere razonamiento abierto. |
 | 2 — Gama media | Detector mediano | Más latencia en CPU; sobredimensionado para 6 clases. |
-| 3 — Especializado | YOLO nano/small | **Elegido:** local, CPU, <100 ms objetivo, AGPL compatible. |
+| 3 — Especializado | YOLO26n nano + ONNX | **Elegido:** local, CPU, <100 ms objetivo, AGPL compatible (ADR 0009). |
 
 No hay LLM en inferencia: la tarea es detección de objetos acotada, con clases fijas,
 requisito de CPU y necesidad de reproducibilidad.
@@ -349,6 +350,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-11-11 | Contenedor Docker CPU con `uv sync --frozen` y torch desde el índice `pytorch-cpu` (Linux); SPA servida por nginx; modelo montado `:ro` | Reproducibilidad del sistema completo sin CUDA ni pesos en Git (HU-011); en Windows/macOS la resolución sigue siendo PyPI |
 | 2026-11-11 | MLflow como extra opcional `tracking`; registro en `src/ppe_detection/tracking/` | Evita ~150 dependencias en el paquete base y en la CI; el run referencia el modelo por SHA256 sin copiar pesos |
 | 2026-11-12 | Requisito de la entrega: **≥ 400 pruebas unitarias**; se cierra sin umbral de cobertura porcentual | Indicación del docente; el plan y el reparto por integrante viven en `docs/curso/PLAN-PRUEBAS.md` |
+| 2026-11-23 | Modelo productivo **YOLO26n + ONNX 640**; YOLO11s como rollback | Mejor mAP50-95 (0,614 vs 0,516) y p95 88,05 ms vs 280,63 ms; decisión en ADR 0009, rollout pendiente |
 
 ## 12. Roadmap M3–M4
 
