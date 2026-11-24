@@ -208,6 +208,7 @@ def build_detector() -> Detector:
     Raises:
         DetectorNotConfiguredError: si `PPE_MODEL_PATH` no está definida.
     """
+    from ppe_detection.detection.onnx import resolve_backend_path
     from ppe_detection.detection.yolo import (
         DEFAULT_CONF,
         DEFAULT_DEVICE,
@@ -219,6 +220,9 @@ def build_detector() -> Detector:
     model_path = os.getenv("PPE_MODEL_PATH")
     if not model_path:
         raise DetectorNotConfiguredError("No hay modelo configurado: define PPE_MODEL_PATH.")
+    model_format = os.getenv("PPE_MODEL_FORMAT")
+    if model_format:
+        model_path = str(resolve_backend_path(model_path, model_format))
     return YoloDetector(
         model_path,
         conf=env_float("PPE_CONF", DEFAULT_CONF),
