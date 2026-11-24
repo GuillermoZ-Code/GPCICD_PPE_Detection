@@ -9,5 +9,12 @@
     "docs/curso/M3/README.md",
     "docs/curso/M4/README.md",
     "docs/adr/*.md"
-  ]
+  ],
+  "mcp": {
+    "engram": {
+      "type": "local",
+      "command": ["engram", "mcp", "--tools=agent"],
+      "enabled": true
+    }
+  }
 }
