@@ -76,7 +76,7 @@ def test_models_lock_has_required_fields() -> None:
     # Assert
     assert isinstance(manifest, ModelManifest)
     assert manifest.name == "ppe-detection"
-    assert manifest.version == "yolo11s-clean"
+    assert manifest.version == "yolo26n-clean"
     assert manifest.sha256 == manifest.sha256.upper()
     assert len(manifest.sha256) == 64
     assert manifest.url
