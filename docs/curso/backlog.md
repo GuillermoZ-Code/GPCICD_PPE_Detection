@@ -170,7 +170,7 @@ El reparto, las dependencias y las olas son los de
 | HU-097 | [#153](../../issues/153) | Runs de YOLO26 y YOLO11s en MLflow | `ep-14` | 2 | P0 | 3 | 098 | abierta |
 | HU-098 | [#154](../../issues/154) | Model Registry con champion/challenger | `ep-14` | 2 | P1 | 3 | 099 | abierta |
 | HU-099 | [#155](../../issues/155) | Informe comparativo de runs | `ep-14` | 1 | P1 | 3 | 100 | abierta |
-| HU-100 | [#156](../../issues/156) | Latencia del benchmark en MLflow | `ep-14` | 1 | P2 | 3 | 101 | abierta |
+| HU-100 | [#156](../../issues/156) | Latencia del benchmark en MLflow | `ep-14` | 1 | P2 | 3 | [101](../../specs/101-hu-100-latencia-mlflow/) | abierta |
 | HU-102 | [#158](../../issues/158) | Protocolo de Engram y ADR | `ep-12` | 2 | P1 | 3 | 103 | abierta |
 | HU-103 | [#159](../../issues/159) | Informe de sprint y burndown | `ep-14` | 2 | P1 | 3 | 104 | abierta |
 | HU-106 | [#162](../../issues/162) | `make estado` con el pipeline de GitLab | `ep-14` | 3 | P2 | 3 | 107 | abierta |
