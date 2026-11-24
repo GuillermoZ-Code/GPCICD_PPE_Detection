@@ -174,7 +174,7 @@ El reparto, las dependencias y las olas son los de
 | HU-102 | [#158](../../issues/158) | Protocolo de Engram y ADR | `ep-12` | 2 | P1 | 3 | 103 | abierta |
 | HU-103 | [#159](../../issues/159) | Informe de sprint y burndown | `ep-14` | 2 | P1 | 3 | 104 | abierta |
 | HU-106 | [#162](../../issues/162) | `make estado` con el pipeline de GitLab | `ep-14` | 3 | P2 | 3 | 107 | abierta |
-| HU-108 | [#164](../../issues/164) | Retrospectiva y lecciones | `ep-15` | 1 | P2 | 3 | 109 | abierta |
+| HU-108 | [#164](../../issues/164) | Retrospectiva y lecciones | `ep-15` | 1 | P2 | 3 | [109](../../specs/109-hu-108-retrospectiva/) | abierta |
 | HU-109 | [#165](../../issues/165) | Capacidad y velocidad real | `ep-14` | 1 | P2 | 3 | 110 | abierta |
 | HU-110 | [#166](../../issues/166) | MLflow en el Droplet con autenticación | `ep-14` | 5 | P2 | 3 | 111 | abierta |
 | HU-111 | [#167](../../issues/167) | Release v1.0.0 `develop → main` | `ep-15` | 2 | P0 | 3 | 112 | abierta |
