@@ -1,4 +1,4 @@
-"""Pruebas de la medición de inferencia y el registro del modelo (rúbrica M3)."""
+"""Pruebas de la medición de inferencia y el registro del modelo (HU-020, rúbrica M3)."""
 
 from __future__ import annotations
 

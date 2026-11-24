@@ -1,4 +1,4 @@
-"""Pruebas del entrenador (sin GPU ni ultralytics)."""
+"""Pruebas del entrenador (HU-017, sin GPU ni ultralytics)."""
 
 from __future__ import annotations
 

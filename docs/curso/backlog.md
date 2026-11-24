@@ -163,7 +163,7 @@ El reparto, las dependencias y las olas son los de
 | HU-089 | [#145](../../issues/145) | Crear las 100 issues | `ep-14` | 3 | P0 | 2 | 090 | cerrada |
 | HU-090 | [#146](../../issues/146) | Tablero con Fibonacci y olas | `ep-14` | 2 | P0 | 2 | 091 | abierta |
 | HU-092 | [#148](../../issues/148) | Sincronizar `backlog.md` con las 113 HU | `ep-14` | 2 | P0 | 2 | [093](../../specs/093-hu-092-backlog-espejo/) | abierta |
-| HU-093 | [#149](../../issues/149) | Matriz de trazabilidad HU → issue → spec → PR | `ep-14` | 5 | P0 | 2 | 094 | abierta |
+| HU-093 | [#149](../../issues/149) | Matriz de trazabilidad HU → issue → spec → PR | `ep-14` | 5 | P0 | 2 | [094](../../specs/094-hu-093-matriz-trazabilidad/) | abierta |
 | HU-096 | [#152](../../issues/152) | Validador de specs SDD | `ep-14` | 3 | P1 | 2 | 097 | abierta |
 | HU-101 | [#157](../../issues/157) | Engram: memoria de los agentes | `ep-12` | 2 | P0 | 2 | 102 | abierta |
 | HU-104 | [#160](../../issues/160) | Registro de riesgos del M4 | `ep-14` | 1 | P1 | 2 | 105 | abierta |

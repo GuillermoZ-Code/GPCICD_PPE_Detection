@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build ownership-check codeowners estado protos estado-write pruebas pruebas-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build ownership-check codeowners estado protos estado-write pruebas pruebas-write trazabilidad trazabilidad-write trazabilidad-check frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -70,6 +70,15 @@ pruebas: ## Cuenta pytest y Vitest e imprime el resumen (HU-094)
 
 pruebas-write: ## Regenera docs/curso/PRUEBAS.md con el conteo real (HU-094)
 	uv run python -m ppe_detection.tools.pruebas --write
+
+trazabilidad: ## Imprime la matriz HU -> issue -> spec -> PR -> pruebas (HU-093)
+	uv run python -m ppe_detection.tools.trazabilidad
+
+trazabilidad-write: ## Regenera docs/curso/TRAZABILIDAD.md (HU-093)
+	uv run python -m ppe_detection.tools.trazabilidad --write
+
+trazabilidad-check: ## Falla si una HU cerrada no tiene spec o pruebas (HU-093)
+	uv run python -m ppe_detection.tools.trazabilidad --check
 
 ownership-check: ## Verifica que el cambio no toque archivos bloqueados de otro (HU-082)
 	uv run python -m ppe_detection.tools.ownership --base $${BASE:-origin/develop}
