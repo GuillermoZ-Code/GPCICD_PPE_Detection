@@ -178,8 +178,8 @@ El reparto, las dependencias y las olas son los de
 | HU-109 | [#165](../../issues/165) | Capacidad y velocidad real | `ep-14` | 1 | P2 | 3 | 110 | abierta |
 | HU-110 | [#166](../../issues/166) | MLflow en el Droplet con autenticación | `ep-14` | 5 | P2 | 3 | 111 | abierta |
 | HU-111 | [#167](../../issues/167) | Release v1.0.0 `develop → main` | `ep-15` | 2 | P0 | 3 | 112 | abierta |
-| HU-112 | [#168](../../issues/168) | Glosario y mapa de documentación | `ep-15` | 1 | P2 | 3 | [113](../../specs/113-hu-112-glosario/) | abierta |
-| HU-113 | [#169](../../issues/169) | Informe de cumplimiento de la rúbrica | `ep-15` | 3 | P0 | 3 | 114 | abierta |
+| HU-112 | [#168](../../issues/168) | Glosario y mapa de documentación | `ep-15` | 1 | P2 | 3 | 113 | abierta |
+| HU-113 | [#169](../../issues/169) | Informe de cumplimiento de la rúbrica | `ep-15` | 3 | P0 | 3 | [114](../../specs/114-hu-113-rubrica/) | abierta |
 
 ## Dependencias entre integrantes
 
