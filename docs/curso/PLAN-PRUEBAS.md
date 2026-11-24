@@ -1,173 +1,93 @@
-# Plan de pruebas — llegar a ≥ 400 en la entrega del M3
+# Plan de pruebas — llegar a 1.200 en la entrega del M4
 
-> **Requisito del curso:** **mínimo 400 pruebas unitarias**. No es un techo: el
-> objetivo operativo es **430**, para tener margen si alguna prueba se descarta en
-> revisión.
+> **Requisito del curso:** **mínimo 1.200 pruebas unitarias** para el M4 (indicación del
+> docente). No es un techo.
 >
-> **Para qué sirve este archivo:** cada integrante (y la IA que lo asiste) lee su
-> sección, crea las pruebas que le corresponden, actualiza el conteo y lo demuestra en
-> su PR. No se reparte por “escribir muchas pruebas”, sino por **AC y FR sin cubrir**.
+> **Para qué sirve este archivo:** cada integrante (y el agente que lo asiste) lee su
+> fila, aporta las pruebas de sus HU y demuestra el avance con el contador del
+> repositorio. No se reparte por «escribir muchas pruebas», sino por **AC y FR sin
+> cubrir**.
 
-## 1. Punto de partida (12/11/2026)
+## 1. Punto de partida y objetivo
 
-| Suite | Herramienta | Archivos | Pruebas |
-|-------|-------------|---------:|--------:|
-| Backend Python | pytest | 20 | **234** |
-| Frontend | Vitest | 8 | **39** |
-| **Total** | | **28** | **273** |
+| Campo | Valor |
+|---|---|
+| **Punto de partida** | **533** (457 pytest + 76 Vitest) |
+| **Objetivo** | **1.200** |
+| **Brecha** | **667** |
+| **Fecha de medición** | 2026-11-23 |
+| **Comando** | `make pruebas-write` |
 
-Brecha contra el mínimo: **127**. Brecha contra el objetivo operativo (430): **157**.
+El punto de partida es el conteo real del repositorio, no una cifra congelada: lo
+produce `make pruebas` (HU-094) y queda escrito en
+[`PRUEBAS.md`](PRUEBAS.md), que es generado y no se edita a mano.
 
-> **Actualización del 12/11 (frente de Guillermo):** +42 pruebas (37 de frontend y 5
-> de overlay/launcher). El total quedó en **315** (239 pytest + 76 Vitest).
-> El detalle está en [`PRUEBAS.md`](PRUEBAS.md).
->
-> **Actualización del 12/11 (frente de Eliana):** +40 pruebas (15 REST en
-> `test_api_contract.py`, 12 gRPC en `test_grpc_contract.py` y 13 estáticas de
-> Docker en `test_docker_assets.py`); abierta como PR #59 desde `develop`.
->
-> **Actualización del 13/11 (frente de Hernán):** +75 pruebas de métricas, geometría,
-> informe y casos límite de IO; fusionada como PR #58 a `develop`.
->
-> **Estado final del plan (frentes de Jesús, Guillermo, Hernán y Eliana aplicados):**
-> **430 pruebas** (354 pytest + 76 Vitest). El mínimo de **400** y el objetivo
-> operativo de **430** están **alcanzados**.
+## 2. Reparto por integrante
 
-Comando de conteo:
+| Integrante | Plan M4 | HU cerradas | Restante planificado | Ajuste de cierre | Total a aportar |
+|---|---:|---:|---:|---:|---:|
+| Guillermo Zabala | 192 | 0 | 192 | 0 | 192 |
+| Hernán Estrada | 192 | 80 | 112 | 0 | 112 |
+| Eliana Cardona | 192 | 0 | 192 | 0 | 192 |
+| Jesús Riveros | 192 | 24 | 168 | +3 | 171 |
+| **Total** | **768** | **104** | **664** | **+3** | **667** |
+
+- **HU cerradas (104 pruebas planificadas):** HU-016, HU-017, HU-019, HU-020, HU-021,
+  HU-023, HU-025, HU-026, HU-033, HU-091, HU-094, HU-095, HU-105 y HU-107.
+- **Ajuste de cierre (+3, HU-113):** algunas HU entregaron más pruebas de las
+  planificadas y otras menos; con el ajuste, `533 + 667 = 1.200`.
+- El reparto por persona es la suma de las pruebas objetivo de sus HU abiertas en
+  [`M4/ASIGNACION.md`](M4/ASIGNACION.md).
+
+## 3. Cómo se cuenta
 
 ```bash
-# Backend: casos recogidos (cada parametrización cuenta)
-uv run pytest --collect-only -q
-
-# Frontend: total que informa Vitest
-cd frontend && npm run test
+make pruebas        # imprime el resumen
+make pruebas-write  # regenera docs/curso/PRUEBAS.md
 ```
 
-## 2. Reglas del plan
+- **pytest:** `uv run pytest --collect-only` (casos recolectados, sin ejecutar la suite).
+- **Vitest:** `npx vitest list --json` desde `frontend/`.
+- El informe incluye el desglose por archivo con su dueño y los totales por integrante.
 
-- **Test-first:** la prueba se escribe antes de la implementación y referencia su AC o
-  FR en el nombre o en el docstring (`AC-008.2`, `FR-013.1`, etc.).
-- **Sin GPU, sin dataset completo y sin red.** Se usan `FakeDetector`, arrays
-  sintéticos y `tmp_path`.
-- **Sin duplicados.** Una prueba debe verificar comportamiento, no repetir otra con
-  otro nombre. Prohibido `assert True`, comparar una constante consigo misma o
-  “probar” que un mock devuelve lo que se le configuró sin pasar por el código real.
-- **Patrón AAA** (*Arrange · Act · Assert*) y nombres descriptivos en inglés.
-- **Cada PR actualiza** `docs/curso/PRUEBAS.md` con el conteo antes/después.
-- **Cierre de una HU:** su PR no se aprueba si el frente de pruebas asignado no está
-  cubierto o si el conteo baja.
+## 4. Reglas del reparto
 
-## 3. Reparto por integrante
+1. Cada HU aporta las pruebas de su tabla de `ASIGNACION.md`, con `AC-0N` en el nombre o
+   docstring.
+2. Test-first: la prueba se escribe antes de la implementación y debe fallar primero.
+3. Una prueba unitaria no depende de GPU, dataset completo ni red.
+4. Si una HU entrega menos pruebas de las planificadas, el faltante se compensa en la
+   siguiente HU del mismo integrante.
+5. El conteo se actualiza con `make pruebas-write` al cerrar cada ola; el cambio de
+   baseline se registra en el historial.
+6. Las HU de documentación aportan pruebas estructurales; no se descuentan del reparto.
 
-| Integrante | Frente principal | Nuevas |
-|------------|------------------|-------:|
-| **Hernán Estrada** | Evaluación, métricas, contratos y geometría | **75 (completado)** |
-| **Jesús Riveros** | MLflow, versión del modelo y trazabilidad | **0 (completado)** |
-| **Eliana Cardona** | API REST, gRPC y Docker | **0 (completado, 40)** |
-| **Guillermo Zabala** | Frontend, visualización y herramientas | **0 (completado, 42)** |
-| **Total** | | **0 restantes** → **430 alcanzado** |
+## 5. Historial de correcciones
 
-> Jesús completó sus 55 pruebas: 20 de HU-013 (`test_model_version.py`) y 35 de
-> tracking/estado (`test_tracking_mlflow.py` y `test_estado_tools.py`). Guillermo
-> completó sus 42: 37 de frontend (cliente, validación, App, canvas, tabla y
-> `SettingsDrawer`) y 5 de overlay/launcher. Hernán completó sus 75 en
-> `test_metrics.py`, `test_geometry.py`, `test_evaluation_report.py` y
-> `test_io_edge_cases.py` (PR #58). Eliana completó sus 40: 15 REST, 12 gRPC y
-> 13 Docker estáticos (PR #59). El plan de 115 nuevas quedó cubierto.
+| Fecha | Baseline | Problema | Corrección |
+|---|---:|---|---|
+| 13/11/2026 | 375 pytest + 76 Vitest = 451 | primer inventario del M3 | — |
+| 21/11/2026 | 451 congelado | se planificaron 749 nuevas sin contar lo ya fusionado del M4 | el plan nace desactualizado |
+| 23/11/2026 | 451 vs. 529 reales | convivían 375, 425, 451 y 515 en distintos documentos | se adopta el conteo real con `make pruebas` (HU-094) |
+| 23/11/2026 | **533** | baseline tras HU-094 y esta HU | plan de **667** pruebas nuevas |
 
-## 4. Frentes y casos concretos
+## 6. Verificación
 
-### 4.1 Hernán — 75 pruebas
+```bash
+uv run pytest tests/test_plan_pruebas.py
+make check
+make ownership-check
+```
 
-| Archivo propuesto | Casos | Qué debe cubrir | AC/FR |
-|-------------------|------:|-----------------|-------|
-| `tests/test_metrics.py` | 35 | IoU (idénticas, disjuntas, borde, anidadas, área cero, `float32` vs `float64`); emparejamiento por clase; AP con 1 y varios puntos; mAP@0.5 y @0.5:0.95; precisión/recall/F1 por clase; listas vacías de predicción y de ground truth; cajas fuera de rango | AC-008.1, AC-008.2 |
-| `tests/test_evaluation_report.py` | 10 | Configuración y partición registradas; reproducibilidad con la misma semilla; CSV/JSON con las seis clases; partición de test protegida; modelo y SHA256 en el manifiesto | AC-008.1, AC-008.4 |
-| `tests/test_geometry.py` | 20 | `xyxy` ↔ `xywh`; escalado letterbox; recorte a límites; cajas degeneradas; tipos y formas inválidas; seis clases parametrizadas | AC-003.2, contrato `Detection` |
-| `tests/test_io_edge_cases.py` | 10 | Grayscale, RGBA, EXIF rotado, archivo truncado, MIME falso, tamaño límite, nombre con espacios, `Path` vs `bytes` | AC-005.1, AC-005.3 |
+- Las pruebas del plan comprueban la aritmética, el reparto por integrante, el comando y
+  el historial.
+- `make ownership-check` no debe reportar bloqueos.
 
-**Cómo lo ejecuta su IA:** crear los archivos, correr
-`uv run pytest tests/test_metrics.py -q` y luego `make check`; actualizar
-`docs/curso/PRUEBAS.md`; PR `test(eval): ampliar la suite de evaluación y geometría`.
+## 7. Instrucción para los agentes
 
-**Estado (13/11): completado (PR #58, fusionada a `develop`).**
-
-### 4.2 Jesús — 0 pruebas restantes (frente completo)
-
-| Archivo propuesto | Casos | Qué debe cubrir | AC/FR |
-|-------------------|------:|-----------------|-------|
-| `tests/test_tracking_mlflow.py` | **25 (hecho)** | Run con parámetros, métricas y referencia al artefacto; dos runs distinguibles; comparación ordenada; fallback sin MLflow instalado; `mlruns/` fuera de Git; SHA256 del modelo; errores de conexión controlados | AC-009.1, AC-009.2, AC-009.3 |
-| `tests/test_model_version.py` | **20 (hecho)** | Identificador verificable por inferencia; dos versiones distintas se distinguen; artefacto externo referenciado; versión en la respuesta REST y gRPC; versión ausente → error controlado; hash y ruta configurable | AC-013.1, AC-013.2, AC-013.3 |
-| `tests/test_estado_tools.py` | **10 (hecho)** | Parser de SP, issues por milestone, rama y PRs, `--write` con y sin `gh`, bloque generado idempotente | FR de `tools/estado.py` |
-
-**Dependencia:** frente completo; no quedan pruebas de Jesús en el plan.
-
-### 4.3 Eliana — 40 pruebas
-
-| Archivo propuesto | Casos | Qué debe cubrir | AC/FR |
-|-------------------|------:|-----------------|-------|
-| `tests/test_api_contract.py` | 15 | Esquema OpenAPI; `conf` por petición fuera de rango; imagen inválida → 4xx sin caída; sin detecciones → 200 con mensaje; CORS; límite de tamaño; detector inyectado | AC-006.1, AC-006.2, AC-006.3, AC-004.1 |
-| `tests/test_grpc_contract.py` | 12 | Contrato `ppe.v1`; seis clases; error definido para bytes inválidos; servidor sigue disponible; equivalencia semántica REST/gRPC; metadatos de versión | AC-010.1, AC-010.2, AC-010.3 |
-| `tests/test_docker_assets.py` | 13 | `Dockerfile` multietapa; usuario no root; `uv sync --frozen`; `.dockerignore` excluye pesos y `.venv`; `compose.yml` monta el modelo `:ro`; `PPE_SERVICES`; healthcheck; nginx sirve la SPA | AC-011.1, AC-011.3, AC-011.4 |
-
-**Nota:** la prueba de contenedor real sigue marcada `@pytest.mark.docker` y no cuenta
-para las 400 si el entorno no tiene Docker; las 13 propuestas son estáticas.
-
-**Estado (13/11): completado (PR #59).** Los 40 casos están en
-`tests/test_api_contract.py`, `tests/test_grpc_contract.py` y
-`tests/test_docker_assets.py`, verificados con `uv run pytest --collect-only -q`
-(354 totales con el frente de Hernán aplicado en `develop`). Sustitución anotada:
-el plan mencionaba un *healthcheck* entre los activos Docker, pero ni
-`Dockerfile` ni `compose.yml` definen uno (AC de HU-015); se cubrió en su lugar
-la selección de `PPE_SERVICES` y la validación del artefacto en el `entrypoint`.
-
-### 4.4 Guillermo — 0 pruebas restantes (frente completo, 42)
-
-| Archivo entregado | Casos | Qué cubre | AC/FR |
-|-------------------|------:|-----------|-------|
-| `frontend/src/api/client.test.ts` | **10** | Detecciones personalizadas, copia profunda de `bbox`, umbral inclusivo y máximo, `conf` omitido, URL normalizada, error 422, identidad del modelo, URL vacía y `VITE_API_URL` | AC-007.1, AC-007.4 |
-| `frontend/src/validate.test.ts` | **5** | Peso exacto de 10 MB, extensión en mayúsculas, `.jpeg` sin MIME, extensión desconocida y MIME que prevalece sobre la extensión | AC-005.1, AC-005.2 |
-| `frontend/src/App.test.tsx` | **8** | Carga, error del cliente, reintento, filtros visuales, auto-análisis, cierre con Escape, alternancia de tema y descargas habilitadas | AC-007.1, AC-007.3, AC-007.4 |
-| `frontend/src/components/AnnotatedCanvas.test.tsx` | **4** | Escalado proporcional, cero cajas, etiquetas desactivadas y etiqueta en el borde superior | AC-003.2, AC-003.3 |
-| `frontend/src/components/DetectionTable.test.tsx` | **5** | Seis clases traducidas, confianza redondeada con barra, caja redondeada, orden recibido y tabla vacía | AC-007.2 |
-| `frontend/src/components/SettingsDrawer.test.tsx` | **5** | Panel cerrado, tema, chips de clase, umbral del modelo y descargas | FR de configuración |
-| `tests/test_overlay_launcher.py` | **5** | Etiquetas en español, colores distintos, argumentos del launcher y entorno del frontend | AC-003.1 |
-| **Total** | **42** | | |
-
-**Notas de ejecución:**
-
-- El plan proponía `SettingsPanel.test.tsx`, pero el componente real es
-  `SettingsDrawer`; la prueba se creó sobre el componente vigente.
-- `DetectionTable` no reordena: conserva el orden de la API. La prueba fija ese
-  contrato en lugar de exigir un orden por confianza que el componente no implementa.
-- «Imagen sin cajas» ya estaba cubierta por `tests/test_overlay.py`
-  (`test_empty_detections_return_unchanged_image`); no se duplicó.
-- La prueba de copia profunda encontró un defecto real: `MockDetectorClient`
-  compartía el arreglo `bbox` entre llamadas. Se corrigió en `client.ts`.
-
-## 5. Calendario de la entrega
-
-| Fecha | Hito |
-|-------|------|
-| **12/11** | HU-013 y los frentes de Jesús (+55) y Guillermo (+42) completos: **315** pruebas |
-| **13/11** | Frentes de Hernán (75) y Eliana (40) en verde y `PRUEBAS.md` actualizado; PRs a `develop` |
-| **14/11 (mañana)** | `make calidad` + `make frontend-check`; conteo final ≥ 400; release del M3 |
-| **14/11 (sustentación)** | Evidencia del conteo y de la suite en verde |
-
-## 6. Definición de terminado
-
-- [ ] `uv run pytest --collect-only -q` + Vitest suman **≥ 400**.
-- [ ] `make check` y `make frontend-check` en verde, sin pruebas rojas.
-- [ ] Cada prueba nueva referencia un AC o FR.
-- [ ] `docs/curso/PRUEBAS.md` refleja el conteo final y el desglose por archivo.
-- [ ] No hay pruebas triviales, duplicadas ni dependientes de red, GPU o dataset.
-
-## 7. Instrucción para las IA de cada integrante
-
-1. Lee este archivo y ubica la sección de tu integrante.
-2. Abre una rama `test/<frente>` desde `develop` y escribe **primero** las pruebas.
-3. Ejecuta solo tu archivo, luego `make check` (y `make frontend-check` si aplica).
-4. Actualiza `docs/curso/PRUEBAS.md` con el conteo antes/después.
-5. Abre la PR a `develop` con la plantilla UAO y evidencia del conteo.
-6. Si un caso no se puede probar sin GPU, red o dataset, **no lo inventes**: sustitúyelo
-   por uno equivalente con `FakeDetector` o datos sintéticos y anótalo en la PR.
+- Lee tu fila y tus HU abiertas en `M4/ASIGNACION.md`; no inventes pruebas fuera de tus
+  AC.
+- Si un caso no se puede reproducir en CPU, sustitúyelo por uno equivalente con
+  `FakeDetector` o datos sintéticos y anótalo en la PR.
+- No edites `PRUEBAS.md` a mano: ejecuta `make pruebas-write`.
+- Si detectas una cifra contradictoria, avisa antes de continuar.
