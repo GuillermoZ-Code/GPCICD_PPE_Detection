@@ -227,6 +227,36 @@ def build_run_payload(
     )
 
 
+COMPARISON_KEYS = ("imgsz", "conf", "iou", "seed", "dataset_split")
+
+
+def build_comparison_payloads(
+    summaries: Sequence[Mapping[str, Any]],
+    *,
+    dataset_sha256: str | None = None,
+    artifacts: Sequence[Path] = (),
+) -> list[tuple[str, RunPayload]]:
+    """Payloads de dos o más evaluaciones comparables (HU-097).
+
+    Todos los resumenes deben compartir ``imgsz``, ``conf``, ``iou``, ``seed`` y la
+    partición; el nombre del run sale de :func:`default_run_name` y el artefacto se
+    referencia por ``sha256:<hash>``, sin copiar pesos.
+    """
+    if len(summaries) < 2:
+        raise TrackingError("Se requieren al menos dos resumenes para comparar.")
+    runs: list[tuple[str, RunPayload]] = []
+    shared: dict[str, str] | None = None
+    for summary in summaries:
+        payload = build_run_payload(summary, dataset_sha256=dataset_sha256, artifacts=artifacts)
+        current = {key: payload.params[key] for key in COMPARISON_KEYS}
+        if shared is None:
+            shared = current
+        elif current != shared:
+            raise TrackingError("Los runs no comparten imgsz, conf, iou, seed y particion.")
+        runs.append((default_run_name(summary), payload))
+    return runs
+
+
 @dataclass(frozen=True, slots=True)
 class LatencyStats:
     """Resumen de latencias de inferencia (ms) y throughput derivado."""
