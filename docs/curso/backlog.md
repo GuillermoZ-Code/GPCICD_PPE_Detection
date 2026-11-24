@@ -167,19 +167,19 @@ El reparto, las dependencias y las olas son los de
 | HU-096 | [#152](../../issues/152) | Validador de specs SDD | `ep-14` | 3 | P1 | 2 | [097](../../specs/097-hu-096-validador-specs/) | abierta |
 | HU-101 | [#157](../../issues/157) | Engram: memoria de los agentes | `ep-12` | 2 | P0 | 2 | [102](../../specs/102-hu-101-engram/) | abierta |
 | HU-104 | [#160](../../issues/160) | Registro de riesgos del M4 | `ep-14` | 1 | P1 | 2 | [105](../../specs/105-hu-104-riesgos/) | abierta |
-| HU-097 | [#153](../../issues/153) | Runs de YOLO26 y YOLO11s en MLflow | `ep-14` | 2 | P0 | 3 | 098 | abierta |
+| HU-097 | [#153](../../issues/153) | Runs de YOLO26 y YOLO11s en MLflow | `ep-14` | 2 | P0 | 3 | [098](../../specs/098-hu-097-runs-mlflow/) | abierta |
 | HU-098 | [#154](../../issues/154) | Model Registry con champion/challenger | `ep-14` | 2 | P1 | 3 | 099 | abierta |
 | HU-099 | [#155](../../issues/155) | Informe comparativo de runs | `ep-14` | 1 | P1 | 3 | 100 | abierta |
 | HU-100 | [#156](../../issues/156) | Latencia del benchmark en MLflow | `ep-14` | 1 | P2 | 3 | [101](../../specs/101-hu-100-latencia-mlflow/) | abierta |
 | HU-102 | [#158](../../issues/158) | Protocolo de Engram y ADR | `ep-12` | 2 | P1 | 3 | 103 | abierta |
 | HU-103 | [#159](../../issues/159) | Informe de sprint y burndown | `ep-14` | 2 | P1 | 3 | 104 | abierta |
 | HU-106 | [#162](../../issues/162) | `make estado` con el pipeline de GitLab | `ep-14` | 3 | P2 | 3 | 107 | abierta |
-| HU-108 | [#164](../../issues/164) | Retrospectiva y lecciones | `ep-15` | 1 | P2 | 3 | 109 | abierta |
+| HU-108 | [#164](../../issues/164) | Retrospectiva y lecciones | `ep-15` | 1 | P2 | 3 | [109](../../specs/109-hu-108-retrospectiva/) | abierta |
 | HU-109 | [#165](../../issues/165) | Capacidad y velocidad real | `ep-14` | 1 | P2 | 3 | 110 | abierta |
 | HU-110 | [#166](../../issues/166) | MLflow en el Droplet con autenticación | `ep-14` | 5 | P2 | 3 | 111 | abierta |
 | HU-111 | [#167](../../issues/167) | Release v1.0.0 `develop → main` | `ep-15` | 2 | P0 | 3 | 112 | abierta |
 | HU-112 | [#168](../../issues/168) | Glosario y mapa de documentación | `ep-15` | 1 | P2 | 3 | 113 | abierta |
-| HU-113 | [#169](../../issues/169) | Informe de cumplimiento de la rúbrica | `ep-15` | 3 | P0 | 3 | 114 | abierta |
+| HU-113 | [#169](../../issues/169) | Informe de cumplimiento de la rúbrica | `ep-15` | 3 | P0 | 3 | [114](../../specs/114-hu-113-rubrica/) | abierta |
 
 ## Dependencias entre integrantes
 
