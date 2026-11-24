@@ -262,16 +262,17 @@ class LatencyStats:
     """Resumen de latencias de inferencia (ms) y throughput derivado."""
 
     mean_ms: float
+    p50_ms: float
     p95_ms: float
     max_ms: float
     throughput_fps: float
 
 
 def latency_stats(samples_ms: Sequence[float]) -> LatencyStats:
-    """Resume latencias con p95 por rango más cercano y throughput en fps.
+    """Resume latencias con p50/p95 por rango más cercano y throughput en fps.
 
-    Las muestras deben ser finitas y positivas; el p95 usa el rango más cercano
-    (índice ``ceil(0.95 * n) - 1``), que es el criterio conservador para muestras
+    Las muestras deben ser finitas y positivas; ambos percentiles usan el rango más
+    cercano (índice ``ceil(p * n) - 1``), que es el criterio conservador para muestras
     pequeñas.
     """
     values = [float(value) for value in samples_ms]
@@ -280,14 +281,60 @@ def latency_stats(samples_ms: Sequence[float]) -> LatencyStats:
     if any(not math.isfinite(value) or value <= 0 for value in values):
         raise TrackingError("Las latencias deben ser finitas y positivas.")
     ordered = sorted(values)
-    index = max(0, math.ceil(0.95 * len(ordered)) - 1)
+    index50 = max(0, math.ceil(0.50 * len(ordered)) - 1)
+    index95 = max(0, math.ceil(0.95 * len(ordered)) - 1)
     mean = sum(ordered) / len(ordered)
     return LatencyStats(
         mean_ms=mean,
-        p95_ms=ordered[index],
+        p50_ms=ordered[index50],
+        p95_ms=ordered[index95],
         max_ms=ordered[-1],
         throughput_fps=1000.0 / mean,
     )
+
+
+@dataclass(frozen=True, slots=True)
+class ResolutionLatency:
+    """Muestras de latencia (ms) de una resolución de entrada."""
+
+    imgsz: int
+    samples_ms: tuple[float, ...]
+
+
+def build_latency_payload(
+    measurements: Sequence[ResolutionLatency],
+    *,
+    hardware: str,
+    model_version: str,
+    model_sha256: str,
+) -> RunPayload:
+    """Payload de latencia por resolución (HU-100).
+
+    Registra ``p50``, ``p95``, ``mean`` y ``fps`` por resolución como métricas, y el
+    hardware, la versión y el SHA256 del modelo como parámetros y etiquetas.
+    """
+    if not measurements:
+        raise TrackingError("Se requiere al menos una medicion de latencia.")
+    if not MODEL_SHA_PATTERN.fullmatch(model_sha256):
+        raise TrackingError("'model_sha256' debe ser un SHA256 hexadecimal de 64 caracteres.")
+    metrics: dict[str, float] = {}
+    for measurement in measurements:
+        stats = latency_stats(measurement.samples_ms)
+        metrics[f"p50_ms_{measurement.imgsz}"] = stats.p50_ms
+        metrics[f"p95_ms_{measurement.imgsz}"] = stats.p95_ms
+        metrics[f"mean_ms_{measurement.imgsz}"] = stats.mean_ms
+        metrics[f"fps_{measurement.imgsz}"] = stats.throughput_fps
+    params = {
+        "hardware": hardware,
+        "model_version": model_version,
+        "model_sha256": model_sha256,
+        "resolutions": ",".join(str(measurement.imgsz) for measurement in measurements),
+    }
+    tags = {
+        "source": "ppe_detection.tracking.latency",
+        "model_reference": f"sha256:{model_sha256}",
+    }
+    return RunPayload(params=params, metrics=metrics, tags=tags)
 
 
 def build_benchmark_payload(
