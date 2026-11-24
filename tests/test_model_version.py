@@ -254,6 +254,20 @@ def test_default_model_version_uses_explicit_env(monkeypatch: pytest.MonkeyPatch
     assert version == MODEL_VERSION
 
 
+def test_default_model_version_infers_from_artifact(monkeypatch: pytest.MonkeyPatch) -> None:
+    """AC-02: el artefacto manda sobre el manifiesto cuando no hay versión explícita."""
+
+    # Arrange
+    monkeypatch.setenv("PPE_MODEL_PATH", "C:/models/yolo26n_clean.pt")
+    monkeypatch.delenv("PPE_MODEL_VERSION", raising=False)
+
+    # Act
+    version = default_model_version()
+
+    # Assert
+    assert version == "yolo26n_clean"
+
+
 def test_model_identity_exposes_artifact_path(tmp_path: Path) -> None:
     # Arrange
     artifact = tmp_path / "best.pt"

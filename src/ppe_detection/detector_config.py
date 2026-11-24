@@ -135,7 +135,7 @@ def sha256_file(path: Path) -> str:
 
 
 def default_model_identity() -> ModelIdentity:
-    """Construye la identidad desde overrides, el manifiesto o el artefacto."""
+    """Construye la identidad desde overrides, el artefacto o el manifiesto."""
     explicit_version = os.getenv("PPE_MODEL_VERSION")
     explicit_sha = os.getenv("PPE_MODEL_SHA256")
     if explicit_sha and not SHA256_PATTERN.fullmatch(explicit_sha):
@@ -146,9 +146,12 @@ def default_model_identity() -> ModelIdentity:
         manifest = _optional_model_manifest()
 
     model_path = os.getenv("PPE_MODEL_PATH")
-    version = explicit_version or (manifest.version if manifest else None)
-    if version is None:
-        version = Path(model_path).stem if model_path else "unknown"
+    version = (
+        explicit_version
+        or (Path(model_path).stem if model_path else None)
+        or (manifest.version if manifest else None)
+        or "unknown"
+    )
     artifact = model_path or (manifest.url if manifest else None)
 
     if explicit_sha:
@@ -186,15 +189,17 @@ def env_int(name: str, default: int) -> int:
 
 
 def default_model_version() -> str:
-    """Versión del modelo: override, manifiesto, nombre del artefacto o `unknown`."""
+    """Versión del modelo: override, artefacto, manifiesto o `unknown`."""
     explicit = os.getenv("PPE_MODEL_VERSION")
     if explicit:
         return explicit
+    model_path = os.getenv("PPE_MODEL_PATH")
+    if model_path:
+        return Path(model_path).stem
     manifest = _optional_model_manifest()
     if manifest is not None:
         return manifest.version
-    model_path = os.getenv("PPE_MODEL_PATH")
-    return Path(model_path).stem if model_path else "unknown"
+    return "unknown"
 
 
 def build_detector() -> Detector:

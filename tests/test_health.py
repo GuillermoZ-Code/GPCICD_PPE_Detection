@@ -104,6 +104,25 @@ def test_health_default_identity_is_explicitly_unknown(tmp_path, monkeypatch) ->
     assert body["model_artifact"] is None
 
 
+def test_health_uses_artifact_version(tmp_path, monkeypatch) -> None:
+    """AC-02 de HU-021: /health infiere la versión del artefacto configurado."""
+
+    # Arrange
+    artifact = tmp_path / "yolo26n_clean.pt"
+    artifact.write_bytes(b"modelo")
+    monkeypatch.setenv("PPE_MODEL_PATH", str(artifact))
+    monkeypatch.delenv("PPE_MODEL_VERSION", raising=False)
+    monkeypatch.delenv("PPE_MODEL_SHA256", raising=False)
+    client = TestClient(create_app(detector=FakeDetector([])))
+
+    # Act
+    body = client.get("/health").json()
+
+    # Assert
+    assert body["model_version"] == "yolo26n_clean"
+    assert body["model_artifact"] == str(artifact)
+
+
 def test_health_does_not_build_the_detector(monkeypatch) -> None:
     """AC-015.1: el chequeo es barato y no carga el modelo por su cuenta."""
     # Arrange

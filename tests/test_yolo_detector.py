@@ -229,6 +229,69 @@ def test_detector_requires_model_or_path() -> None:
         YoloDetector()
 
 
+def test_yolo26_nms_free_passes_nms_false() -> None:
+    """AC-03: el modo end-to-end de YOLO26 se solicita con nms=False."""
+
+    # Arrange
+    model = FakeModel([])
+    detector = YoloDetector(model_path="yolo26n_clean.pt", model=model, nms=False)
+
+    # Act
+    detector.detect(_image())
+
+    # Assert
+    assert model.calls[0]["nms"] is False
+
+
+def test_default_detector_omits_nms() -> None:
+    """AC-03: sin opción explícita no se envía nms al modelo."""
+
+    # Arrange
+    model = FakeModel([])
+    detector = _detector(model)
+
+    # Act
+    detector.detect(_image())
+
+    # Assert
+    assert "nms" not in model.calls[0]
+
+
+def test_yolo11_and_yolo26_outputs_are_equivalent() -> None:
+    """AC-01: la misma salida produce el mismo contrato con ambos modelos."""
+
+    # Arrange
+    boxes = [
+        FakeBox(0, 0.75, [1.0, 2.0, 5.0, 6.0]),
+        FakeBox(3, 0.91, [2.0, 1.0, 4.0, 5.0]),
+    ]
+    yolo11 = YoloDetector(model_path="yolo11s.pt", model=FakeModel([FakeResult(boxes)]))
+    yolo26 = YoloDetector(
+        model_path="yolo26n_clean.pt",
+        model=FakeModel([FakeResult(boxes)]),
+        nms=False,
+    )
+
+    # Act
+    first = yolo11.detect(_image())
+    second = yolo26.detect(_image())
+
+    # Assert
+    assert [(d.class_name, d.bbox, d.confidence) for d in first] == [
+        (d.class_name, d.bbox, d.confidence) for d in second
+    ]
+
+
+def test_detector_exposes_model_version() -> None:
+    """AC-02: la versión se infiere del nombre del artefacto."""
+
+    # Arrange / Act
+    detector = YoloDetector(model_path="yolo26n_clean.pt", model=FakeModel([]))
+
+    # Assert
+    assert detector.model_version == "yolo26n_clean"
+
+
 @pytest.mark.skipif(not Path("artifacts/models").is_dir(), reason="sin artefactos locales")
 def test_real_weights_smoke() -> None:
     # Arrange
