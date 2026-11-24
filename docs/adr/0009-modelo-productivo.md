@@ -1,9 +1,10 @@
 # ADR 0009 — Modelo productivo: YOLO26n con ONNX
 
 - **Fecha:** 2026-11-23
-- **Estado:** Propuesta para aprobación del equipo
+- **Estado:** Aceptada (PR #184)
 - **Decisores:** Grupo 4
 - **Evidencia:** HU-019, HU-020, SPI-03
+- **Rollout:** `models.lock` actualizado; artefacto y servicio pendientes
 
 ## Contexto
 

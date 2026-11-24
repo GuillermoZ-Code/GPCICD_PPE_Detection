@@ -2,6 +2,6 @@
 # Los pesos NO se versionan; solo se registra su ubicación y su integridad.
 # HU-024 reemplazará `url` por el paquete de GitLab cuando esté publicado.
 name = "ppe-detection"
-version = "yolo11s-clean"
-sha256 = "E51EB08078F8ABADA1D5F3D15BFB17D94E32DA0C70467D7C79E43C338D7A9959"
+version = "yolo26n-clean"
+sha256 = "FEFB1F1A120FB3AC7BC0F4DE90E5E594BBEF5E936D8168750AA78FC3FB0F27F9"
 url = "file:///models/best.pt"

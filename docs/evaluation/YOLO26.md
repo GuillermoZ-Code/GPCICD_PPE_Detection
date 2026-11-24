@@ -146,8 +146,8 @@ versionan pesos ni imágenes.
 3. **El eval de 492 no es suficiente para decidir**: solo 6 objetos de
    `safety_shoe`.
 4. **YOLO26s no se justifica**: es más lento y no está fine-tuneado.
-5. La decisión final corresponde al **ADR 0009 (HU-023)**; hasta entonces,
-   `models.lock` conserva YOLO11s.
+5. La decisión final está en el **ADR 0009 (HU-023)**; `models.lock` ya apunta a
+   YOLO26n y el rollout del artefacto queda pendiente.
 
 ## 9. Limitaciones
 

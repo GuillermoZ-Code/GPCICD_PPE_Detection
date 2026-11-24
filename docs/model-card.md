@@ -8,7 +8,7 @@
 | Campo | Valor |
 |---|---|
 | **Modelo seleccionado** | `yolo26n-clean` — YOLO26n ajustado para 6 clases de EPP |
-| **Estado** | Seleccionado; rollout pendiente |
+| **Estado** | Seleccionado; manifiesto actualizado, rollout del artefacto pendiente |
 | **Tarea** | Detección de objetos (bounding boxes) |
 | **Versión** | `yolo26n-clean` |
 | **SHA256 del `best.pt`** | `FEFB1F1A120FB3AC7BC0F4DE90E5E594BBEF5E936D8168750AA78FC3FB0F27F9` |
@@ -206,7 +206,7 @@ uv run --extra inference uvicorn ppe_detection.api.app:app --port 8000
 **Rollout:**
 
 1. Publicar `best.pt` y `best.onnx` con SHA256.
-2. Actualizar `models.lock` a `yolo26n-clean`.
+2. Actualizar `models.lock` a `yolo26n-clean` (hecho).
 3. Verificar la descarga con `ppe_detection.detection.artifact fetch`.
 4. Montar el `best.pt` nuevo y reiniciar API/gRPC.
 5. Ejecutar smoke REST/gRPC y medir latencia de servicio.
