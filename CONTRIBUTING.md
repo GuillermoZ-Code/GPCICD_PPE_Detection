@@ -13,6 +13,7 @@ en [`CONSTITUTION.md`](./CONSTITUTION.md). Léela antes de tu primera contribuci
 - [Commits](#-commits)
 - [Pull Requests](#-pull-requests)
 - [Spec Kit por HU](#-spec-kit-por-hu)
+- [Criterios de entrada y salida (DoR / DoD)](#-criterios-de-entrada-y-salida-dor--dod)
 - [Estándares de código](#-estándares-de-código)
 - [Sincronía documental](#-sincronía-documental)
 - [Licencia](#-licencia)
@@ -245,6 +246,38 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
   `.opencode/commands/` y la rama se crea con `branch_template:
   "feature/{number}-{slug}"`.
 - Specs `001`–`005` en `specs/`; las HU se implementan con el flujo anterior.
+
+## 🚦 Criterios de entrada y salida (DoR / DoD)
+
+Toda HU pasa por dos compuertas: una antes de tocar código y otra antes de cerrarse.
+Son las mismas para las cuatro personas y para sus agentes, y la plantilla
+[`.github/ISSUE_TEMPLATE/hu.yml`](./.github/ISSUE_TEMPLATE/hu.yml) las incluye como
+checklist obligatorio.
+
+### Definition of Ready (DoR)
+
+Una HU no se empieza hasta cumplir estos criterios:
+
+- [ ] Spec creada con `/speckit.specify` en `specs/NNN-hu-xxx-slug/`.
+- [ ] Criterios de aceptación (AC) numerados en la issue y en la spec.
+- [ ] Story Points estimados con la serie Fibonacci (1, 2, 3, 5, 8, 13) y dueño asignado.
+- [ ] Dependencias identificadas (`—` si no tiene).
+- [ ] Rama `feature/NNN-hu-xxx-slug` creada desde `develop`.
+- [ ] `make ownership-check` sin bloqueos.
+
+### Definition of Done (DoD)
+
+Una HU no se cierra hasta cumplir estos criterios:
+
+- [ ] Cada AC tiene al menos una prueba que lo referencia (`AC-0N` en el nombre o docstring).
+- [ ] `make check` en verde y CI en verde.
+- [ ] PR con una aprobación de otro integrante (el autor nunca se autoaprueba).
+- [ ] Issue cerrada a mano y HU movida a Done en el tablero.
+- [ ] Conteo de pruebas actualizado en `docs/curso/PRUEBAS.md` por su dueño.
+
+> La DoD no autoriza a editar archivos `[[locked]]`: `docs/curso/PRUEBAS.md` y
+> `docs/curso/ESTADO.md` los actualiza su dueño, según
+> [`docs/curso/propiedad.toml`](./docs/curso/propiedad.toml).
 
 ## 🧹 Estándares de código
 
