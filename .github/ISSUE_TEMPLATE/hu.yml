@@ -1,0 +1,89 @@
+name: "HU — Historia de usuario"
+description: "HU con historia, criterios de aceptación, SP Fibonacci, dependencias, spec y pruebas objetivo."
+title: "[HU] "
+body:
+  - type: markdown
+    attributes:
+      value: "Reemplaza `[HU]` del título por `HU-NNN — título`. Antes de escribir código: mueve la issue a **In progress** en el tablero (WIP 1), crea la spec con `/speckit.specify` y ejecuta `make ownership-check`."
+  - type: textarea
+    id: historia
+    attributes:
+      label: "Historia de usuario"
+      description: "Formato: Como <rol>, quiero <acción>, para <beneficio>."
+      placeholder: "Como dueño del backlog, quiero una plantilla de HU, para que todas tengan el mismo formato."
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: criterios
+    attributes:
+      label: "Criterios de aceptación"
+      description: "Un AC por línea, numerados AC-01, AC-02, ... Cada AC debe ser verificable con al menos una prueba."
+      placeholder: "- AC-01: ..."
+      render: markdown
+    validations:
+      required: true
+  - type: dropdown
+    id: sp
+    attributes:
+      label: "Story Points (Fibonacci)"
+      description: "Solo la serie Fibonacci. 1 SP ≈ 1 día de trabajo."
+      options:
+        - "1"
+        - "2"
+        - "3"
+        - "5"
+        - "8"
+        - "13"
+    validations:
+      required: true
+  - type: input
+    id: dependencias
+    attributes:
+      label: "Dependencias"
+      description: 'Issues o HU de las que depende. Escribe "—" si no tiene.'
+      placeholder: "#81, HU-019"
+    validations:
+      required: true
+  - type: input
+    id: spec
+    attributes:
+      label: "Spec"
+      description: "Carpeta de Spec Kit que corresponde a la HU."
+      placeholder: "specs/092-hu-091-plantilla-hu/"
+    validations:
+      required: true
+  - type: input
+    id: pruebas
+    attributes:
+      label: "Pruebas objetivo"
+      description: "Número de pruebas nuevas que la HU debe aportar."
+      placeholder: "4"
+    validations:
+      required: true
+  - type: checkboxes
+    id: dor
+    attributes:
+      label: "Definition of Ready"
+      description: "No se empieza la HU hasta cumplir los tres puntos."
+      options:
+        - label: "Spec creada con `/speckit.specify` en `specs/NNN-hu-xxx-slug/`."
+          required: true
+        - label: "Rama `feature/NNN-hu-xxx-slug` creada desde `develop`."
+          required: true
+        - label: "`make ownership-check` sin bloqueos."
+          required: true
+  - type: checkboxes
+    id: dod
+    attributes:
+      label: "Definition of Done"
+      description: "No se cierra la HU hasta cumplir los cuatro puntos."
+      options:
+        - label: "Cada AC tiene al menos una prueba que lo referencia (`AC-0N` en el nombre o docstring)."
+          required: true
+        - label: "`make check` en verde y CI en verde."
+          required: true
+        - label: "PR con una aprobación de otro integrante (el autor nunca se autoaprueba)."
+          required: true
+        - label: "Issue cerrada a mano y HU movida a Done en el tablero."
+          required: true
