@@ -25,6 +25,27 @@ from ppe_detection.detector_config import (
 )
 from ppe_detection.io import InvalidImageError, validate_image_bytes
 
+#: Ejemplo estático de la respuesta publicada en `/predict` (HU-052).
+PREDICT_EXAMPLE = {
+    "detections": [
+        {
+            "class_id": 3,
+            "class_name": "helmet",
+            "confidence": 0.93,
+            "bbox": [12.0, 8.0, 96.0, 84.0],
+            "image_width": 640,
+            "image_height": 480,
+        }
+    ],
+    "image_width": 640,
+    "image_height": 480,
+    "model_version": "yolo11s-clean",
+    "model_sha256": None,
+    "model_artifact": None,
+    "model_reference": "artifacts/drive/yolo11s_clean/weights/best.pt",
+    "elapsed_ms": 42.5,
+}
+
 
 class DetectionOut(BaseModel):
     """Detección serializada para la API."""
@@ -105,7 +126,11 @@ def create_app(
     application = FastAPI(
         title="GPCICD PPE Detection API",
         version="0.1.0",
-        description="Detección de EPP sobre imágenes JPEG/PNG.",
+        description=(
+            "API REST para la detección de EPP sobre imágenes JPEG/PNG, publicada "
+            "como MaaS (Model as a Service). La interfaz interactiva está en `/docs`; "
+            "la guía para consumidores externos está en `docs/maas/README.md`."
+        ),
         lifespan=lifespan,
     )
     application.add_middleware(
@@ -129,7 +154,15 @@ def create_app(
                 raise HTTPException(status_code=503, detail=str(exc)) from exc
         return cast(Detector, application.state.detector)
 
-    @application.get("/health", response_model=HealthResponse)
+    @application.get(
+        "/health",
+        response_model=HealthResponse,
+        summary="Estado del servicio",
+        description=(
+            "Informa el estado del componente y la identidad del modelo cargado. "
+            "No construye el detector: sin modelo responde `degraded` sin bloquear."
+        ),
+    )
     async def health() -> HealthResponse:
         """Informa el estado del componente y la identidad del modelo cargado.
 
@@ -180,10 +213,52 @@ def create_app(
             return JSONResponse(status_code=503, content=response.model_dump(mode="json"))
         return response
 
-    @application.post("/predict", response_model=PredictResponse)
+    @application.post(
+        "/predict",
+        response_model=PredictResponse,
+        summary="Detectar EPP en una imagen",
+        description=(
+            "Recibe una imagen JPEG o PNG (máximo 10 MB) y devuelve las detecciones "
+            "de EPP con sus coordenadas, confianza e identidad del modelo. "
+            "El parámetro opcional `conf` filtra detecciones entre 0.01 y 0.99. "
+            "No hay clase `person` ni `no-EPP`: el resultado no evalúa cumplimiento."
+        ),
+        responses={
+            200: {
+                "description": "Detecciones e identidad del modelo",
+                "content": {"application/json": {"example": PREDICT_EXAMPLE}},
+            },
+            400: {
+                "description": "Imagen inválida: se aceptan JPEG/PNG de hasta 10 MB",
+                "content": {
+                    "application/json": {
+                        "example": {"detail": "Formato no admitido: se aceptan JPEG y PNG."}
+                    }
+                },
+            },
+            503: {
+                "description": "Modelo no cargado o detector no configurado",
+                "content": {
+                    "application/json": {
+                        "example": {"detail": "Detector no configurado; revise PPE_MODEL_PATH."}
+                    }
+                },
+            },
+        },
+    )
     async def predict(
-        file: Annotated[UploadFile, File(description="Imagen JPEG o PNG")],
-        conf: Annotated[float | None, Form(ge=0.01, le=0.99)] = None,
+        file: Annotated[UploadFile, File(description="Imagen JPEG o PNG de hasta 10 MB")],
+        conf: Annotated[
+            float | None,
+            Form(
+                ge=0.01,
+                le=0.99,
+                description=(
+                    "Umbral mínimo de confianza (0.01..0.99); omítalo para usar el default."
+                ),
+                examples=[0.25],
+            ),
+        ] = None,
     ) -> PredictResponse:
         """Valida la imagen y devuelve las detecciones del modelo configurado."""
         data = await file.read()
