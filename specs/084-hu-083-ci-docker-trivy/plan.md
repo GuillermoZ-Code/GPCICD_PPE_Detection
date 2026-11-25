@@ -18,8 +18,10 @@ leen el workflow y el runbook, sin Docker.
 
 ## Decisiones
 
-1. El smoke usa `python -c "from ppe_detection.api import create_app; ..."` dentro
-   de la imagen: comprueba que el paquete y la API se construyen sin modelo.
+1. El smoke usa `docker run --rm --entrypoint python … -c "from ppe_detection.api
+   import create_app; ..."` dentro de la imagen: comprueba que el paquete y la API
+   se construyen sin modelo. El `--entrypoint` evita que `docker/entrypoint.sh`
+   interprete los argumentos y arranque REST+gRPC, lo que dejaría el job esperando.
 2. Trivy corre con `exit-code: '0'`: reporta HIGH/CRITICAL sin convertir hallazgos
    heredados en un fallo; el job sí falla si el build, el smoke o la subida fallan.
 3. `if-no-files-found: error` evita un artefacto vacío silencioso.

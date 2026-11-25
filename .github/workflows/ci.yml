@@ -86,8 +86,8 @@ jobs:
 
       - name: Smoke sin modelo
         run: |
-          docker run --rm gpcicd-ppe-detection:ci \
-            python -c "from ppe_detection.api import create_app; app = create_app(); print(app.version)"
+          docker run --rm --entrypoint python gpcicd-ppe-detection:ci \
+            -c "from ppe_detection.api import create_app; app = create_app(); print(app.version)"
 
       - name: Escanear imagen con Trivy
         uses: aquasecurity/trivy-action@v0.33.0

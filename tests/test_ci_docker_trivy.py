@@ -38,7 +38,7 @@ def test_smoke_no_monta_modelo_ac_01() -> None:
     smoke = bloque.split("- name: Smoke sin modelo", 1)[1].split("- name:", 1)[0]
 
     # Act / Assert
-    assert "docker run --rm gpcicd-ppe-detection:ci" in smoke
+    assert "docker run --rm --entrypoint python gpcicd-ppe-detection:ci" in smoke
     assert "-v" not in smoke
     assert "PPE_MODEL_PATH" not in smoke
 
@@ -49,6 +49,7 @@ def test_smoke_construye_la_api_sin_pesos_ac_01() -> None:
     bloque = _job()
 
     # Assert
+    assert "--entrypoint python" in bloque
     assert "from ppe_detection.api import create_app" in bloque
     assert "app = create_app()" in bloque
     assert "app.version" in bloque
