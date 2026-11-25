@@ -36,4 +36,4 @@
 - [x] T022 Crear `docs/maas/segunda-url.md` con decisión, runbook y límites.
 - [x] T023 Registrar en la issue #109 el bloqueo de credenciales HF para publicar el Space (comentario `7170284743`).
 - [x] T024 Ejecutar pytest completo, ruff, pre-commit, ty, check_specs y propiedad.
-- [ ] T025 Commitear test-first y docs/deploy por separado, pushear y abrir PR a `develop` con `Closes #109`, plantilla UAO y revisores ajenos; mover #109 a *In review*.
+- [x] T025 Commitear test-first y docs/deploy por separado, pushear y abrir PR #230 a `develop` con `Closes #109`, plantilla UAO y revisores ajenos; mover #109 a *In review*.
