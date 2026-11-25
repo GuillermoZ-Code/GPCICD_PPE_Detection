@@ -1,5 +1,10 @@
 """Evaluación reproducible del detector de EPP."""
 
+from ppe_detection.evaluation.artifacts import (
+    artifact_slug,
+    collect_evaluation_artifacts,
+    stable_artifact_name,
+)
 from ppe_detection.evaluation.errors import (
     ErrorCase,
     ErrorSummary,
@@ -44,15 +49,18 @@ __all__ = [
     "PredictionBox",
     "ThresholdMetrics",
     "analyze_errors",
+    "artifact_slug",
     "build_summary",
     "calibrate_thresholds",
     "calibration_payload",
+    "collect_evaluation_artifacts",
     "evaluate",
     "evaluate_thresholds",
     "load_thresholds",
     "render_error_report",
     "render_markdown",
     "sha256_file",
+    "stable_artifact_name",
     "threshold_map",
     "validate_model_names",
     "write_thresholds",

@@ -18,6 +18,7 @@ from typing import Any
 
 from ppe_detection.contracts import CLASSES
 from ppe_detection.detector_config import sha256_file
+from ppe_detection.evaluation.artifacts import collect_evaluation_artifacts
 
 DEFAULT_IMGSZ = 640
 DEFAULT_CONF = 0.001
@@ -244,6 +245,14 @@ def evaluate(config: EvaluationConfig) -> dict[str, Any]:
     )
     output_dir = config.output / config.name
     output_dir.mkdir(parents=True, exist_ok=True)
+    source_dir = Path(getattr(metrics, "save_dir", output_dir))
+    artifacts = collect_evaluation_artifacts(
+        source_dir,
+        output_dir,
+        model_version=config.model.stem,
+        model_sha256=summary["model"]["sha256"],
+    )
+    summary["artifacts"] = [str(path) for path in artifacts]
     (output_dir / "summary.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
     )
