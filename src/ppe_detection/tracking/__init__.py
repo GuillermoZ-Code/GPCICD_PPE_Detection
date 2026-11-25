@@ -25,6 +25,7 @@ from ppe_detection.tracking.mlflow_tracker import (
     main,
     parse_args,
     render_comparison,
+    render_comparison_report,
 )
 
 __all__ = [
@@ -52,4 +53,5 @@ __all__ = [
     "main",
     "parse_args",
     "render_comparison",
+    "render_comparison_report",
 ]
