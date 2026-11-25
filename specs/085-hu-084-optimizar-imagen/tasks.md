@@ -11,4 +11,4 @@
 - [x] T009 Medir tamaño antes/después y documentarlo en `docs/operacion/docker.md` (1034.2 → 549.4 MB, −484.8 MB / −46.9 %; Actions run 45657387570).
 - [x] T010 Ejecutar ruff, formato, ty, pytest, check_specs y `uv build`.
 - [x] T011 Verificar `ownership --base origin/develop` (0 bloqueos, 4 avisos).
-- [ ] T012 Abrir PR a `develop` con `Closes #140` y revisión de Guillermo.
+- [x] T012 Abrir PR a `develop` con `Closes #140` y revisión de Guillermo (PR #225).
