@@ -173,6 +173,8 @@ make arch       # regenera el diagrama Archify (si está instalado)
 | Spec Kit | CLI/SDD | Especificaciones ejecutables y flujo por HU | Diseñar e implementar cada HU |
 | `archify` | Skill | Diagramas interactivos de arquitectura | Actualizar `docs/architecture/` |
 | `find-skills` | Skill | Descubrir skills instalables | Buscar una capacidad nueva |
+| `frontend-design` | Skill | Dirección visual, tipografía y sistema de diseño | Rediseñar la SPA (HU-076) |
+| `glab` | Skill | Uso correcto y seguro de `glab` y la API de GitLab | Cualquier operación de GitLab (HU-073) |
 | **GitHub MCP** | MCP | Issues, PRs, labels, milestones, revisiones | Operar el repositorio con la cuenta UAO `GuillermoZ-Code` |
 | **context7** | MCP | Documentación vigente de librerías | FastAPI, gRPC, MLflow, Ultralytics, Spec Kit |
 | **fetch** | MCP | Descargar documentación o datasets | Verificar fuentes externas |
@@ -184,6 +186,10 @@ make arch       # regenera el diagrama Archify (si está instalado)
 > **Ninguna de estas herramientas se descubre sola:** un agente solo conoce lo
 > que está escrito aquí o en `.opencode/rules/`. Si instalas una y no la
 > documentas, nadie la usará. Engram y GGA **no** son requisito para abrir un PR.
+
+> Las skills `frontend-design` y `glab` están versionadas en
+> [`.agents/skills/`](./.agents/skills/README.md); las demás se instalan en
+> `~/.agents/skills/`. El README de esa carpeta documenta origen y actualización.
 
 
 ## Dominio y límites
