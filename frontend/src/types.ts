@@ -21,3 +21,14 @@ export interface PredictResponse {
   model_reference?: string
   elapsed_ms?: number
 }
+
+/** Espejo del contrato `GET /health/ready` (HU-045), usado por HU-079. */
+export interface ReadyResponse {
+  status: 'ready' | 'not_ready'
+  api_version: string
+  model_loaded: boolean
+  model_version: string
+  model_reference: string
+  model_sha256?: string | null
+  model_artifact?: string | null
+}

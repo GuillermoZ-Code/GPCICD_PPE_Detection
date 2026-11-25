@@ -4,6 +4,7 @@ import { createClient, type DetectorClient } from './api/client'
 import { AnnotatedCanvas } from './components/AnnotatedCanvas'
 import { Background } from './components/Background'
 import { DetectionTable } from './components/DetectionTable'
+import { ModelInfo } from './components/ModelInfo'
 import { SettingsDrawer } from './components/SettingsDrawer'
 import { StatusBanner } from './components/StatusBanner'
 import { UploadPanel } from './components/UploadPanel'
@@ -36,6 +37,7 @@ export function App({ client }: AppProps) {
   const [settings, setSettings] = useState<Settings>(loadSettings)
   const [analysis, setAnalysis] = useState<Analysis>({ status: 'idle' })
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [modelInfoOpen, setModelInfoOpen] = useState(false)
   const imageUrlRef = useRef<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -184,6 +186,16 @@ export function App({ client }: AppProps) {
           <button
             className="icon-button"
             type="button"
+            aria-label="Acerca del modelo"
+            title="Acerca del modelo"
+            aria-expanded={modelInfoOpen}
+            onClick={() => setModelInfoOpen((open) => !open)}
+          >
+            ⓘ
+          </button>
+          <button
+            className="icon-button"
+            type="button"
             aria-label="Cambiar tema"
             title="Cambiar tema"
             onClick={() => updateSettings({ theme: resolvedTheme === 'dark' ? 'light' : 'dark' })}
@@ -323,6 +335,8 @@ export function App({ client }: AppProps) {
             )}
           </section>
         </div>
+
+        {modelInfoOpen && <ModelInfo />}
       </main>
 
       <footer className="footer">
