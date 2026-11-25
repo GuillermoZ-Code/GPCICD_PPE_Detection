@@ -27,21 +27,23 @@ npm ci
 
 ## API
 
-- `VITE_API_URL` define la base de la API REST (HU-006). Si está vacía, la aplicación
-  usa un **cliente simulado** determinista y funciona sin backend.
+- Sin `VITE_API_URL`, la SPA llama a la ruta relativa `/api` (HU-072). En desarrollo, el
+  proxy de Vite reenvía `/api/*` a `http://localhost:8000/*` (sin el prefijo).
+- `VITE_API_PROXY` cambia el destino del proxy si la API escucha en otro host o puerto.
+- Una `VITE_API_URL` absoluta se sigue respetando, por si la API vive en otro origen.
 - Copia `.env.example` a `.env.local` o exporta la variable.
 
 ```bash
-# Con API real (la API debe estar escuchando)
-VITE_API_URL=http://127.0.0.1:8000 npm run dev
-
-# Sin API (cliente simulado)
+# Desarrollo con la API local (proxy /api → http://localhost:8000)
 npm run dev
+
+# API en otro host, sin pasar por el proxy
+VITE_API_URL=http://127.0.0.1:8000 npm run dev
 ```
 
-El cliente HTTP hace `POST {VITE_API_URL}/predict` con `multipart/form-data` y el campo
-`file`. El contrato está cerrado desde HU-006 y la respuesta incluye `model_version` y
-`elapsed_ms`.
+El cliente HTTP hace `POST {base}/predict` con `multipart/form-data` y el campo
+`file`; la base es `/api` por omisión. El contrato está cerrado desde HU-006 y la
+respuesta incluye `model_version` y `elapsed_ms`.
 
 La receta completa —descarga de pesos, variables de la API, CORS y verificación— está en
 [`docs/operacion/demo-local.md`](../docs/operacion/demo-local.md).
@@ -61,7 +63,8 @@ src/
 ## Pruebas
 
 - Vitest + Testing Library + jsdom.
-- Sin backend, GPU ni red: el cliente simulado devuelve detecciones fijas.
+- Sin backend, GPU ni red: las pruebas inyectan el cliente simulado y obtienen
+  detecciones fijas.
 - `src/setupTests.ts` sustituye `URL.createObjectURL` y `canvas.getContext` porque jsdom
   no los implementa.
 

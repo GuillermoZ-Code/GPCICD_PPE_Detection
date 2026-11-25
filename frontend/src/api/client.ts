@@ -1,6 +1,10 @@
-/** Cliente de inferencia: HTTP cuando hay API, simulado cuando no. */
+/**
+ * Cliente de inferencia: HTTP contra la API real (ruta relativa `/api` por
+ * omisión) y simulado para pruebas o demos sin backend.
+ */
 
 import type { Detection, PredictResponse } from '../types'
+import { resolveApiBaseUrl } from './config'
 
 export interface DetectorClient {
   detect(file: File, conf?: number): Promise<PredictResponse>
@@ -74,7 +78,12 @@ export class HttpDetectorClient implements DetectorClient {
   }
 }
 
+/**
+ * Construye el cliente HTTP con la base resuelta (HU-072, AC-01).
+ *
+ * @param baseUrl URL explícita; por omisión, `VITE_API_URL` o `/api`.
+ * @returns cliente HTTP listo para publicar en `{base}/predict`.
+ */
 export function createClient(baseUrl?: string): DetectorClient {
-  const url = (baseUrl ?? import.meta.env.VITE_API_URL ?? '').trim()
-  return url ? new HttpDetectorClient(url) : new MockDetectorClient()
+  return new HttpDetectorClient(resolveApiBaseUrl(baseUrl))
 }
