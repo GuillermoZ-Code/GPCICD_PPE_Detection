@@ -15,4 +15,4 @@
 - [x] T013 Documentar el uso en `docs/operacion/fallos.md`.
 - [x] T014 Ejecutar ruff, formato, ty, pytest y `uv build`.
 - [x] T015 Verificar `ownership --base origin/develop`.
-- [ ] T016 Abrir PR a `develop` con plantilla UAO, `Closes #106` y revisor ajeno.
+- [x] T016 Abrir PR a `develop` con plantilla UAO, `Closes #106` y revisor ajeno (PR #222).
