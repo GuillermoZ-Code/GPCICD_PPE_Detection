@@ -53,15 +53,16 @@ def test_runtime_stage_pins_python313_without_uv_downloads() -> None:
     assert "UV_PYTHON_DOWNLOADS=never" in dockerfile
 
 
-def test_frontend_builder_uses_node24_npm_ci_and_baked_api_url() -> None:
-    """AC-011.1: la SPA se construye con Node 24, `npm ci` y `VITE_API_URL`."""
+def test_frontend_builder_uses_node24_and_npm_ci_without_baked_url() -> None:
+    """AC-01 (HU-072): la SPA se construye con Node 24 y `npm ci` sin hornear la API."""
     # Arrange / Act
     dockerfile = _read(DOCKERFILE)
 
     # Assert
     assert "FROM node:24-alpine AS frontend-builder" in dockerfile
     assert "npm ci" in dockerfile
-    assert "ARG VITE_API_URL" in dockerfile
+    assert "ARG VITE_API_URL" not in dockerfile
+    assert "localhost:8000" not in dockerfile
     assert "npm run build" in dockerfile
 
 
@@ -193,3 +194,23 @@ def test_nginx_serves_spa_fallback_and_caches_hashed_assets() -> None:
     assert "try_files $uri $uri/ /index.html;" in conf
     assert "location /assets/" in conf
     assert "immutable" in conf
+
+
+def test_nginx_proxies_api_prefix_to_api_service() -> None:
+    """AC-02 (HU-072): nginx reenvía `/api/` al servicio `api` sin el prefijo."""
+    # Arrange / Act
+    conf = _read(NGINX_CONF)
+
+    # Assert
+    assert "location /api/" in conf
+    assert "proxy_pass http://api:8000/;" in conf
+    assert "X-Forwarded-Proto" in conf
+
+
+def test_compose_does_not_pass_baked_api_url() -> None:
+    """AC-01 (HU-072): compose ya no hornea la URL de la API en el build de la SPA."""
+    # Arrange / Act
+    compose = _read(COMPOSE_FILE)
+
+    # Assert
+    assert "VITE_API_URL" not in compose
