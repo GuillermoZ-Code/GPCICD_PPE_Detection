@@ -27,16 +27,16 @@ rama `feature/062-hu-061-readme-badges` desde `develop`.
 
 ## Phase 3: Implementation
 
-- [ ] T009 Añadir los cuatro badges al bloque del README.
-- [ ] T010 Crear «Enlaces públicos del M4» con HTTPS, Registry, CONSTITUTION y
+- [x] T009 Añadir los cuatro badges al bloque del README.
+- [x] T010 Crear «Enlaces públicos del M4» con HTTPS, Registry, CONSTITUTION y
       `<URL_PUBLICA>`, y añadir la entrada al índice.
-- [ ] T011 Documentar los pendientes de HU-053 y HU-068 sin inventar dominios.
+- [x] T011 Documentar los pendientes de HU-053 y HU-068 sin inventar dominios.
 
 ## Phase 4: Validation and delivery
 
-- [ ] T012 Ejecutar las 4 pruebas focalizadas en verde y comprobar que fallaron antes.
-- [ ] T013 Verificar `ruff format --check README.md`, `check_specs` y propiedad.
-- [ ] T014 Commit de pruebas (test-first) y commit de documentación.
+- [x] T012 Ejecutar las 4 pruebas focalizadas en verde y comprobar que fallaron antes.
+- [x] T013 Verificar `ruff format --check README.md`, `check_specs` y propiedad.
+- [x] T014 Commit de pruebas (test-first) y commit de documentación.
 - [ ] T015 Push y PR a `develop` con plantilla UAO y `Closes #117`.
 - [ ] T016 Mover #117 a **In review** y verificar checks remotos; sin merge ni
       autoaprobación.
