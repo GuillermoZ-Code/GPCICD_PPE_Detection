@@ -1,0 +1,88 @@
+# HU-066 — pipeline de GitLab CI/CD con compuertas de calidad.
+#
+# GitHub es la fuente de verdad y este archivo llega por el espejo de `.github/workflows/`
+# (ADR 0007). El pipeline replica las compuertas de la CI de GitHub: Ruff, `ty`, pytest,
+# frontend y build del paquete, con caché de `uv` y de `npm`.
+
+stages:
+  - quality
+  - frontend
+  - build
+  - deploy
+
+# Evita pipelines duplicados: uno por MR o por push a develop/main (o manual).
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+
+variables:
+  UV_CACHE_DIR: "$CI_PROJECT_DIR/.uv-cache"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+default:
+  interruptible: true
+
+.uv-cache: &uv-cache
+  key:
+    files:
+      - uv.lock
+  paths:
+    - .uv-cache/
+
+quality:
+  stage: quality
+  image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+  cache:
+    <<: *uv-cache
+  script:
+    - uv sync --frozen --all-groups
+    - uv run ruff check .
+    - uv run ruff format --check .
+    - uv run ty check
+    - uv run pytest -q
+
+frontend:
+  stage: frontend
+  image: node:24-alpine
+  cache:
+    key:
+      files:
+        - frontend/package-lock.json
+    paths:
+      - frontend/node_modules/
+  script:
+    - cd frontend
+    - npm ci
+    - npm run lint
+    - npm run test
+    - npm run build
+
+build:
+  stage: build
+  image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+  cache:
+    <<: *uv-cache
+  script:
+    - uv sync --frozen --all-groups
+    - uv build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "web"
+
+# Marcador de HU-070: el despliegue real (SSH + rollback) sustituye este job.
+deploy:
+  stage: deploy
+  image: alpine:3.20
+  script:
+    - echo "Despliegue pendiente de HU-070 (SSH, pull por tag y rollback)."
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+  allow_failure: true
