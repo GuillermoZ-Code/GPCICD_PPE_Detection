@@ -28,6 +28,6 @@ leen el workflow y el runbook, sin Docker.
 ## Riesgos y mitigación
 
 - **Imagen sin modelo**: `create_app()` no dispara el arranque que carga pesos.
-- **Versión de Trivy**: se fija `@0.33.0` en lugar de `@master` para repetibilidad.
+- **Versión de Trivy**: se fija `@v0.33.0` en lugar de `@master` para repetibilidad.
 - **Propiedad**: `.github/` pertenece a Guillermo (aviso, no bloqueo); CODEOWNERS
   pedirá su revisión. `docs/operacion/` es de Eliana; las pruebas son libres.

@@ -87,5 +87,5 @@ del workflow y el runbook con lectura de archivos, sin Docker ni red.
 ## Assumptions
 
 - La imagen `runtime` construye sin pesos y `create_app()` no carga el modelo.
-- `aquasecurity/trivy-action@0.33.0` es la versión estable disponible en Actions.
+- `aquasecurity/trivy-action@v0.33.0` es la versión estable disponible en Actions.
 - El token de Actions puede escribir artefactos con `actions: write`.
