@@ -16,9 +16,8 @@ WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend/ ./
-# URL de la API que la SPA hornea en el bundle (por omisión, el puerto de la API).
-ARG VITE_API_URL=http://localhost:8000
-ENV VITE_API_URL=$VITE_API_URL
+# HU-072 — sin VITE_API_URL el bundle usa la ruta relativa `/api` y nginx la
+# reenvía al servicio `api` del mismo compose (sin CORS ni localhost horneado).
 RUN npm run build
 
 # --- runtime: backend CPU con dependencias de uv.lock ------------------------

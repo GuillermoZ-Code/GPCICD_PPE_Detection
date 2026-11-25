@@ -87,18 +87,19 @@ Respuesta real de la demo:
 
 ```powershell
 cd frontend
-$env:VITE_API_URL = "http://127.0.0.1:8000"
 npm run dev
 ```
 
 - Abre <http://localhost:5173>.
-- Sin `VITE_API_URL`, la app usa el **cliente simulado** y no necesita backend.
+- La SPA llama a `/api` y el proxy de Vite la reenvía a `http://localhost:8000`
+  (HU-072); no hace falta definir `VITE_API_URL`.
+- Si la API escucha en otro host, define `VITE_API_PROXY` o una `VITE_API_URL` absoluta.
 - CORS de la API permite `http://localhost:5173` por defecto (`PPE_CORS_ORIGINS`).
 
 ## 4. Flujo verificado
 
 1. Subir un JPEG de `ds_base/test/images`.
-2. La SPA hace `POST /predict` con `multipart/form-data`.
+2. La SPA hace `POST /api/predict` y el proxy la reenvía como `POST /predict`.
 3. La API valida la imagen, ejecuta el detector y devuelve las detecciones.
 4. La SPA dibuja las cajas y la tabla con categoría y confianza.
 
