@@ -5,6 +5,15 @@ from ppe_detection.evaluation.artifacts import (
     collect_evaluation_artifacts,
     stable_artifact_name,
 )
+from ppe_detection.evaluation.errors import (
+    ErrorCase,
+    ErrorSummary,
+    GroundTruthBox,
+    ImageAnnotations,
+    PredictionBox,
+    analyze_errors,
+    render_error_report,
+)
 from ppe_detection.evaluation.evaluate import (
     EvaluationConfig,
     EvaluationError,
@@ -28,12 +37,18 @@ from ppe_detection.evaluation.thresholds import (
 )
 
 __all__ = [
+    "ErrorCase",
+    "ErrorSummary",
     "EvaluationConfig",
     "EvaluationError",
     "GroundTruth",
+    "GroundTruthBox",
+    "ImageAnnotations",
     "ImageRecord",
     "Prediction",
+    "PredictionBox",
     "ThresholdMetrics",
+    "analyze_errors",
     "artifact_slug",
     "build_summary",
     "calibrate_thresholds",
@@ -42,6 +57,7 @@ __all__ = [
     "evaluate",
     "evaluate_thresholds",
     "load_thresholds",
+    "render_error_report",
     "render_markdown",
     "sha256_file",
     "stable_artifact_name",
