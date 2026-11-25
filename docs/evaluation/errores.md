@@ -108,4 +108,3 @@ Los ejemplos se identifican por imagen y clase; no se adjuntan recortes.
 - La categoría es geométrica; la oclusión real necesita revisión de imágenes.
 - El análisis usa IoU 0,50 y confianza 0,25; otros umbrales cambian los conteos.
 - Las imágenes con personas no se publican ni se recortan.
-
