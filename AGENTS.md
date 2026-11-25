@@ -176,7 +176,7 @@ make arch       # regenera el diagrama Archify (si está instalado)
 | **GitHub MCP** | MCP | Issues, PRs, labels, milestones, revisiones | Operar el repositorio con la cuenta UAO `GuillermoZ-Code` |
 | **context7** | MCP | Documentación vigente de librerías | FastAPI, gRPC, MLflow, Ultralytics, Spec Kit |
 | **fetch** | MCP | Descargar documentación o datasets | Verificar fuentes externas |
-| **Engram** | MCP | Memoria local de cada agente | Disponible y opcional; **no** coordina agentes entre máquinas ni sustituye CONSTITUTION ni ADR |
+| **Engram** | MCP | Memoria local de cada agente | Disponible y opcional (protocolo: **ADR 0011**); **no** coordina agentes entre máquinas ni sustituye CONSTITUTION ni ADR |
 | **GGA** | CLI | Revisión de código con IA | Opcional y **no bloqueante**; sin él, `make check` y la revisión humana son suficientes |
 | **GitLab MCP** | MCP | Proyecto, MRs, pipelines, jobs y logs de GitLab | Operar la entrega y el despliegue (solo el Code Reviewer) |
 | **`glab`** | CLI | GitLab desde la terminal | Pipelines, variables y releases |
