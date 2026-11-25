@@ -14,6 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from ppe_detection.api.settings import load_settings
 from ppe_detection.contracts import Detection, Detector
 from ppe_detection.detector_config import (
     DetectorNotConfiguredError,
@@ -92,6 +93,7 @@ def create_app(
     model_identity: ModelIdentity | None = None,
 ) -> FastAPI:
     """Crea la aplicación; permite inyectar un detector y la identidad del modelo."""
+    settings = load_settings()
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
@@ -105,14 +107,9 @@ def create_app(
         description="Detección de EPP sobre imágenes JPEG/PNG.",
         lifespan=lifespan,
     )
-    origins = [
-        origin.strip()
-        for origin in os.getenv("PPE_CORS_ORIGINS", "http://localhost:5173").split(",")
-        if origin.strip()
-    ]
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,
+        allow_origins=list(settings.cors_origins),
         allow_methods=["*"],
         allow_headers=["*"],
     )
