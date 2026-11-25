@@ -12,4 +12,4 @@
 - [x] T010 Integrar el botón «Acerca del modelo» en `App.tsx`.
 - [x] T011 Documentar el uso en `docs/operacion/modelo.md`.
 - [x] T012 Ejecutar lint, Vitest y build del frontend; suite Python, specs y propiedad.
-- [ ] T013 Abrir PR a `develop` con `Closes #135` y revisión de Guillermo.
+- [x] T013 Abrir PR a `develop` con `Closes #135` y revisión de Guillermo (PR #226).
