@@ -75,4 +75,4 @@ def test_directiva_user_se_verifica_estaticamente_ac_03() -> None:
 
     # Assert
     assert user_lines == ["USER appuser"]
-    assert lineas.index("USER appuser") < lineas.index("ENTRYPOINT [\"/entrypoint.sh\"]")
+    assert lineas.index("USER appuser") < lineas.index('ENTRYPOINT ["/entrypoint.sh"]')
