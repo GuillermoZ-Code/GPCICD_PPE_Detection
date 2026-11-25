@@ -1,0 +1,18 @@
+# HU-053: mantener fuera del contexto de build secretos, pesos y datos.
+.git
+.github
+.venv
+.env
+.env.*
+**/__pycache__
+*.pyc
+*.pt
+*.pth
+*.onnx
+*.h5
+data/
+runs/
+mlruns/
+tests/
+docs/
+frontend/node_modules/
