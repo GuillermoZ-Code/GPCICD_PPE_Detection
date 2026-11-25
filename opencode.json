@@ -15,6 +15,11 @@
       "type": "local",
       "command": ["engram", "mcp", "--tools=agent"],
       "enabled": true
+    },
+    "gitlab": {
+      "type": "remote",
+      "url": "https://gitlab.com/api/v4/mcp",
+      "enabled": true
     }
   }
 }
