@@ -11,6 +11,7 @@ from typing import Annotated, Literal, cast
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from ppe_detection.contracts import Detection, Detector
@@ -51,6 +52,24 @@ class HealthResponse(BaseModel):
     """Estado del servicio y contrato publicado en `GET /health`."""
 
     status: Literal["ok", "degraded"]
+    api_version: str
+    model_loaded: bool
+    model_version: str
+    model_reference: str
+    model_sha256: str | None
+    model_artifact: str | None
+
+
+class LiveResponse(BaseModel):
+    """Contrato mínimo de `GET /health/live`, independiente del modelo."""
+
+    status: Literal["ok"]
+
+
+class ReadyResponse(BaseModel):
+    """Contrato de `GET /health/ready`, con identidad verificable del modelo."""
+
+    status: Literal["ready", "not_ready"]
     api_version: str
     model_loaded: bool
     model_version: str
@@ -129,6 +148,38 @@ def create_app(
             model_sha256=identity.sha256,
             model_artifact=identity.artifact,
         )
+
+    @application.get("/health/live", response_model=LiveResponse)
+    async def live() -> LiveResponse:
+        """Confirma que el proceso responde sin mirar ni cargar el modelo."""
+        return LiveResponse(status="ok")
+
+    @application.get(
+        "/health/ready",
+        response_model=ReadyResponse,
+        responses={
+            503: {
+                "model": ReadyResponse,
+                "description": "El modelo todavía no está cargado.",
+            }
+        },
+    )
+    async def ready() -> ReadyResponse | JSONResponse:
+        """Informa si el modelo está listo sin provocar su carga."""
+        identity = cast(ModelIdentity, application.state.model_identity)
+        loaded = application.state.detector is not None
+        response = ReadyResponse(
+            status="ready" if loaded else "not_ready",
+            api_version=str(application.version),
+            model_loaded=loaded,
+            model_version=identity.version,
+            model_reference=identity.reference,
+            model_sha256=identity.sha256,
+            model_artifact=identity.artifact,
+        )
+        if not loaded:
+            return JSONResponse(status_code=503, content=response.model_dump(mode="json"))
+        return response
 
     @application.post("/predict", response_model=PredictResponse)
     async def predict(
