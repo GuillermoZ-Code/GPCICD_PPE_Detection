@@ -10,13 +10,14 @@ stages:
   - build
   - deploy
 
-# Evita pipelines duplicados: uno por MR o por push a develop/main (o manual).
+# Evita pipelines duplicados: uno por MR o por push a develop/main (o manual o por API).
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == "develop"
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "api"
 
 variables:
   UV_CACHE_DIR: "$CI_PROJECT_DIR/.uv-cache"
