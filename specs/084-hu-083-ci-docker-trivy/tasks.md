@@ -14,4 +14,4 @@
 - [x] T012 Documentar el job en `docs/operacion/docker.md`.
 - [x] T013 Ejecutar ruff, formato, ty, pytest, check_specs y `uv build`.
 - [x] T014 Verificar `ownership --base origin/develop`.
-- [ ] T015 Abrir PR a `develop` con `Closes #139` y revisión de Guillermo.
+- [x] T015 Abrir PR a `develop` con `Closes #139` y revisión de Guillermo (PR #224).
