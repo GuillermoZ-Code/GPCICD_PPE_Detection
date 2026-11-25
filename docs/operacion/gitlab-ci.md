@@ -23,7 +23,7 @@
 ## 3. Reglas
 
 - `workflow.rules` evita pipelines duplicados: uno por MR, uno por push a `develop` o
-  `main`, y ejecución manual.
+  `main`, y ejecución manual o por API (`CI_PIPELINE_SOURCE`).
 - `quality` y `frontend` corren en todas las pipelines.
 - `build` y `deploy` solo en `main` (o manual); `deploy` es manual y lo sustituye HU-070.
 
