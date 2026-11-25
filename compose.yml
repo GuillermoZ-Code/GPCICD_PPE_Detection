@@ -16,6 +16,12 @@ x-backend: &backend
     target: runtime
   image: gpcicd-ppe-detection:local
   restart: unless-stopped
+  healthcheck:
+    test: ["CMD", "/healthcheck.sh"]
+    interval: 30s
+    timeout: 5s
+    retries: 3
+    start_period: 40s
   volumes:
     - ${PPE_MODELS_DIR:-./artifacts}:/models:ro
 

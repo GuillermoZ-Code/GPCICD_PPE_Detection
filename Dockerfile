@@ -53,8 +53,15 @@ RUN uv sync --frozen --no-dev --extra inference --extra grpc
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod 0755 /entrypoint.sh
 
+# HU-046 — Docker marca el contenedor como healthy consultando /health/ready (REST) o el
+# puerto de gRPC según PPE_SERVICES.
+COPY docker/healthcheck.sh /healthcheck.sh
+RUN chmod 0755 /healthcheck.sh
+
 ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 8000 9000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD ["/healthcheck.sh"]
 ENTRYPOINT ["/entrypoint.sh"]
 
 # --- web: SPA estática servida por nginx --------------------------------------

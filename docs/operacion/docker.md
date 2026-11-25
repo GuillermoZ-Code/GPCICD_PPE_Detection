@@ -129,6 +129,21 @@ El cliente imprime `message`, las detecciones y la cabecera
 `Imagen <w>x<h> · modelo <versión> · <ms> ms`. Una solicitud inválida devuelve
 `INVALID_ARGUMENT` y el servidor sigue disponible.
 
+### Healthcheck (HU-046)
+
+La imagen declara `HEALTHCHECK` y compose lo hereda para `api` y `grpc`. El script
+`docker/healthcheck.sh` consulta `/health/ready` cuando `PPE_SERVICES=rest` y comprueba el
+puerto 9000 cuando es `grpc`.
+
+```bash
+docker inspect --format '{{.State.Health.Status}}' ppe-api-1      # healthy
+docker inspect --format '{{json .State.Health}}' ppe-api-1 | jq   # último resultado
+```
+
+`starting` es normal durante el arranque (torch tarda en cargar el artefacto); si tras
+`start-period` sigue en `unhealthy`, revisa el log del healthcheck con
+`docker inspect --format '{{json .State.Health.Log}}' ppe-api-1`.
+
 ### SPA (HU-007) con nginx
 
 Con compose (§5), la interfaz queda en <http://localhost:8080> y la SPA llama a
