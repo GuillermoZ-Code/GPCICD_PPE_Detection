@@ -193,7 +193,12 @@ def create_app(
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         started = perf_counter()
-        detections: list[Detection] = get_detector().detect(image, conf=conf)
+        try:
+            detections: list[Detection] = get_detector().detect(image, conf=conf)
+        except DetectorNotConfiguredError as exc:
+            # Un detector inyectado también puede quedar sin modelo en tiempo de
+            # inferencia: REST debe traducirlo igual que gRPC (503 ↔ UNAVAILABLE).
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
         elapsed_ms = (perf_counter() - started) * 1000
         identity = cast(ModelIdentity, application.state.model_identity)
         return PredictResponse(
