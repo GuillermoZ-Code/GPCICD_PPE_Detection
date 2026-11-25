@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
 import pytest
 
@@ -63,7 +63,7 @@ class FakeResponse:
 
     model_version = "yolo26n-onnx-640"
     elapsed_ms = 12.5
-    detections: list[Any] = []
+    detections: ClassVar[list[Any]] = []
 
 
 def _ready(status: str = "ready", version: str = "yolo26n-onnx-640") -> dict[str, Any]:

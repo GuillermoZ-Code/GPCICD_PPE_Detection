@@ -13,7 +13,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import sys
 import urllib.error
 import urllib.request
 import uuid
@@ -224,9 +223,8 @@ def format_summary(report: SmokeReport) -> str:
     lines.extend(
         f"  [{'ok' if item.ok else 'FALLO'}] {item.name}: {item.detail}" for item in report.checks
     )
-    lines.append(
-        f"Modelo: {report.model_version or 'desconocido'} · latencia REST {report.latency_ms:.1f} ms"
-    )
+    modelo = report.model_version or "desconocido"
+    lines.append(f"Modelo: {modelo} · latencia REST {report.latency_ms:.1f} ms")
     return "\n".join(lines)
 
 
