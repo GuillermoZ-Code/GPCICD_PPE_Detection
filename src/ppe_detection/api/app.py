@@ -14,6 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from ppe_detection.api.logging import RequestLoggingMiddleware
 from ppe_detection.api.settings import load_settings
 from ppe_detection.contracts import Detection, Detector
 from ppe_detection.detector_config import (
@@ -113,6 +114,7 @@ def create_app(
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    application.add_middleware(RequestLoggingMiddleware)
     application.state.detector = detector
     identity = model_identity or default_model_identity()
     if model_version is not None:
