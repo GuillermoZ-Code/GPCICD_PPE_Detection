@@ -37,6 +37,6 @@ rama `feature/062-hu-061-readme-badges` desde `develop`.
 - [x] T012 Ejecutar las 4 pruebas focalizadas en verde y comprobar que fallaron antes.
 - [x] T013 Verificar `ruff format --check README.md`, `check_specs` y propiedad.
 - [x] T014 Commit de pruebas (test-first) y commit de documentación.
-- [ ] T015 Push y PR a `develop` con plantilla UAO y `Closes #117`.
-- [ ] T016 Mover #117 a **In review** y verificar checks remotos; sin merge ni
-      autoaprobación.
+- [x] T015 Push y PR a `develop` con plantilla UAO y `Closes #117` (PR #231).
+- [x] T016 Mover #117 a **In review** y verificar checks remotos (7/7 en verde);
+      sin merge ni autoaprobación.
