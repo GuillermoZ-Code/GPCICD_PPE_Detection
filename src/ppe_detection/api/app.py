@@ -83,6 +83,8 @@ def _is_allowed_type(content_type: str | None) -> bool:
     """True si el MIME anunciado es PNG o JPEG."""
     normalized = (content_type or "").split(";", 1)[0].strip().lower()
     return normalized in ALLOWED_IMAGE_TYPES
+
+
 class LiveResponse(BaseModel):
     """Contrato mínimo de `GET /health/live`, independiente del modelo."""
 

@@ -79,8 +79,9 @@ usando `FakeDetector` y PNG generado en memoria.
 - Límites en el servidor web, Caddy o el proxy (HU-041/HU-083).
 - Rate limiting global (HU-054).
 - Modificar `validate_image_bytes` ni su límite interno de 10 MB.
-- Actualizar `.env.example`: coordinar con la PR de HU-044 (#210) por ser archivo de un
-  solo escritor; esta PR no lo toca.
+- El resto de la configuración de HU-044: se coordina con la PR #210 (ya fusionada);
+  esta PR solo documenta `PPE_MAX_UPLOAD_MB` en `.env.example` para cumplir AC-01 de
+  HU-044 sin cambiar los valores por defecto.
 
 ## Assumptions
 
