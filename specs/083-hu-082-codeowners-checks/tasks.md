@@ -11,4 +11,4 @@
 - [x] T009 Indexar el ADR en `docs/adr/README.md`.
 - [x] T010 Ejecutar ruff, formato, ty, pytest, check_specs y `uv build`.
 - [x] T011 Verificar `ownership --base origin/develop`.
-- [ ] T012 Abrir PR a `develop` con `Closes #138` y revisión de Guillermo.
+- [x] T012 Abrir PR a `develop` con `Closes #138` y revisión de Guillermo (PR #223).
