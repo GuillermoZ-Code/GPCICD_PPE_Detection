@@ -233,8 +233,9 @@ make frontend-build   # build estático en frontend/dist/
 ```
 
 Flujo de la SPA: seleccionar imagen → estados `idle` / `loading` / `success` /
-`error` → inferencia → cajas con clase y confianza → descarga de resultados. Si
-`VITE_API_URL` no está definida, usa un cliente simulado determinista.
+`error` → inferencia → cajas con clase y confianza → descarga de resultados. La SPA
+llama a `/api` en el mismo origen: el proxy de Vite en desarrollo y nginx en el
+contenedor reenvían a la API (HU-072).
 
 ### MLflow
 

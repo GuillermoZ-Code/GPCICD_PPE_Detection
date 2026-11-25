@@ -11,8 +11,11 @@ from typing import Annotated, Literal, cast
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from ppe_detection.api.logging import RequestLoggingMiddleware
+from ppe_detection.api.settings import load_settings
 from ppe_detection.contracts import Detection, Detector
 from ppe_detection.detector_config import (
     DetectorNotConfiguredError,
@@ -80,6 +83,22 @@ def _is_allowed_type(content_type: str | None) -> bool:
     """True si el MIME anunciado es PNG o JPEG."""
     normalized = (content_type or "").split(";", 1)[0].strip().lower()
     return normalized in ALLOWED_IMAGE_TYPES
+class LiveResponse(BaseModel):
+    """Contrato mínimo de `GET /health/live`, independiente del modelo."""
+
+    status: Literal["ok"]
+
+
+class ReadyResponse(BaseModel):
+    """Contrato de `GET /health/ready`, con identidad verificable del modelo."""
+
+    status: Literal["ready", "not_ready"]
+    api_version: str
+    model_loaded: bool
+    model_version: str
+    model_reference: str
+    model_sha256: str | None
+    model_artifact: str | None
 
 
 def _build_detector() -> Detector:
@@ -96,6 +115,7 @@ def create_app(
     model_identity: ModelIdentity | None = None,
 ) -> FastAPI:
     """Crea la aplicación; permite inyectar un detector y la identidad del modelo."""
+    settings = load_settings()
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
@@ -109,17 +129,13 @@ def create_app(
         description="Detección de EPP sobre imágenes JPEG/PNG.",
         lifespan=lifespan,
     )
-    origins = [
-        origin.strip()
-        for origin in os.getenv("PPE_CORS_ORIGINS", "http://localhost:5173").split(",")
-        if origin.strip()
-    ]
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,
+        allow_origins=list(settings.cors_origins),
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    application.add_middleware(RequestLoggingMiddleware)
     application.state.detector = detector
     identity = model_identity or default_model_identity()
     if model_version is not None:
@@ -152,6 +168,38 @@ def create_app(
             model_sha256=identity.sha256,
             model_artifact=identity.artifact,
         )
+
+    @application.get("/health/live", response_model=LiveResponse)
+    async def live() -> LiveResponse:
+        """Confirma que el proceso responde sin mirar ni cargar el modelo."""
+        return LiveResponse(status="ok")
+
+    @application.get(
+        "/health/ready",
+        response_model=ReadyResponse,
+        responses={
+            503: {
+                "model": ReadyResponse,
+                "description": "El modelo todavía no está cargado.",
+            }
+        },
+    )
+    async def ready() -> ReadyResponse | JSONResponse:
+        """Informa si el modelo está listo sin provocar su carga."""
+        identity = cast(ModelIdentity, application.state.model_identity)
+        loaded = application.state.detector is not None
+        response = ReadyResponse(
+            status="ready" if loaded else "not_ready",
+            api_version=str(application.version),
+            model_loaded=loaded,
+            model_version=identity.version,
+            model_reference=identity.reference,
+            model_sha256=identity.sha256,
+            model_artifact=identity.artifact,
+        )
+        if not loaded:
+            return JSONResponse(status_code=503, content=response.model_dump(mode="json"))
+        return response
 
     @application.post("/predict", response_model=PredictResponse)
     async def predict(

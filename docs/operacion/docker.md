@@ -131,9 +131,9 @@ El cliente imprime `message`, las detecciones y la cabecera
 
 ### SPA (HU-007) con nginx
 
-Con compose (§5), la interfaz queda en <http://localhost:8080>; la API que la
-SPA llama se hornea en el build (`VITE_API_URL`, por omisión
-`http://localhost:8000`).
+Con compose (§5), la interfaz queda en <http://localhost:8080> y la SPA llama a
+`/api` en el mismo origen; nginx reenvía `/api/*` al servicio `api` (HU-072), así
+que no hay URL horneada ni CORS en el despliegue.
 
 ### Prueba automatizada
 
@@ -171,7 +171,7 @@ Los tres montan `${PPE_MODELS_DIR}:/models:ro` y comparten la imagen backend
 |---------|-------|--------|
 | `503` en `/predict` o `UNAVAILABLE` en gRPC | Montaje ausente o `PPE_MODEL_PATH` mal apuntada | Revisa `docker logs`; monta `:ro` y redefine `PPE_MODEL_PATH` |
 | Primera petición muy lenta | torch carga el artefacto (una vez) | Espera; las siguientes son rápidas |
-| La SPA no llama a la API | `VITE_API_URL` horneado ≠ puerto de la API | Reconstruye `web` con `--build-arg VITE_API_URL=http://host:puerto` |
+| La SPA no llama a la API | `/api` no llega al servicio `api` | Revisa `docker/nginx.conf` y la red de compose; para otro origen, reconstruye `web` con `--build-arg VITE_API_URL=http://host:puerto` |
 | Puerto ocupado | 8000/9000/8080 en uso | Cambia el mapeo (`-p`) o las variables de compose |
 | `Read-only file system` al escribir en `/models` | Montaje `:ro` funcionando | Comportamiento esperado (AC-011.3) |
 

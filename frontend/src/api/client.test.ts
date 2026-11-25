@@ -221,21 +221,41 @@ describe('HttpDetectorClient', () => {
 })
 
 describe('createClient', () => {
-  it('usa el cliente simulado sin URL', () => {
-    expect(createClient('')).toBeInstanceOf(MockDetectorClient)
+  it('AC-01: usa la ruta relativa /api sin URL', () => {
+    expect(createClient('')).toBeInstanceOf(HttpDetectorClient)
+  })
+
+  it('AC-01: publica en /api/predict con la base por omisión', async () => {
+    // Arrange
+    const fetchMock = stubFetch(response)
+    const client = createClient('')
+
+    // Act
+    await client.detect(pngFile(), 0.3)
+
+    // Assert
+    expect(fetchMock.mock.calls[0][0]).toBe('/api/predict')
+  })
+
+  it('AC-01: usa /api cuando la URL solo tiene espacios', () => {
+    expect(createClient('   ')).toBeInstanceOf(HttpDetectorClient)
   })
 
   it('usa el cliente HTTP con URL', () => {
     expect(createClient('http://api.local')).toBeInstanceOf(HttpDetectorClient)
   })
 
-  it('ignora una URL con solo espacios', () => {
-    expect(createClient('   ')).toBeInstanceOf(MockDetectorClient)
-  })
-
   it('usa VITE_API_URL cuando no recibe argumento', () => {
     // Arrange
     vi.stubEnv('VITE_API_URL', 'http://env.local')
+
+    // Act / Assert
+    expect(createClient()).toBeInstanceOf(HttpDetectorClient)
+  })
+
+  it('AC-01: usa /api cuando VITE_API_URL está vacía', () => {
+    // Arrange
+    vi.stubEnv('VITE_API_URL', '')
 
     // Act / Assert
     expect(createClient()).toBeInstanceOf(HttpDetectorClient)
