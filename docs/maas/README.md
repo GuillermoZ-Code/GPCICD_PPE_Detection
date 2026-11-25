@@ -55,22 +55,22 @@ Sin dependencias ajenas a la instalación estándar:
 ```python
 import os
 import urllib.request
-from urllib.parse import urlencode
 
 base = os.environ["PPE_MAAS_URL"]
 with open("imagen.jpg", "rb") as fh:
     image = fh.read()
 
 boundary = "----ppe-example"
-body = (
-    f"--{boundary}\r\n"
-    'Content-Disposition: form-data; name="file"; filename="imagen.jpg"\r\n'
-    "Content-Type: image/jpeg\r\n\r\n"
-).encode() + image + (
-    f"\r\n--{boundary}\r\n"
-    'Content-Disposition: form-data; name="conf"\r\n\r\n0.25\r\n'
-    f"--{boundary}--\r\n"
-).encode()
+parts = [
+    f"--{boundary}\r\n".encode(),
+    b'Content-Disposition: form-data; name="file"; filename="imagen.jpg"\r\n',
+    b"Content-Type: image/jpeg\r\n\r\n",
+    image,
+    f"\r\n--{boundary}\r\n".encode(),
+    b'Content-Disposition: form-data; name="conf"\r\n\r\n0.25\r\n',
+    f"--{boundary}--\r\n".encode(),
+]
+body = b"".join(parts)
 
 request = urllib.request.Request(
     f"{base}/predict",
@@ -82,8 +82,8 @@ with urllib.request.urlopen(request, timeout=30) as response:
     print(response.read().decode("utf-8"))
 ```
 
-`urlencode` se importa solo como referencia de codificación de parámetros; el
-cuerpo `multipart/form-data` se construye explícitamente porque incluye bytes.
+El cuerpo `multipart/form-data` se construye explícitamente porque incluye bytes;
+el ejemplo solo usa la biblioteca estándar.
 
 ## Ejemplo de respuesta 200
 
