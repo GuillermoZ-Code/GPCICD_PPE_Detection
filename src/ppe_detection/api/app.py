@@ -9,12 +9,13 @@ from dataclasses import replace
 from time import perf_counter
 from typing import Annotated, Literal, cast
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from ppe_detection.api.logging import RequestLoggingMiddleware
+from ppe_detection.api.security import API_KEY_HEADER, configured_keys, is_authorized
 from ppe_detection.api.settings import load_settings
 from ppe_detection.contracts import Detection, Detector
 from ppe_detection.detector_config import (
@@ -95,6 +96,7 @@ def create_app(
 ) -> FastAPI:
     """Crea la aplicación; permite inyectar un detector y la identidad del modelo."""
     settings = load_settings()
+    api_keys = configured_keys()
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
@@ -128,6 +130,15 @@ def create_app(
             except RuntimeError as exc:
                 raise HTTPException(status_code=503, detail=str(exc)) from exc
         return cast(Detector, application.state.detector)
+
+    async def require_api_key(request: Request) -> None:
+        """Traduce la validación de la clave a 401 sin eco del valor recibido."""
+        if not is_authorized(request.headers.get(API_KEY_HEADER), api_keys):
+            raise HTTPException(
+                status_code=401,
+                detail=f"{API_KEY_HEADER} inválida o ausente.",
+                headers={"WWW-Authenticate": "ApiKey"},
+            )
 
     @application.get("/health", response_model=HealthResponse)
     async def health() -> HealthResponse:
@@ -180,7 +191,12 @@ def create_app(
             return JSONResponse(status_code=503, content=response.model_dump(mode="json"))
         return response
 
-    @application.post("/predict", response_model=PredictResponse)
+    @application.post(
+        "/predict",
+        response_model=PredictResponse,
+        dependencies=[Depends(require_api_key)],
+        responses={401: {"description": f"{API_KEY_HEADER} inválida o ausente"}},
+    )
     async def predict(
         file: Annotated[UploadFile, File(description="Imagen JPEG o PNG")],
         conf: Annotated[float | None, Form(ge=0.01, le=0.99)] = None,
