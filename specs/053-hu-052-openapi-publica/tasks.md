@@ -26,4 +26,4 @@
 - [x] T012 Enriquecer metadatos de `/predict`, `/health`, `conf` y descripción global en `src/ppe_detection/api/app.py` sin cambiar contratos ni validaciones.
 - [x] T013 Escribir `docs/maas/README.md` con URL configurable (`PPE_MAAS_URL` / `<URL_PUBLICA>`), curl, Python, límites y HU pendientes.
 - [x] T014 Ejecutar pytest completo, ruff, pre-commit, ty, check_specs y propiedad.
-- [ ] T015 Commitear test-first y feat/docs por separado, pushear y abrir PR a `develop` con `Closes #108`, plantilla UAO y revisores ajenos; mover #108 a *In review*.
+- [x] T015 Commitear test-first y feat/docs por separado, pushear y abrir PR #228 a `develop` con `Closes #108`, plantilla UAO y revisores ajenos; mover #108 a *In review*.
