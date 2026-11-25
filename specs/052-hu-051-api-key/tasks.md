@@ -31,4 +31,4 @@
 - [x] T017 Conectar la guarda a `/predict` en `src/ppe_detection/api/app.py` y documentar 401.
 - [x] T018 Documentar `PPE_API_KEYS` y `PPE_API_KEY` en `.env.example`.
 - [x] T019 Ejecutar pytest completo, ruff, pre-commit, ty, check_specs y propiedad.
-- [ ] T020 Commitear test-first y feat/docs por separado, pushear y abrir PR a `develop` con `Closes #107`, plantilla UAO y revisores ajenos; mover #107 a *In review*.
+- [x] T020 Commitear test-first y feat/docs por separado, pushear y abrir PR #229 a `develop` con `Closes #107`, plantilla UAO y revisores ajenos; mover #107 a *In review*.
