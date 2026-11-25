@@ -62,6 +62,7 @@ def test_trivy_escanea_la_imagen_del_job_ac_02() -> None:
 
     # Assert
     assert "uses: aquasecurity/trivy-action@v0.33.0" in bloque
+    assert "version: v0.76.2" in bloque
     assert "image-ref: gpcicd-ppe-detection:ci" in bloque
 
 

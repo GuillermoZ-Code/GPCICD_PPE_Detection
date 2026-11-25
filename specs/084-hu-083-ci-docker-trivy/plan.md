@@ -24,6 +24,9 @@ leen el workflow y el runbook, sin Docker.
    interprete los argumentos y arranque REST+gRPC, lo que dejaría el job esperando.
 2. Trivy corre con `exit-code: '0'`: reporta HIGH/CRITICAL sin convertir hallazgos
    heredados en un fallo; el job sí falla si el build, el smoke o la subida fallan.
+   La versión se fija a `v0.76.2`: el default de la action (`v0.65.0`) ya no tiene
+   release descargable y el job fallaba al instalar el binario antes de escanear.
+   Fijar una versión publicada mantiene el escaneo activo y hace la CI reproducible.
 3. `if-no-files-found: error` evita un artefacto vacío silencioso.
 4. `permissions` del job: `contents: read` y `actions: write`.
 
