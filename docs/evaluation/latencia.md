@@ -57,6 +57,20 @@ Los pesos están fuera de Git. El JSON completo está en
 | YOLO26s pretrained | PyTorch | 281,07 / 353,63 | 150,18 / 185,59 | 153,72 / 179,69 |
 | YOLO26s pretrained | ONNX | 123,69 / 190,80 | 119,72 / 132,81 | 118,42 / 138,61 |
 
+### 4.1.1 Revalidación controlada — 2026-11-24
+
+Se repitió el caso **YOLO26n ONNX 640** con el proceso en primer plano, 10 hilos de
+PyTorch, OpenCV sin hilos propios, 5 warm-ups y **50 repeticiones**:
+
+| Modelo | Formato | 640 p50 / p95 | Condición |
+|---|---|---:|---|
+| **YOLO26n clean** | **ONNX** | **33,94 / 40,90 ms** | CPU, imagen sintética 640×640 |
+
+El resultado confirma el objetivo de **<100 ms** y es aún mejor que la medición
+original de 53,92 / 88,05 ms. La diferencia se explica por la fijación de hilos y por
+una sesión sin carga concurrente; el JSON completo está en
+`dist/analisis/latencia/latency_yolo26_onnx_640_2026-11-24.json`.
+
 ### 4.2 Cumplimiento de <100 ms
 
 | Combinación | p50 <100 | p95 <100 | Lectura |
@@ -89,13 +103,11 @@ pero puede costar precisión en objetos pequeños. **416 px no ofrece ventaja** 
 - **YOLO11s**: el baseline actual no cumple el objetivo en CPU.
 - **PyTorch 640**: p95 109,68 ms, ligeramente fuera del objetivo; ONNX es necesario.
 
-### Decisión pendiente
+### Estado de la decisión
 
-La latencia ya no es el bloqueo principal para YOLO26n. Falta:
-
-1. Aceptar la comparación de calidad de HU-018/HU-019.
-2. Actualizar el ADR de modelo productivo (HU-023).
-3. Medir la latencia de servicio completa (API + serialización) en HU-011/HU-050.
+La comparación de calidad de HU-018/HU-019 y el ADR 0009 ya están cerrados. El smoke
+local de REST/gRPC con ONNX también se completó. Falta el rollout en Docker/Droplet y
+la comprobación de `/health` en ese entorno.
 
 ## 6. Límites
 
@@ -112,7 +124,7 @@ Configuración fija:
 ```text
 imgsz = 640, 480, 416
 warmups = 5
-iterations = 20
+iterations = 20 (original), 50 (revalidación 2026-11-24)
 conf = 0.25
 iou = 0.7
 device = cpu
@@ -137,3 +149,33 @@ No se versionan pesos ni imágenes. El JSON de resultados se conserva en
 **YOLO26n ONNX a 640 px cumple <100 ms en CPU** en el equipo de referencia. Es el
 candidato técnico para reemplazar a YOLO11s, sujeto a la decisión de calidad de HU-019
 y al ADR de HU-023.
+
+## 9. Smoke de servicio — 2026-11-24
+
+Docker no está disponible en este equipo, así que el smoke se ejecutó en proceso con
+el artefacto real, usando `TestClient` para REST y un servidor gRPC efímero:
+
+```text
+PPE_MODEL_PATH=artifacts/models/yolo26n_clean/weights/best.pt
+PPE_MODEL_FORMAT=onnx
+PPE_MODEL_VERSION=yolo26n-clean
+PPE_MODEL_SHA256=FEFB1F1A…0F27F9
+```
+
+| Comprobación | Resultado |
+|---|---|
+| `/health` | `model_version=yolo26n-clean`, SHA `FEFB1F1A…0F27F9` |
+| `POST /predict` | 2 detecciones `Vest` |
+| gRPC `Detect` | 2 detecciones `Vest`, 44,22 ms |
+| Artefacto cargado | `best.onnx` |
+| Evidencia | `dist/analisis/rollout/smoke_rest_grpc.json` |
+
+El REST frío tardó 2.214,63 ms por la carga inicial del modelo; no es una medición de
+inferencia en caliente. El smoke confirma que REST y gRPC devuelven las mismas clases
+y que `/health` reporta la versión y el SHA correctos cuando las variables se fijan
+explícitamente.
+
+**Aviso de despliegue:** `compose.yml` todavía usa `PPE_MODEL_PATH=/models/best.pt` y
+`PPE_MODEL_VERSION=best`, y no define `PPE_MODEL_FORMAT=onnx`. Para que el contenedor
+reporte la identidad correcta y use ONNX, el compose debe montar `best.onnx` o fijar
+las tres variables (`PPE_MODEL_PATH`, `PPE_MODEL_FORMAT` y `PPE_MODEL_VERSION`).
