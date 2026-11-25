@@ -10,4 +10,4 @@
 - [x] T008 Ampliar `HealthResponse` y `health()` en `src/ppe_detection/api/app.py`.
 - [x] T009 Documentar variables y atribución en `docs/operacion/licencias-despliegue.md` (y `.env.example`).
 - [x] T010 Ejecutar pytest completo (683 passed, 2 skipped), ruff, pre-commit, ty, check_specs y propiedad.
-- [ ] T011 Abrir PR a `develop` con `Closes #116` y revisión de Guillermo.
+- [x] T011 Abrir PR a `develop` con `Closes #116` y revisión de Guillermo (PR #227).
