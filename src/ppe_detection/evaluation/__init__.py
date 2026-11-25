@@ -9,13 +9,35 @@ from ppe_detection.evaluation.evaluate import (
     sha256_file,
     validate_model_names,
 )
+from ppe_detection.evaluation.thresholds import (
+    GroundTruth,
+    ImageRecord,
+    Prediction,
+    ThresholdMetrics,
+    calibrate_thresholds,
+    calibration_payload,
+    evaluate_thresholds,
+    load_thresholds,
+    threshold_map,
+    write_thresholds,
+)
 
 __all__ = [
     "EvaluationConfig",
     "EvaluationError",
+    "GroundTruth",
+    "ImageRecord",
+    "Prediction",
+    "ThresholdMetrics",
     "build_summary",
+    "calibrate_thresholds",
+    "calibration_payload",
     "evaluate",
+    "evaluate_thresholds",
+    "load_thresholds",
     "render_markdown",
     "sha256_file",
+    "threshold_map",
     "validate_model_names",
+    "write_thresholds",
 ]

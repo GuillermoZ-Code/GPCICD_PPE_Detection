@@ -1,0 +1,11 @@
+# Umbrales de confianza por clase (HU-029).
+# Generado por ppe_detection.evaluation.thresholds; no editar a mano.
+version: 1
+iou: 0.50
+thresholds:
+  Gloves: 0.45
+  Vest: 0.51
+  goggles: 0.30
+  helmet: 0.49
+  mask: 0.40
+  safety_shoe: 0.32
