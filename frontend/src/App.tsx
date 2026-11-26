@@ -4,6 +4,7 @@ import { createClient, type DetectorClient } from './api/client'
 import { AnnotatedCanvas } from './components/AnnotatedCanvas'
 import { Background } from './components/Background'
 import { DetectionTable } from './components/DetectionTable'
+import { ModelInfo } from './components/ModelInfo'
 import { SettingsDrawer } from './components/SettingsDrawer'
 import { StatusBanner } from './components/StatusBanner'
 import { UploadPanel } from './components/UploadPanel'
@@ -38,8 +39,7 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
   const [settings, setSettings] = useState<Settings>(loadSettings)
   const [analysis, setAnalysis] = useState<Analysis>({ status: 'idle' })
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [slow, setSlow] = useState(false)
-  const [attempt, setAttempt] = useState(0)
+  const [modelInfoOpen, setModelInfoOpen] = useState(false)
   const imageUrlRef = useRef<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -200,6 +200,16 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
           <button
             className="icon-button"
             type="button"
+            aria-label="Acerca del modelo"
+            title="Acerca del modelo"
+            aria-expanded={modelInfoOpen}
+            onClick={() => setModelInfoOpen((open) => !open)}
+          >
+            ⓘ
+          </button>
+          <button
+            className="icon-button"
+            type="button"
             aria-label="Cambiar tema"
             title="Cambiar tema"
             onClick={() => updateSettings({ theme: resolvedTheme === 'dark' ? 'light' : 'dark' })}
@@ -356,6 +366,8 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
             )}
           </section>
         </div>
+
+        {modelInfoOpen && <ModelInfo />}
       </main>
 
       <footer className="footer">
