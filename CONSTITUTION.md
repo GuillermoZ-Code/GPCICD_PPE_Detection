@@ -201,6 +201,8 @@ Todo en Docker CPU; CI/CD → Droplet
 
 - Diagrama interactivo: [`docs/architecture/arquitectura.html`](docs/architecture/arquitectura.html)
 - Fuente versionada: [`docs/architecture/arquitectura.json`](docs/architecture/arquitectura.json)
+- Decisiones de despliegue: [ADR 0007](docs/adr/0007-gitlab-ci-espejo.md) (GitLab CI con
+  espejo desde GitHub) y [ADR 0008](docs/adr/0008-droplet-caddy.md) (Droplet + Caddy).
 
 ### Contract-first
 
@@ -351,6 +353,8 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-11-11 | MLflow como extra opcional `tracking`; registro en `src/ppe_detection/tracking/` | Evita ~150 dependencias en el paquete base y en la CI; el run referencia el modelo por SHA256 sin copiar pesos |
 | 2026-11-12 | Requisito de la entrega: **≥ 400 pruebas unitarias**; se cierra sin umbral de cobertura porcentual | Indicación del docente; el plan y el reparto por integrante viven en `docs/curso/PLAN-PRUEBAS.md` |
 | 2026-11-23 | Modelo productivo **YOLO26n + ONNX 640**; YOLO11s como rollback | Mejor mAP50-95 (0,614 vs 0,516) y p95 88,05 ms vs 280,63 ms; decisión en ADR 0009, rollout pendiente |
+| 2026-11-25 | GitLab CI/CD con espejo de *push* desde GitHub | Pipeline del M4 sin GitLab Premium y con SHA trazable (ADR 0007) |
+| 2026-11-25 | Despliegue en Droplet con Docker Compose y Caddy | HTTPS automático en el entorno del curso, sin PaaS (ADR 0008) |
 
 ## 12. Roadmap M3–M4
 

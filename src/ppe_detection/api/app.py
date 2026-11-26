@@ -26,6 +26,27 @@ from ppe_detection.detector_config import (
 )
 from ppe_detection.io import InvalidImageError, validate_image_bytes
 
+#: Ejemplo estático de la respuesta publicada en `/predict` (HU-052).
+PREDICT_EXAMPLE = {
+    "detections": [
+        {
+            "class_id": 3,
+            "class_name": "helmet",
+            "confidence": 0.93,
+            "bbox": [12.0, 8.0, 96.0, 84.0],
+            "image_width": 640,
+            "image_height": 480,
+        }
+    ],
+    "image_width": 640,
+    "image_height": 480,
+    "model_version": "yolo11s-clean",
+    "model_sha256": None,
+    "model_artifact": None,
+    "model_reference": "artifacts/drive/yolo11s_clean/weights/best.pt",
+    "elapsed_ms": 42.5,
+}
+
 
 class DetectionOut(BaseModel):
     """Detección serializada para la API."""
@@ -61,6 +82,31 @@ class HealthResponse(BaseModel):
     model_reference: str
     model_sha256: str | None
     model_artifact: str | None
+    source_url: str
+    commit: str | None
+
+
+ALLOWED_IMAGE_TYPES = ("image/png", "image/jpeg")
+
+
+def _configured_upload_bytes() -> tuple[int, float] | None:
+    """Devuelve bytes y MB si `PPE_MAX_UPLOAD_MB` fue configurado explícitamente."""
+    raw = os.getenv("PPE_MAX_UPLOAD_MB")
+    if raw is None:
+        return None
+    try:
+        megabytes = float(raw)
+    except ValueError:
+        return None
+    if not 0 < megabytes <= 1024:
+        return None
+    return int(megabytes * 1024 * 1024), megabytes
+
+
+def _is_allowed_type(content_type: str | None) -> bool:
+    """True si el MIME anunciado es PNG o JPEG."""
+    normalized = (content_type or "").split(";", 1)[0].strip().lower()
+    return normalized in ALLOWED_IMAGE_TYPES
 
 
 class LiveResponse(BaseModel):
@@ -107,7 +153,11 @@ def create_app(
     application = FastAPI(
         title="GPCICD PPE Detection API",
         version="0.1.0",
-        description="Detección de EPP sobre imágenes JPEG/PNG.",
+        description=(
+            "API REST para la detección de EPP sobre imágenes JPEG/PNG, publicada "
+            "como MaaS (Model as a Service). La interfaz interactiva está en `/docs`; "
+            "la guía para consumidores externos está en `docs/maas/README.md`."
+        ),
         lifespan=lifespan,
     )
     application.add_middleware(
@@ -118,6 +168,8 @@ def create_app(
     )
     application.add_middleware(RequestLoggingMiddleware)
     application.state.detector = detector
+    application.state.source_url = (os.getenv("PPE_SOURCE_URL") or "").strip() or DEFAULT_SOURCE_URL
+    application.state.deploy_commit = (os.getenv("PPE_DEPLOY_COMMIT") or "").strip() or None
     identity = model_identity or default_model_identity()
     if model_version is not None:
         identity = replace(identity, version=model_version)
@@ -157,6 +209,8 @@ def create_app(
             model_reference=identity.reference,
             model_sha256=identity.sha256,
             model_artifact=identity.artifact,
+            source_url=cast(str, application.state.source_url),
+            commit=cast(str | None, application.state.deploy_commit),
         )
 
     @application.get("/health/live", response_model=LiveResponse)
@@ -198,11 +252,32 @@ def create_app(
         responses={401: {"description": f"{API_KEY_HEADER} inválida o ausente"}},
     )
     async def predict(
-        file: Annotated[UploadFile, File(description="Imagen JPEG o PNG")],
-        conf: Annotated[float | None, Form(ge=0.01, le=0.99)] = None,
+        file: Annotated[UploadFile, File(description="Imagen JPEG o PNG de hasta 10 MB")],
+        conf: Annotated[
+            float | None,
+            Form(
+                ge=0.01,
+                le=0.99,
+                description=(
+                    "Umbral mínimo de confianza (0.01..0.99); omítalo para usar el default."
+                ),
+                examples=[0.25],
+            ),
+        ] = None,
     ) -> PredictResponse:
         """Valida la imagen y devuelve las detecciones del modelo configurado."""
+        configured_limit = _configured_upload_bytes()
         data = await file.read()
+        if configured_limit is not None and len(data) > configured_limit[0]:
+            raise HTTPException(
+                status_code=413,
+                detail=f"Archivo demasiado grande: el límite es {configured_limit[1]:g} MB.",
+            )
+        if data and not _is_allowed_type(file.content_type):
+            raise HTTPException(
+                status_code=415,
+                detail="Tipo de archivo no permitido: se aceptan image/png e image/jpeg.",
+            )
         try:
             image = validate_image_bytes(data, source=file.filename or "upload")
         except InvalidImageError as exc:
