@@ -15,3 +15,4 @@ nueva se agrega con su propio número; no se reescribe la historia.
 | [0008](0008-droplet-caddy.md) | Despliegue en Droplet con Docker Compose y Caddy (HTTPS automático) |
 | [0009](0009-modelo-productivo.md) | Modelo productivo: YOLO26n fine-tuneado + ONNX 640; YOLO11s como rollback |
 | [0011](0011-memoria-agentes.md) | Memoria local de agentes con Engram, subordinada al repositorio |
+| [0012](0012-codeowners-checks-obligatorios.md) | CODEOWNERS generado y checks obligatorios (actualiza 0004) |
