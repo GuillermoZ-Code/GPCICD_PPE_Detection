@@ -105,6 +105,24 @@ equipo.
 - **Resultado esperado:** el healthcheck por dominio y la inferencia por dominio
   devuelven 200 sin cambios en el código del detector.
 
+## Verificación remota desde otro equipo (HU-050)
+
+Cuando el fallo puede estar en el proxy o en la exposición pública, ejecutar el cliente
+de verificación desde una máquina ajena al Droplet:
+
+```bash
+uv run python -m ppe_detection.tools.smoke_remote \
+  --api-url https://<host> \
+  --grpc-target <host>:443 \
+  --image artifacts/ejemplo.png
+```
+
+El cliente comprueba `/health/ready`, una predicción válida y un rechazo por REST, las
+dos comprobaciones equivalentes por gRPC y que el servicio sigue `ready` después del
+rechazo. Imprime la versión del modelo y la latencia declarada por la API; devuelve 0
+solo si todo pasa. Las pruebas usan transportes simulados (`tests/test_smoke_remote.py`),
+por lo que no necesitan red, dataset ni pesos.
+
 ## Registro de ensayos
 
 | Validación | Estado | Evidencia |
