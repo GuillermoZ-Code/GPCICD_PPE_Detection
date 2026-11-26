@@ -70,3 +70,39 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  docker:
+    name: Docker y Trivy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Construir imagen CPU
+        run: docker build --target runtime -t gpcicd-ppe-detection:ci .
+
+      - name: Smoke sin modelo
+        run: |
+          docker run --rm --entrypoint python gpcicd-ppe-detection:ci \
+            -c "from ppe_detection.api import create_app; app = create_app(); print(app.version)"
+
+      - name: Escanear imagen con Trivy
+        uses: aquasecurity/trivy-action@v0.33.0
+        with:
+          version: v0.76.2
+          image-ref: gpcicd-ppe-detection:ci
+          format: sarif
+          output: trivy-results.sarif
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '0'
+
+      - name: Publicar reporte
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-sarif
+          path: trivy-results.sarif
+          if-no-files-found: error
