@@ -9,12 +9,13 @@ from dataclasses import replace
 from time import perf_counter
 from typing import Annotated, Literal, cast
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from ppe_detection.api.logging import RequestLoggingMiddleware
+from ppe_detection.api.security import API_KEY_HEADER, configured_keys, is_authorized
 from ppe_detection.api.settings import load_settings
 from ppe_detection.contracts import Detection, Detector
 from ppe_detection.detector_config import (
@@ -141,6 +142,7 @@ def create_app(
 ) -> FastAPI:
     """Crea la aplicación; permite inyectar un detector y la identidad del modelo."""
     settings = load_settings()
+    api_keys = configured_keys()
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
@@ -181,15 +183,16 @@ def create_app(
                 raise HTTPException(status_code=503, detail=str(exc)) from exc
         return cast(Detector, application.state.detector)
 
-    @application.get(
-        "/health",
-        response_model=HealthResponse,
-        summary="Estado del servicio",
-        description=(
-            "Informa el estado del componente y la identidad del modelo cargado. "
-            "No construye el detector: sin modelo responde `degraded` sin bloquear."
-        ),
-    )
+    async def require_api_key(request: Request) -> None:
+        """Traduce la validación de la clave a 401 sin eco del valor recibido."""
+        if not is_authorized(request.headers.get(API_KEY_HEADER), api_keys):
+            raise HTTPException(
+                status_code=401,
+                detail=f"{API_KEY_HEADER} inválida o ausente.",
+                headers={"WWW-Authenticate": "ApiKey"},
+            )
+
+    @application.get("/health", response_model=HealthResponse)
     async def health() -> HealthResponse:
         """Informa el estado del componente y la identidad del modelo cargado.
 
@@ -245,35 +248,8 @@ def create_app(
     @application.post(
         "/predict",
         response_model=PredictResponse,
-        summary="Detectar EPP en una imagen",
-        description=(
-            "Recibe una imagen JPEG o PNG (máximo 10 MB) y devuelve las detecciones "
-            "de EPP con sus coordenadas, confianza e identidad del modelo. "
-            "El parámetro opcional `conf` filtra detecciones entre 0.01 y 0.99. "
-            "No hay clase `person` ni `no-EPP`: el resultado no evalúa cumplimiento."
-        ),
-        responses={
-            200: {
-                "description": "Detecciones e identidad del modelo",
-                "content": {"application/json": {"example": PREDICT_EXAMPLE}},
-            },
-            400: {
-                "description": "Imagen inválida: se aceptan JPEG/PNG de hasta 10 MB",
-                "content": {
-                    "application/json": {
-                        "example": {"detail": "Formato no admitido: se aceptan JPEG y PNG."}
-                    }
-                },
-            },
-            503: {
-                "description": "Modelo no cargado o detector no configurado",
-                "content": {
-                    "application/json": {
-                        "example": {"detail": "Detector no configurado; revise PPE_MODEL_PATH."}
-                    }
-                },
-            },
-        },
+        dependencies=[Depends(require_api_key)],
+        responses={401: {"description": f"{API_KEY_HEADER} inválida o ausente"}},
     )
     async def predict(
         file: Annotated[UploadFile, File(description="Imagen JPEG o PNG de hasta 10 MB")],
