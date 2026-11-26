@@ -184,22 +184,29 @@ Los tres montan `${PPE_MODELS_DIR}:/models:ro` y comparten la imagen backend
 | AC-011.3 | Montaje `:ro`; `.gitignore` y `.dockerignore` bloquean pesos/datasets; sin Colab ni reentrenamiento |
 | AC-011.4 | Este runbook + README (`Iniciar servicios → Docker`) |
 
-## 8. CI: build, smoke y escaneo Trivy (HU-083)
+## 9. Tamaño de la imagen (HU-084)
 
-Cada PR a `develop` ejecuta el job **Docker y Trivy** de `.github/workflows/ci.yml`:
+Medición del target `runtime` en un runner `ubuntu-latest` (Actions), con Docker
+y el mismo contexto de construcción para ambas versiones. El tamaño es el que
+reporta Docker sin comprimir, en MB decimales (1 MB = 1.000.000 bytes).
 
-1. construye `gpcicd-ppe-detection:ci` desde el target `runtime`;
-2. ejecuta un smoke sin modelo (`create_app()` dentro de la imagen) que comprueba
-   que el paquete y la API se construyen sin pesos ni volúmenes;
-3. escanea esa misma imagen con Trivy (`HIGH,CRITICAL`) y escribe
-   `trivy-results.sarif`;
-4. publica el SARIF como artefacto `trivy-sarif`.
+| Versión | Bytes | MB |
+|---------|-------|----|
+| Antes (HU-011): `runtime` con uv en la imagen final | 1.034.249.515 | 1034.2 MB |
+| Después (HU-084): `runtime-deps` + `runtime` sin uv | 549.440.518 | 549.4 MB |
+| Reducción | 484.809.997 | 484.8 MB (46.9 %) |
 
-Para descargar el reporte: abre la PR → pestaña **Checks** → job **Docker y Trivy**
-→ sección **Artifacts** → `trivy-sarif`. Si el archivo no se genera, el paso de
-subida falla (`if-no-files-found: error`).
+Comando para reproducir la medición con cada versión del `Dockerfile`:
 
-Trivy corre con `exit-code: '0'`: el job **reporta** vulnerabilidades heredadas sin
-convertirlas en una compuerta roja, pero sigue fallando si el build, el smoke, el
-escaneo o la publicación del artefacto fallan. Las pruebas estáticas de
-`tests/test_ci_docker_trivy.py` verifican esta configuración sin necesidad de Docker.
+```bash
+docker build --target runtime -f Dockerfile.before -t ppe-before:medir .
+docker build --target runtime -t ppe-after:medir .
+docker image inspect ppe-before:medir --format '{{.Size}}'
+docker image inspect ppe-after:medir --format '{{.Size}}'
+```
+
+La reducción viene de separar la resolución de dependencias (`runtime-deps`) de
+la imagen publicada, desactivar la caché de uv (`UV_NO_CACHE=1`) y no copiar el
+binario de uv al runtime final. La etapa `runtime` crea el usuario `appuser`
+(UID 10001) y arranca con `USER appuser`; el target `web` no cambia. Fecha de la
+medición: 2026-11-25.

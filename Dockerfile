@@ -20,21 +20,13 @@ COPY frontend/ ./
 # reenvía al servicio `api` del mismo compose (sin CORS ni localhost horneado).
 RUN npm run build
 
-# --- runtime: backend CPU con dependencias de uv.lock ------------------------
-FROM python:3.13-slim AS runtime
+# --- runtime-deps: entorno resuelto, no se publica ---------------------------
+FROM python:3.13-slim AS runtime-deps
 ENV UV_PYTHON_DOWNLOADS=never \
+    UV_NO_CACHE=1 \
     UV_LINK_MODE=copy \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
-
-# Bibliotecas del sistema en Debian trixie:
-#   OpenCV headless → libgl1, libglib2.0-0t64, libxcb1
-#   torch CPU       → libgomp1 (OpenMP), libquadmath0
-#   TLS del cliente → ca-certificates
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        ca-certificates libgl1 libglib2.0-0t64 libgomp1 libquadmath0 libxcb1 \
-    && rm -rf /var/lib/apt/lists/*
 
 # uv como único gestor de dependencias; sin pip ni requirements.txt.
 COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /usr/local/bin/uv
@@ -50,10 +42,31 @@ RUN uv sync --frozen --no-dev --no-install-project --extra inference --extra grp
 COPY src ./src
 RUN uv sync --frozen --no-dev --extra inference --extra grpc
 
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod 0755 /entrypoint.sh
+# --- runtime: backend CPU publicado, sin uv y con usuario no root -------------
+FROM python:3.13-slim AS runtime
+ENV UV_PYTHON_DOWNLOADS=never \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/app/.venv/bin:$PATH"
 
-ENV PATH="/app/.venv/bin:$PATH"
+# Bibliotecas del sistema en Debian trixie:
+#   OpenCV headless → libgl1, libglib2.0-0t64, libxcb1
+#   torch CPU       → libgomp1 (OpenMP), libquadmath0
+#   TLS del cliente → ca-certificates
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates libgl1 libglib2.0-0t64 libgomp1 libquadmath0 libxcb1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --gid 10001 appuser \
+    && useradd --uid 10001 --gid appuser --create-home --shell /bin/sh appuser \
+    && install -d -o appuser -g appuser /app
+
+WORKDIR /app
+COPY --chown=appuser:appuser --from=runtime-deps /app/.venv /app/.venv
+COPY --chown=appuser:appuser --from=runtime-deps /app/src /app/src
+COPY --chmod=0755 --chown=appuser:appuser docker/entrypoint.sh /entrypoint.sh
+
+USER appuser
 EXPOSE 8000 9000
 ENTRYPOINT ["/entrypoint.sh"]
 
