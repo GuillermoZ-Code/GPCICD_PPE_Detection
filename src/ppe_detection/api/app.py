@@ -25,6 +25,8 @@ from ppe_detection.detector_config import (
 )
 from ppe_detection.io import InvalidImageError, validate_image_bytes
 
+DEFAULT_SOURCE_URL = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection"
+
 
 class DetectionOut(BaseModel):
     """Detección serializada para la API."""
@@ -60,6 +62,8 @@ class HealthResponse(BaseModel):
     model_reference: str
     model_sha256: str | None
     model_artifact: str | None
+    source_url: str
+    commit: str | None
 
 
 ALLOWED_IMAGE_TYPES = ("image/png", "image/jpeg")
@@ -139,6 +143,8 @@ def create_app(
     )
     application.add_middleware(RequestLoggingMiddleware)
     application.state.detector = detector
+    application.state.source_url = (os.getenv("PPE_SOURCE_URL") or "").strip() or DEFAULT_SOURCE_URL
+    application.state.deploy_commit = (os.getenv("PPE_DEPLOY_COMMIT") or "").strip() or None
     identity = model_identity or default_model_identity()
     if model_version is not None:
         identity = replace(identity, version=model_version)
@@ -169,6 +175,8 @@ def create_app(
             model_reference=identity.reference,
             model_sha256=identity.sha256,
             model_artifact=identity.artifact,
+            source_url=cast(str, application.state.source_url),
+            commit=cast(str | None, application.state.deploy_commit),
         )
 
     @application.get("/health/live", response_model=LiveResponse)
