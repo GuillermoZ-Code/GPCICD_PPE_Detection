@@ -30,9 +30,11 @@ type Analysis =
 
 interface AppProps {
   client?: DetectorClient
+  /** Milisegundos tras los cuales se avisa que el análisis sigue en curso (HU-081). */
+  slowAfterMs?: number
 }
 
-export function App({ client }: AppProps) {
+export function App({ client, slowAfterMs = 8000 }: AppProps) {
   const detector = useMemo(() => client ?? createClient(), [client])
   const [settings, setSettings] = useState<Settings>(loadSettings)
   const [analysis, setAnalysis] = useState<Analysis>({ status: 'idle' })
@@ -64,6 +66,16 @@ export function App({ client }: AppProps) {
     }
   }, [])
 
+  // HU-081 AC-01: si la inferencia tarda más de `slowAfterMs`, se avisa que sigue en
+  // curso; el umbral es configurable para que la espera no parezca un cuelgue.
+  useEffect(() => {
+    if (analysis.status !== 'loading') {
+      return
+    }
+    const timer = setTimeout(() => setSlow(true), slowAfterMs)
+    return () => clearTimeout(timer)
+  }, [analysis.status, attempt, slowAfterMs])
+
   useEffect(() => {
     if (!drawerOpen) {
       return
@@ -90,7 +102,9 @@ export function App({ client }: AppProps) {
   }
 
   async function analyze(target: File, url: string) {
+    setSlow(false)
     setAnalysis({ status: 'loading', file: target, imageUrl: url })
+    setAttempt((current) => current + 1)
     try {
       const response = await detector.detect(target, settings.modelConfidence)
       setAnalysis({ status: 'ready', file: target, imageUrl: url, response })
@@ -272,6 +286,12 @@ export function App({ client }: AppProps) {
                     Validando, enviando y detectando con umbral{' '}
                     {Math.round(settings.modelConfidence * 100)} %.
                   </p>
+                  {slow && (
+                    <p className="muted">
+                      Sigue procesando… el análisis ha tardado más de{' '}
+                      {Math.round(slowAfterMs / 1000)} s.
+                    </p>
+                  )}
                 </div>
                 <div className="skeleton" aria-hidden="true">
                   <span />
@@ -282,7 +302,18 @@ export function App({ client }: AppProps) {
             )}
 
             {analysis.status === 'error' && (
-              <StatusBanner tone="error">{analysis.message}</StatusBanner>
+              <div className="error-state">
+                <StatusBanner tone="error">{analysis.message}</StatusBanner>
+                {file && imageUrl && (
+                  <button
+                    type="button"
+                    className="button button--primary"
+                    onClick={() => void analyze(file, imageUrl)}
+                  >
+                    Reintentar
+                  </button>
+                )}
+              </div>
             )}
 
             {analysis.status === 'ready' && (

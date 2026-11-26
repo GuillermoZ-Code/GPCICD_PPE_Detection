@@ -183,3 +183,30 @@ Los tres montan `${PPE_MODELS_DIR}:/models:ro` y comparten la imagen backend
 | AC-011.2 | Contenedor sin GPU sirve `/predict` y `Detect` conforme al contrato (`make docker-smoke`) |
 | AC-011.3 | Montaje `:ro`; `.gitignore` y `.dockerignore` bloquean pesos/datasets; sin Colab ni reentrenamiento |
 | AC-011.4 | Este runbook + README (`Iniciar servicios → Docker`) |
+
+## 9. Tamaño de la imagen (HU-084)
+
+Medición del target `runtime` en un runner `ubuntu-latest` (Actions), con Docker
+y el mismo contexto de construcción para ambas versiones. El tamaño es el que
+reporta Docker sin comprimir, en MB decimales (1 MB = 1.000.000 bytes).
+
+| Versión | Bytes | MB |
+|---------|-------|----|
+| Antes (HU-011): `runtime` con uv en la imagen final | 1.034.249.515 | 1034.2 MB |
+| Después (HU-084): `runtime-deps` + `runtime` sin uv | 549.440.518 | 549.4 MB |
+| Reducción | 484.809.997 | 484.8 MB (46.9 %) |
+
+Comando para reproducir la medición con cada versión del `Dockerfile`:
+
+```bash
+docker build --target runtime -f Dockerfile.before -t ppe-before:medir .
+docker build --target runtime -t ppe-after:medir .
+docker image inspect ppe-before:medir --format '{{.Size}}'
+docker image inspect ppe-after:medir --format '{{.Size}}'
+```
+
+La reducción viene de separar la resolución de dependencias (`runtime-deps`) de
+la imagen publicada, desactivar la caché de uv (`UV_NO_CACHE=1`) y no copiar el
+binario de uv al runtime final. La etapa `runtime` crea el usuario `appuser`
+(UID 10001) y arranca con `USER appuser`; el target `web` no cambia. Fecha de la
+medición: 2026-11-25.
