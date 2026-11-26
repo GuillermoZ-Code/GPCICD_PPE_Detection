@@ -40,6 +40,9 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
   const [analysis, setAnalysis] = useState<Analysis>({ status: 'idle' })
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [modelInfoOpen, setModelInfoOpen] = useState(false)
+  // HU-081: aviso de espera larga y contador de reintentos.
+  const [slow, setSlow] = useState(false)
+  const [attempt, setAttempt] = useState(0)
   const imageUrlRef = useRef<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 

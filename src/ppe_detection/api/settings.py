@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 SHA256_PATTERN = re.compile(r"^[0-9A-Fa-f]{64}$")
 TARGET_PATTERN = re.compile(r"^[^:\s]+:(\d{1,5})$")
 SECRET_VARS = frozenset({"PPE_API_KEY"})
+DEFAULT_SOURCE_URL = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection"
 KNOWN_VARS = frozenset(
     {
         "PPE_API_HOST",
@@ -30,10 +31,18 @@ KNOWN_VARS = frozenset(
         "PPE_MODEL_PATH",
         "PPE_MODEL_SHA256",
         "PPE_MODEL_VERSION",
+        "PPE_SOURCE_URL",
+        "PPE_DEPLOY_COMMIT",
     }
 )
 
-__all__ = ["Settings", "SettingsError", "load_settings", "validate_environment"]
+__all__ = [
+    "DEFAULT_SOURCE_URL",
+    "Settings",
+    "SettingsError",
+    "load_settings",
+    "validate_environment",
+]
 
 
 @dataclass(frozen=True, slots=True)

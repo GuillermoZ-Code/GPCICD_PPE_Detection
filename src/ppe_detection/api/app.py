@@ -16,7 +16,7 @@ from pydantic import BaseModel
 
 from ppe_detection.api.logging import RequestLoggingMiddleware
 from ppe_detection.api.security import API_KEY_HEADER, configured_keys, is_authorized
-from ppe_detection.api.settings import load_settings
+from ppe_detection.api.settings import DEFAULT_SOURCE_URL, load_settings
 from ppe_detection.contracts import Detection, Detector
 from ppe_detection.detector_config import (
     DetectorNotConfiguredError,
@@ -25,6 +25,8 @@ from ppe_detection.detector_config import (
     default_model_identity,
 )
 from ppe_detection.io import InvalidImageError, validate_image_bytes
+
+_EXAMPLE_MODEL_SHA = "FEFB1F1A120FB3AC7BC0F4DE90E5E594BBEF5E936D8168750AA78FC3FB0F27F9"
 
 #: Ejemplo estático de la respuesta publicada en `/predict` (HU-052).
 PREDICT_EXAMPLE = {
@@ -249,7 +251,40 @@ def create_app(
         "/predict",
         response_model=PredictResponse,
         dependencies=[Depends(require_api_key)],
-        responses={401: {"description": f"{API_KEY_HEADER} inválida o ausente"}},
+        summary="Detectar EPP en una imagen",
+        description=("Valida la imagen y devuelve las detecciones de EPP del modelo configurado."),
+        responses={
+            200: {
+                "description": "Detecciones de EPP encontradas (puede ser una lista vacía).",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "detections": [
+                                {
+                                    "class_id": 3,
+                                    "class_name": "helmet",
+                                    "confidence": 0.91,
+                                    "bbox": [10.0, 20.0, 110.0, 140.0],
+                                    "image_width": 640,
+                                    "image_height": 480,
+                                }
+                            ],
+                            "image_width": 640,
+                            "image_height": 480,
+                            "model_version": "yolo26n-clean",
+                            "model_sha256": _EXAMPLE_MODEL_SHA,
+                            "model_artifact": "file:///models/best.pt",
+                            "model_reference": f"sha256:{_EXAMPLE_MODEL_SHA}",
+                            "elapsed_ms": 54.2,
+                        }
+                    }
+                },
+            },
+            400: {"description": "Imagen inválida, vacía o corrupta."},
+            401: {"description": f"{API_KEY_HEADER} inválida o ausente"},
+            422: {"description": "Parámetros fuera de rango o archivo no soportado."},
+            503: {"description": "El modelo todavía no está cargado."},
+        },
     )
     async def predict(
         file: Annotated[UploadFile, File(description="Imagen JPEG o PNG de hasta 10 MB")],

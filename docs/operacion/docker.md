@@ -210,3 +210,12 @@ la imagen publicada, desactivar la caché de uv (`UV_NO_CACHE=1`) y no copiar el
 binario de uv al runtime final. La etapa `runtime` crea el usuario `appuser`
 (UID 10001) y arranca con `USER appuser`; el target `web` no cambia. Fecha de la
 medición: 2026-11-25.
+## Docker y Trivy
+
+El job **Docker y Trivy** del CI construye la imagen `runtime`, la escanea con
+`aquasecurity/trivy-action` y publica el reporte como artefacto **trivy-sarif**
+(`trivy-results.sarif`).
+
+- **Qué bloquea:** la imagen no se publica si el escaneo falla.
+- **Cómo descargar el reporte:** Actions → ejecución → *Artifacts* → `trivy-sarif`.
+- **Qué revisar:** vulnerabilidades `CRITICAL`/`HIGH` con corrección disponible.
