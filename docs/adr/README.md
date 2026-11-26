@@ -11,5 +11,7 @@ nueva se agrega con su propio número; no se reescribe la historia.
 | [0004](0004-gitflow-spec-kit-merge.md) | Gitflow + Spec Kit + estrategia de merge |
 | [0005](0005-contract-first.md) | Contract-first con detector simulado |
 | [0006](0006-frontend-react.md) | Frontend web React + Vite + TypeScript (sustituye Streamlit/Tkinter) |
+| [0007](0007-gitlab-ci-espejo.md) | GitLab CI/CD con espejo de *push* desde GitHub (sin Premium) |
+| [0008](0008-droplet-caddy.md) | Despliegue en Droplet con Docker Compose y Caddy (HTTPS automático) |
 | [0009](0009-modelo-productivo.md) | Modelo productivo: YOLO26n fine-tuneado + ONNX 640; YOLO11s como rollback |
 | [0011](0011-memoria-agentes.md) | Memoria local de agentes con Engram, subordinada al repositorio |
