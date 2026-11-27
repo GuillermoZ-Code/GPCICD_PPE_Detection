@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build ownership-check codeowners estado protos estado-write pruebas pruebas-write trazabilidad trazabilidad-write trazabilidad-check specs-check rubrica rubrica-write rubrica-check frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
+.PHONY: help install dev pre-commit-install pre-commit secrets lint format format-check typecheck test check build ownership-check codeowners estado protos estado-write pruebas pruebas-write trazabilidad trazabilidad-write trazabilidad-check specs-check rubrica rubrica-write rubrica-check frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -32,6 +32,9 @@ pre-commit-install: ## Instala los hooks de pre-commit en el repositorio local
 
 pre-commit: ## Ejecuta todos los hooks de pre-commit sobre el repositorio
 	uv run pre-commit run --all-files
+
+secrets: ## Escanea secretos con gitleaks en local (HU-043)
+	gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
 
 lint: ## Ejecuta Ruff (lint)
 	uv run ruff check .
