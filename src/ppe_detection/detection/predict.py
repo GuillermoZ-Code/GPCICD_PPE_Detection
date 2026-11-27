@@ -41,7 +41,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         description="Detecta EPP en imágenes con un modelo YOLO entrenado.",
     )
     parser.add_argument("--model", type=Path, required=True, help="best.pt o best.onnx")
-    parser.add_argument("--source", type=Path, required=True, help="imagen o carpeta")
+    source_group = parser.add_mutually_exclusive_group(required=True)
+    source_group.add_argument("--source", type=Path, help="imagen o carpeta")
+    source_group.add_argument("--dir", type=Path, dest="source", help="carpeta de imágenes")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--conf", type=float, default=DEFAULT_CONF)
     parser.add_argument("--iou", type=float, default=DEFAULT_IOU)
@@ -88,6 +90,55 @@ def detection_rows(image_path: Path, detections: Sequence[Detection]) -> list[di
         }
         for detection in detections
     ]
+
+
+def image_json_payload(
+    image_path: Path,
+    image: ImageData,
+    detections: Sequence[Detection],
+    args: argparse.Namespace,
+    model_sha256: str,
+) -> dict[str, Any]:
+    """Construye el JSON de una imagen con modelo, parámetros y detecciones."""
+    return {
+        "image": str(image_path),
+        "width": image.width,
+        "height": image.height,
+        "format": image.format,
+        "model": {
+            "path": str(args.model),
+            "version": args.model.stem,
+            "sha256": model_sha256,
+        },
+        "parameters": {
+            "conf": args.conf,
+            "iou": args.iou,
+            "imgsz": args.imgsz,
+            "device": args.device,
+            "seed": getattr(args, "seed", DEFAULT_SEED),
+        },
+        "detections": [
+            {
+                "class_id": detection.class_id,
+                "class_name": detection.class_name,
+                "confidence": round(detection.confidence, 6),
+                "bbox": [round(value, 2) for value in detection.bbox],
+                "image_width": detection.image_width,
+                "image_height": detection.image_height,
+            }
+            for detection in detections
+        ],
+        "message": NO_DETECTIONS_MESSAGE if not detections else f"{len(detections)} detecciones",
+    }
+
+
+def write_image_json(payload: dict[str, Any], path: Path) -> None:
+    """Escribe el JSON de una imagen, creando el directorio si hace falta."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
 
 def write_detections_csv(rows: Sequence[dict[str, Any]], path: Path) -> None:
@@ -223,11 +274,17 @@ def run(args: argparse.Namespace) -> None:
     rows: list[dict[str, Any]] = []
     records: list[dict[str, Any]] = []
     annotated_dir = args.output / "annotated"
+    json_dir = args.output / "json"
+    model_sha256 = sha256_file(args.model)
     for image_path in images:
         image = load_image(image_path)
         detections = detector.detect(image)
         rows.extend(detection_rows(image_path, detections))
         records.append(image_record(image_path, image, len(detections)))
+        write_image_json(
+            image_json_payload(image_path, image, detections, args, model_sha256),
+            json_dir / f"{image_path.name}.json",
+        )
         if getattr(args, "annotated", False):
             write_image(draw_detections(image, detections), annotated_dir / image_path.name)
         print(f"{image_path}: {len(detections)} detecciones")
@@ -238,6 +295,7 @@ def run(args: argparse.Namespace) -> None:
     write_manifest(build_manifest(args, records, len(rows)), manifest_path)
     print(format_summary(rows))
     print(f"CSV: {csv_path}")
+    print(f"JSON por imagen: {json_dir}")
     print(f"Manifiesto: {manifest_path}")
     if getattr(args, "annotated", False):
         print(f"Anotadas: {annotated_dir}")
