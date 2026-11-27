@@ -2,7 +2,7 @@
   "schema_version": 1,
   "diagram_type": "architecture",
   "meta": {
-    "title": "GPCICD PPE Detection — arquitectura objetivo",
+    "title": "GPCICD PPE Detection — arquitectura de despliegue",
     "locale": "es",
     "output": "docs/architecture/arquitectura.html",
     "quality_profile": "showcase"
@@ -17,27 +17,35 @@
       "size": [110, 64]
     },
     {
-      "id": "ui",
-      "type": "frontend",
-      "label": "React + Vite",
-      "sublabel": "Interfaz web",
+      "id": "caddy",
+      "type": "cloud",
+      "label": "Caddy",
+      "sublabel": "80/443 · basic auth",
       "pos": [190, 280],
-      "size": [110, 64]
+      "size": [120, 64]
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "SPA (nginx)",
+      "sublabel": "interno :80",
+      "pos": [350, 280],
+      "size": [120, 64]
     },
     {
       "id": "api",
       "type": "backend",
-      "label": "FastAPI + gRPC",
-      "sublabel": "Contrato Image → Detection",
-      "pos": [340, 280],
-      "size": [140, 64]
+      "label": "FastAPI REST",
+      "sublabel": "interno :8000",
+      "pos": [510, 280],
+      "size": [130, 64]
     },
     {
       "id": "validate",
       "type": "backend",
       "label": "Validación",
       "sublabel": "Formato / tamaño",
-      "pos": [520, 280],
+      "pos": [690, 280],
       "size": [110, 64]
     },
     {
@@ -45,7 +53,7 @@
       "type": "backend",
       "label": "Preprocesamiento",
       "sublabel": "Resize / normalización",
-      "pos": [670, 280],
+      "pos": [840, 280],
       "size": [120, 64]
     },
     {
@@ -53,7 +61,7 @@
       "type": "backend",
       "label": "YOLO detector",
       "sublabel": "nano/small · CPU",
-      "pos": [830, 280],
+      "pos": [1000, 280],
       "size": [120, 64]
     },
     {
@@ -61,7 +69,7 @@
       "type": "backend",
       "label": "Postprocesamiento",
       "sublabel": "NMS / umbrales",
-      "pos": [1030, 280],
+      "pos": [1180, 280],
       "size": [130, 64]
     },
     {
@@ -69,7 +77,7 @@
       "type": "database",
       "label": "Artefacto YOLO",
       "sublabel": "versión + SHA256",
-      "pos": [830, 130],
+      "pos": [1000, 130],
       "size": [120, 60]
     },
     {
@@ -77,61 +85,107 @@
       "type": "database",
       "label": "MLflow",
       "sublabel": "runs / métricas",
-      "pos": [1030, 130],
+      "pos": [1180, 130],
       "size": [120, 60]
     },
     {
-      "id": "repo",
-      "type": "external",
-      "label": "Repositorio Git",
-      "sublabel": "develop / main",
-      "pos": [40, 470],
-      "size": [110, 60]
+      "id": "grpc",
+      "type": "backend",
+      "label": "gRPC",
+      "sublabel": "interno :9000",
+      "pos": [690, 410],
+      "size": [120, 60]
     },
     {
-      "id": "ci",
+      "id": "model",
+      "type": "database",
+      "label": "best.pt",
+      "sublabel": "montado :ro",
+      "pos": [840, 410],
+      "size": [120, 60]
+    },
+    {
+      "id": "github",
+      "type": "external",
+      "label": "GitHub",
+      "sublabel": "develop / main",
+      "pos": [40, 550],
+      "size": [120, 60]
+    },
+    {
+      "id": "gitlab",
       "type": "cloud",
-      "label": "GitHub Actions",
-      "sublabel": "CI/CD",
-      "pos": [190, 470],
-      "size": [110, 60]
+      "label": "GitLab CI",
+      "sublabel": "lint → build → deploy",
+      "pos": [260, 550],
+      "size": [120, 60]
+    },
+    {
+      "id": "registry",
+      "type": "database",
+      "label": "Registry",
+      "sublabel": "imágenes + modelo",
+      "pos": [470, 550],
+      "size": [140, 60]
     },
     {
       "id": "droplet",
       "type": "cloud",
       "label": "Droplet",
-      "sublabel": "host CPU",
-      "pos": [340, 470],
-      "size": [120, 60]
+      "sublabel": "Docker Compose",
+      "pos": [710, 550],
+      "size": [130, 60]
     },
     {
-      "id": "logs",
-      "type": "database",
-      "label": "Health / logs",
-      "sublabel": "sin secretos",
-      "pos": [500, 470],
-      "size": [120, 60]
+      "id": "secrets",
+      "type": "security",
+      "label": "Secretos",
+      "sublabel": "SSH_KEY · tokens · hash",
+      "pos": [940, 550],
+      "size": [150, 60]
+    },
+    {
+      "id": "health",
+      "type": "backend",
+      "label": "Healthchecks",
+      "sublabel": "/health · /health/ready",
+      "pos": [1120, 550],
+      "size": [170, 60]
     }
   ],
   "boundaries": [
     {
       "kind": "region",
-      "label": "Docker CPU en Droplet",
-      "wraps": ["api", "validate", "preprocess", "detector", "postprocess", "artifacts", "mlflow"]
+      "label": "Entrega: GitHub → GitLab → Registry",
+      "wraps": ["github", "gitlab", "registry"]
+    },
+    {
+      "kind": "region",
+      "label": "Droplet — Docker CPU",
+      "wraps": [
+        "caddy", "web", "api", "validate", "preprocess", "detector", "postprocess",
+        "artifacts", "mlflow", "grpc", "model"
+      ]
     }
   ],
   "connections": [
     {
-      "id": "user-to-ui",
+      "id": "user-to-caddy",
       "from": "user",
-      "to": "ui",
-      "label": "imagen"
+      "to": "caddy",
+      "label": "HTTPS 443"
     },
     {
-      "id": "ui-to-api",
-      "from": "ui",
+      "id": "caddy-to-web",
+      "from": "caddy",
+      "to": "web",
+      "label": "SPA · basic auth"
+    },
+    {
+      "id": "caddy-to-api",
+      "from": "caddy",
       "to": "api",
-      "label": "HTTP"
+      "label": "/api/* · /health"
     },
     {
       "id": "api-to-validate",
@@ -163,10 +217,7 @@
       "id": "postprocess-to-api",
       "from": "postprocess",
       "to": "api",
-      "label": "list[Detection]",
-      "fromSide": "bottom",
-      "toSide": "bottom",
-      "via": [[1095, 390], [410, 390]]
+      "label": "list[Detection]"
     },
     {
       "id": "artifacts-to-detector",
@@ -181,28 +232,46 @@
       "label": "métricas"
     },
     {
-      "id": "repo-to-ci",
-      "from": "repo",
-      "to": "ci",
+      "id": "api-to-grpc",
+      "from": "api",
+      "to": "grpc",
+      "label": "solo red interna"
+    },
+    {
+      "id": "grpc-to-model",
+      "from": "grpc",
+      "to": "model",
+      "label": "monta :ro"
+    },
+    {
+      "id": "github-to-gitlab",
+      "from": "github",
+      "to": "gitlab",
       "label": "push / PR"
     },
     {
-      "id": "ci-to-droplet",
-      "from": "ci",
+      "id": "gitlab-to-registry",
+      "from": "gitlab",
+      "to": "registry",
+      "label": "build + push"
+    },
+    {
+      "id": "registry-to-droplet",
+      "from": "registry",
       "to": "droplet",
-      "label": "deploy"
+      "label": "compose pull"
     },
     {
-      "id": "droplet-to-api",
+      "id": "droplet-to-caddy",
       "from": "droplet",
-      "to": "api",
-      "label": "Docker CPU"
+      "to": "caddy",
+      "label": "deploy.sh"
     },
     {
-      "id": "droplet-to-logs",
-      "from": "droplet",
-      "to": "logs",
-      "label": "health / logs"
+      "id": "secrets-to-droplet",
+      "from": "secrets",
+      "to": "droplet",
+      "label": ".env"
     }
   ],
   "cards": [
@@ -216,22 +285,39 @@
       ]
     },
     {
+      "dot": "violet",
+      "title": "Entrega",
+      "items": [
+        "GitHub → GitLab → Registry → Droplet",
+        "Tag = CI_COMMIT_SHORT_SHA (8 caracteres)",
+        "deploy.sh con rollback por tag"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Secretos y puertos",
+      "items": [
+        "SSH_KEY · DOCKERHUB_TOKEN (masked)",
+        "PPE_AUTH_HASH en /opt/ppe/.env",
+        "80/443 públicos · 8000/9000 internos"
+      ]
+    },
+    {
       "dot": "emerald",
+      "title": "Salud",
+      "items": [
+        "/health abierto para el smoke",
+        "/health/ready detrás de basic auth",
+        "gRPC :9000 nunca se publica"
+      ]
+    },
+    {
+      "dot": "cyan",
       "title": "Modelo",
       "items": [
         "YOLO nivel 3, nano/small",
         "CPU, objetivo <100 ms",
         "AGPL-3.0; pesos fuera de Git"
-      ]
-    },
-    {
-      "dot": "violet",
-      "title": "Operación",
-      "items": [
-        "Docker CPU en Droplet",
-        "CI/CD con compuertas",
-        "MLflow para experimentos",
-        "Healthcheck y logs sin secretos"
       ]
     },
     {
