@@ -220,6 +220,8 @@ reiniciar y repetir el smoke. No se reentrena.
 
 - [ADR 0009 — modelo productivo](adr/0009-modelo-productivo.md)
 - [Comparación YOLO26 vs YOLO11s](evaluation/YOLO26.md)
+- [Experimentos en MLflow](operacion/mlflow.md) — runs de entrenamiento, benchmark y
+  Model Registry con el alias `production`
 - [Entrenamiento YOLO26n](evaluation/yolo26-training.md)
 - [Benchmark de latencia](evaluation/latencia.md)
 - [SPI-03 — compatibilidad YOLO26](spikes/SPI-03-yolo26.md)
