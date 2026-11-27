@@ -94,3 +94,26 @@ def test_caddyfile_is_versioned_next_to_the_compose() -> None:
     # Assert
     assert CADDYFILE.is_file()
     assert "./Caddyfile:/etc/caddy/Caddyfile:ro" in compose
+
+
+def test_site_is_protected_with_basic_auth() -> None:
+    """HU-042: el sitio publicado pide credenciales y el hash viene del entorno."""
+    # Arrange
+    caddyfile = _read(CADDYFILE)
+
+    # Assert
+    assert "basic_auth {" in caddyfile
+    assert "{env.PPE_AUTH_HASH}" in caddyfile
+    assert caddyfile.count("import protegido") >= 2
+
+
+def test_health_stays_open_for_the_deploy_smoke() -> None:
+    """HU-042: `/health` queda fuera de la protección para el smoke y el monitoreo."""
+    # Arrange
+    caddyfile = _read(CADDYFILE)
+
+    # Act
+    bloque = caddyfile.split("handle /health*", 1)[1].split("}", 1)[0]
+
+    # Assert
+    assert "import protegido" not in bloque
