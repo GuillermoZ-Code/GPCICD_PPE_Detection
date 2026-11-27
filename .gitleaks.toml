@@ -1,0 +1,29 @@
+# HU-043 — configuración de gitleaks.
+#
+# Se usa la regla por defecto del proyecto (más de 150 patrones: AWS, GitHub,
+# GitLab, Slack, claves privadas…) y se añaden exclusiones justificadas.
+# El objetivo es que un token real nunca llegue a `develop`.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Rutas y patrones sin secretos reales"
+paths = [
+  # Ejemplos didácticos: los runbooks muestran nombres de variables, no valores.
+  '''docs/''',
+  # Fixtures de pruebas: claves ficticias para validar el propio validador.
+  '''tests/''',
+  # Dependencias instaladas y artefactos de build.
+  '''frontend/node_modules/''',
+  '''frontend/dist/''',
+  '''artifacts/''',
+]
+
+# Cadenas que parecen credenciales pero son marcadores de plantilla.
+regexes = [
+  '''REPLACE_ME''',
+  '''<tu-token>''',
+  '''<your_api_token>''',
+  '''tu-usuario''',
+]
