@@ -1,6 +1,7 @@
 # =============================================================================
 # HU-041 — Caddy como proxy inverso con HTTPS automático
 # HU-042 — el sitio publicado pide credenciales (basic auth)
+# HU-054 — CORS de producción y rate limit en el proxy
 #
 #   /api/*   → FastAPI (api:8000), sin el prefijo
 #   /health* → FastAPI, abierto: lo usan el smoke y el monitoreo
@@ -9,6 +10,8 @@
 # El dominio llega por `PPE_DOMAIN`: en el Droplet es el subdominio real; en una
 # prueba local, `localhost` (Caddy usa su CA interna).
 # El hash bcrypt llega por `PPE_AUTH_HASH`; el usuario es `demo`.
+# El origen CORS permitido llega por `PPE_CORS_ORIGIN`; por omisión usa el
+# dominio público con https.
 # =============================================================================
 
 (protegido) {
@@ -17,8 +20,28 @@
 	}
 }
 
+(cors) {
+	@cors_origin header Origin {env.PPE_CORS_ORIGIN}
+	header @cors_origin Access-Control-Allow-Origin {env.PPE_CORS_ORIGIN}
+	header @cors_origin Access-Control-Allow-Methods "GET, POST, OPTIONS"
+	header @cors_origin Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
+	header @cors_origin Access-Control-Allow-Credentials "true"
+	header @cors_origin Vary "Origin"
+}
+
 {$PPE_DOMAIN:localhost} {
 	encode zstd gzip
+
+	# HU-054 AC-02: rate limit por IP, configurable y documentado.
+	# El módulo parsea events/window al adaptar el Caddyfile, por eso se usa
+	# {$VAR:default} (sustitución en parseo) y no {env.VAR} (placeholder dinámico).
+	rate_limit {
+		zone api_limit {
+			key {remote_host}
+			events {$PPE_RATE_LIMIT_EVENTS:60}
+			window {$PPE_RATE_LIMIT_WINDOW:1m}
+		}
+	}
 
 	# Cabeceras de seguridad básicas (HU-041 AC-02). Caddy ya redirige HTTP a
 	# HTTPS solo cuando el sitio tiene un nombre de host.
@@ -30,14 +53,23 @@
 		-Server
 	}
 
+	# Preflight CORS: responde antes de llegar al backend.
+	@options method OPTIONS
+	handle @options {
+		import cors
+		respond 204
+	}
+
 	# `handle_path` quita el prefijo: /api/predict → /predict.
 	handle_path /api/* {
 		import protegido
+		import cors
 		reverse_proxy api:8000
 	}
 
 	# El healthcheck queda abierto: el smoke del despliegue no lleva credenciales.
 	handle /health* {
+		import cors
 		reverse_proxy api:8000
 	}
 

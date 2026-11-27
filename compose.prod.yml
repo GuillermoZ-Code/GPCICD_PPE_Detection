@@ -14,8 +14,12 @@
 #   PPE_API_IMAGE   registry.../api:<tag>
 #   PPE_WEB_IMAGE   registry.../web:<tag>
 #   PPE_DOMAIN      dominio público del equipo (por ejemplo ppe.midominio.net)
+#   PPE_CADDY_IMAGE imagen Caddy con rate_limit (Dockerfile: docker/Dockerfile.caddy)
 # Opcionales:
 #   PPE_MODELS_DIR  carpeta del host con best.pt (por omisión /opt/ppe/models)
+#   PPE_CORS_ORIGIN origen permitido por CORS (por omisión https://PPE_DOMAIN)
+#   PPE_RATE_LIMIT_EVENTS  peticiones permitidas por IP y ventana (60)
+#   PPE_RATE_LIMIT_WINDOW  ventana del límite (1m)
 # =============================================================================
 
 name: gpcicd-ppe-detection
@@ -50,7 +54,8 @@ services:
       - "80"
 
   caddy:
-    image: caddy:2-alpine
+    # HU-054 — imagen con el módulo rate_limit, construida con docker/Dockerfile.caddy.
+    image: ${PPE_CADDY_IMAGE:?define PPE_CADDY_IMAGE con la imagen de docker/Dockerfile.caddy}
     restart: unless-stopped
     depends_on:
       - api
@@ -59,6 +64,11 @@ services:
       PPE_DOMAIN: ${PPE_DOMAIN:-localhost}
       # HU-042 — basic auth del sitio publicado; el hash vive en el `.env`.
       PPE_AUTH_HASH: ${PPE_AUTH_HASH}
+      # HU-054 — CORS solo permite el dominio público.
+      PPE_CORS_ORIGIN: ${PPE_CORS_ORIGIN:-https://${PPE_DOMAIN:-localhost}}
+      # HU-054 — rate limit por IP (eventos/ventana).
+      PPE_RATE_LIMIT_EVENTS: ${PPE_RATE_LIMIT_EVENTS:-60}
+      PPE_RATE_LIMIT_WINDOW: ${PPE_RATE_LIMIT_WINDOW:-1m}
     ports:
       - "80:80"
       - "443:443"
