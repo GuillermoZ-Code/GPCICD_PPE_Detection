@@ -149,3 +149,13 @@ def test_runbook_declares_source_of_truth_and_pull_mirror() -> None:
     assert "fuente de verdad" in runbook
     assert "pull" in runbook.lower()
     assert "89281003" in runbook
+
+
+def test_verification_falls_back_to_git_when_the_api_rejects() -> None:
+    """AC-02: si la API responde 403, el espejo verifica con `git ls-remote`."""
+    # Arrange
+    workflow = _read(WORKFLOW)
+
+    # Assert
+    assert "git ls-remote" in workflow
+    assert "La API de GitLab rechazó la consulta" in workflow
