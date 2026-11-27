@@ -356,6 +356,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-11-23 | Modelo productivo **YOLO26n + ONNX 640**; YOLO11s como rollback | Mejor mAP50-95 (0,614 vs 0,516) y p95 88,05 ms vs 280,63 ms; decisión en ADR 0009, rollout pendiente |
 | 2026-11-25 | GitLab CI/CD con espejo de *push* desde GitHub | Pipeline del M4 sin GitLab Premium y con SHA trazable (ADR 0007) |
 | 2026-11-25 | Despliegue en Droplet con Docker Compose y Caddy | HTTPS automático en el entorno del curso, sin PaaS (ADR 0008) |
+| 2026-11-27 | Basic auth en Caddy y dominio gratuito `sslip.io` | Sitio protegido sin proveedor de identidad ni dominio propio (ADR 0013) |
 
 ## 12. Roadmap M3–M4
 
