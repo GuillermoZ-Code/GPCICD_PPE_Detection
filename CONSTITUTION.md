@@ -249,6 +249,7 @@ falsos positivos/negativos y la ausencia de detecciones no son prueba de incumpl
 | `ty` | Verificación de tipos | `make typecheck` |
 | `pytest` | Pruebas | `make test` |
 | `pre-commit` | Hooks antes de cada commit | `make pre-commit` |
+| `gitleaks` | Escaneo de secretos en CI y en local | `make secrets` |
 | `npm` | Dependencias del frontend | `npm ci` |
 | ESLint | Lint del frontend | `make frontend-lint` |
 | Vitest | Pruebas del frontend | `make frontend-test` |
