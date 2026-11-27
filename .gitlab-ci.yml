@@ -246,7 +246,9 @@ deploy:
   needs:
     - build_image
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $DEPLOY_HOST
+    # Sin servidor o sin cuenta de Docker Hub no hay a dónde desplegar: el job
+    # no se crea y el pipeline no queda rojo por una dependencia externa.
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $DEPLOY_HOST && $DOCKERHUB_USER
   environment:
     name: production
     url: https://$PPE_DOMAIN
@@ -286,5 +288,6 @@ deploy:
       ssh -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new
       -o BatchMode=yes -o ConnectTimeout=10
       "$DEPLOY_USER@$DEPLOY_HOST"
-      "cd /opt/ppe && PPE_API_REPO=$API_IMAGE PPE_WEB_REPO=$WEB_IMAGE
+      "cd /opt/ppe && PPE_API_REPO=$DOCKERHUB_USER/gpcicd-ppe-api
+      PPE_WEB_REPO=$DOCKERHUB_USER/gpcicd-ppe-web
       PPE_COMPOSE_DIR=/opt/ppe sh deploy.sh $CI_COMMIT_SHORT_SHA"

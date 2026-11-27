@@ -198,3 +198,14 @@ def test_provision_creates_the_work_directory() -> None:
     # Assert
     assert "install -d -m 0755 /opt/ppe" in script
     assert "install -d -m 0755 /opt/ppe/models" in script
+
+
+def test_deploy_pulls_from_the_public_mirror() -> None:
+    """AC-01: el Droplet baja de Docker Hub, que no pide credenciales."""
+    # Arrange
+    pipeline = _read(PIPELINE)
+
+    # Assert
+    assert "PPE_API_REPO=$DOCKERHUB_USER/gpcicd-ppe-api" in pipeline
+    assert "PPE_WEB_REPO=$DOCKERHUB_USER/gpcicd-ppe-web" in pipeline
+    assert "$CI_REGISTRY_IMAGE/api" not in pipeline.split("deploy:", 1)[1]

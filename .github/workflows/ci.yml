@@ -106,3 +106,22 @@ jobs:
           name: trivy-sarif
           path: trivy-results.sarif
           if-no-files-found: error
+
+  secrets:
+    name: Secretos
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout completo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # HU-043 — más de 150 patrones (AWS, GitHub, GitLab, claves privadas…).
+      # El escaneo recorre el histórico, no solo el último commit.
+      - name: Escanear secretos
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
