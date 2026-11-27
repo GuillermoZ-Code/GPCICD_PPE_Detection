@@ -1,0 +1,475 @@
+/* =============================================================================
+   Sistema de diseño — "hoja de inspección"
+   Rediseño de HU-076. Se carga después de styles.css y sustituye la paleta, la
+   tipografía y la estructura del armazón. Los componentes conservan sus clases:
+   el cambio llega por tokens y por unas pocas reglas de shell.
+
+   Idea: la interfaz se lee como una hoja de inspección de seguridad pegada en
+   la pared de un taller. Papel, tinta y una sola banda de amarillo de señal.
+   Nada de tarjetas flotantes ni degradados: reglas de 1 px y bordes rectos.
+   ============================================================================= */
+
+/* --- Tipografía: una superfamilia, dos anchos ------------------------------ */
+
+:root {
+  --font-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+
+  /* Papel y tinta (modo oscuro: turno de noche) */
+  --bg: #101210;
+  --bg-soft: #161915;
+  --panel: #191d18;
+  --panel-solid: #191d18;
+  --line: #2a2f29;
+  --line-strong: #3c433b;
+  --text: #ecefe7;
+  --muted: #9aa396;
+
+  /* Señal: el único color que grita */
+  --accent: #f5c400;
+  --accent-strong: #d9ac00;
+  --accent-2: #f5c400;
+  --on-accent: #14170f;
+  --success: #4caf7d;
+  --warning: #f5c400;
+  --error: #e2574c;
+
+  --shadow: none;
+  --radius: 2px;
+  --pad: 28px;
+  --gap: 20px;
+  --blob-opacity: 0;
+}
+
+:root[data-theme='light'] {
+  /* Hoja de inspección: papel frío, tinta casi negra, la misma señal */
+  --bg: #edefe9;
+  --bg-soft: #e4e7df;
+  --panel: #f8f9f5;
+  --panel-solid: #ffffff;
+  --line: #cdd2c7;
+  --line-strong: #a9b0a2;
+  --text: #14170f;
+  --muted: #5c6357;
+  --accent: #f5c400;
+  --accent-strong: #c79f00;
+  --accent-2: #1f6b45;
+  --on-accent: #14170f;
+  --blob-opacity: 0;
+}
+
+/* El selector de acento del equipo se conserva, con nombres de taller. */
+:root[data-accent='indigo'] {
+  --accent: #f5c400;
+  --accent-strong: #c79f00;
+  --accent-2: #f5c400;
+}
+:root[data-accent='cyan'] {
+  --accent: #4f9fa6;
+  --accent-strong: #377d83;
+  --accent-2: #4f9fa6;
+}
+:root[data-accent='emerald'] {
+  --accent: #4caf7d;
+  --accent-strong: #357a57;
+  --accent-2: #4caf7d;
+}
+:root[data-accent='rose'] {
+  --accent: #e2574c;
+  --accent-strong: #b23d34;
+  --accent-2: #e2574c;
+}
+:root[data-accent='gray'] {
+  --accent: #9aa396;
+  --accent-strong: #6f776c;
+  --accent-2: #9aa396;
+}
+
+/* --- Base ----------------------------------------------------------------- */
+
+body {
+  font-family: var(--font-body);
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  background: var(--bg);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 40px);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 0.98;
+}
+
+a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+/* --- Barra superior ------------------------------------------------------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line-strong);
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.brand__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  align-self: center;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  border-radius: 0;
+}
+
+.brand__name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.topbar .badge {
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+}
+
+.icon-button {
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+}
+
+.icon-button:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+
+/* --- Banda de señal (único elemento que grita) ---------------------------- */
+
+.hero {
+  margin: 28px 0 8px;
+  padding: clamp(22px, 4vw, 40px);
+  background: var(--accent);
+  color: var(--on-accent);
+  border-radius: 0;
+  border: 1px solid var(--on-accent);
+}
+
+.hero .eyebrow {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: inherit;
+  opacity: 0.85;
+}
+
+.hero h1 {
+  margin: 0;
+  max-width: 16ch;
+  font-size: clamp(38px, 7vw, 76px);
+  font-weight: 700;
+  /* La banda es una señal: aquí sí mayúsculas, y solo aquí. */
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  color: var(--on-accent);
+}
+
+.hero .lede {
+  margin: 16px 0 0;
+  max-width: 56ch;
+  font-size: clamp(15px, 1.6vw, 17px);
+  color: var(--on-accent);
+  opacity: 0.9;
+}
+
+/* --- Área de trabajo ------------------------------------------------------ */
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: var(--gap);
+  margin: 24px 0 8px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--panel-solid);
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+.panel__header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-soft);
+}
+
+.panel__header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.step {
+  display: inline-grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid var(--line-strong);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.panel__body,
+.panel > :not(.panel__header) {
+  padding: var(--pad);
+}
+
+/* --- Botones -------------------------------------------------------------- */
+
+.button {
+  border-radius: 0;
+  border: 1px solid var(--text);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 10px 22px;
+  box-shadow: none;
+}
+
+.button:hover {
+  background: var(--bg-soft);
+}
+
+.button--primary {
+  background: var(--accent);
+  border-color: var(--text);
+  color: var(--on-accent);
+}
+
+.button--primary:hover {
+  background: var(--accent-strong);
+}
+
+.button:disabled,
+.button[aria-disabled='true'] {
+  opacity: 0.45;
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--line-strong);
+}
+
+/* --- Resultado: cifras y tabla como reporte ------------------------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  margin-bottom: 18px;
+}
+
+.stat {
+  padding: 14px 16px;
+  border-right: 1px solid var(--line);
+  background: transparent;
+}
+
+.stat:last-child {
+  border-right: 0;
+}
+
+.stat__value,
+.stat strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat__label,
+.stat span {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+tbody td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* --- Estados vacíos y de error ------------------------------------------- */
+
+.empty-state {
+  border: 1px dashed var(--line-strong);
+  border-radius: 0;
+  background: transparent;
+  padding: clamp(24px, 5vw, 48px) 20px;
+  text-align: center;
+}
+
+.empty-state__icon {
+  color: var(--muted);
+}
+
+.error-state {
+  border: 1px solid var(--error);
+  border-left-width: 6px;
+  border-radius: 0;
+  background: transparent;
+  padding: 18px;
+}
+
+/* --- Pie ------------------------------------------------------------------ */
+
+.footer {
+  margin-top: auto;
+  padding: 20px 0 28px;
+  border-top: 1px solid var(--line-strong);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* --- Movimiento: un solo gesto ------------------------------------------- */
+
+@keyframes reveal-panel {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.result,
+.error-state {
+  animation: reveal-panel 280ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result,
+  .error-state {
+    animation: none;
+  }
+}
+
+/* --- Responsive ----------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero h1 {
+    max-width: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stat {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stat:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* Foco visible para teclado, sin depender del color del acento. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
