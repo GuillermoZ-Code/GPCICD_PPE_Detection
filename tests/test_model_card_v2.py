@@ -1,4 +1,3 @@
-"""Pruebas estructurales de la Model Card v2 (HU-027)."""
 """HU-027 — Model Card v2 (AC-01, AC-02 y AC-03).
 
 Pruebas estáticas: leen `docs/model-card.md` sin red ni pesos. El contenido numérico
@@ -111,6 +110,8 @@ def test_model_card_declares_license_and_six_classes() -> None:
     assert "AGPL-3.0-only" in text
     for class_name in ("Gloves", "Vest", "goggles", "helmet", "mask", "safety_shoe"):
         assert class_name in text
+
+
 MODEL_CARD = Path("docs/model-card.md")
 
 
