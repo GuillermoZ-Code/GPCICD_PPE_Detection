@@ -37,8 +37,9 @@ referencia por su identificador.
 ## Phase 4: Cierre
 
 - [x] T011 Ruff, formato, `ty`, pytest y `ownership-check` verificados en local.
-- [ ] T012 PR con plantilla UAO, `Closes #142`, reviewer Guillermo por propiedad de
-      `docs/architecture/`, y CI reportada solo con evidencia.
+- [x] T012 PR con plantilla UAO, `Closes #142`, reviewer Guillermo por propiedad de
+      `docs/architecture/`, y CI reportada solo con evidencia. PR #262 abierta; 9/9
+      checks en `success` verificados con `gh pr checks 262 --watch`.
 
 ## Evidencia local (2026-11-27)
 
@@ -56,5 +57,9 @@ referencia por su identificador.
 
 ## Estado
 
-- Implementación lista en local; **sin commit ni PR todavía** porque no hubo pedido
-  explícito para esta HU. La issue #142 permanece *In progress* (WIP propio).
+- Implementación commiteada (`a3c9bd3`) y rebaseada sobre `origin/develop`.
+- PR #262 abierta a `develop` con revisor Guillermo; no fusionada ni autoaprobada.
+- Issue #142 movida a *In review* para liberar WIP.
+- CI en verde: 9/9 checks en `success` (`gh pr checks 262 --watch`, 2026-11-27).
+- Suite local tras el rebase: 945 passed, 2 skipped; Ruff, formato, `ty`, propiedad y
+  `uv build` correctos.

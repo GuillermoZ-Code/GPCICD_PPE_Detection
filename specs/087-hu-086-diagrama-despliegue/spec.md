@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-27
 
-**Status**: En implementación
+**Status**: En revisión (PR #262, sin fusionar ni autoaprobar)
 
 **Input**: Issue #142 — «HU-086 — Diagrama de arquitectura de despliegue». Asignada a
 Eliana (`ElianaCardona`), épica `ep-15`, P1 · ola 3, 1 SP, 4 pruebas objetivo. Depende de
