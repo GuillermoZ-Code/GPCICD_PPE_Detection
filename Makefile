@@ -50,8 +50,14 @@ test: ## Ejecuta las pruebas
 
 check: lint format-check typecheck test ## Verificación completa (lint + formato + tipos + pruebas)
 
-secrets: ## Escanea secretos con gitleaks si está instalado (HU-043)
-	gitleaks detect --source . --config .gitleaks.toml --no-banner
+deploy: ## Despliega un tag en el Droplet (TAG=<sha>) — requiere PPE_DEPLOY_HOST
+	sh deploy/remote.sh deploy
+
+verify: ## Comprueba el sistema desplegado (health) — requiere PPE_PUBLIC_URL
+	sh deploy/remote.sh verify
+
+model-publish: ## Publica el modelo en el registry (ARCHIVO=<ruta> VERSION=<tag>)
+	sh deploy/model/publish.sh "$(ARCHIVO)" "$(VERSION)"
 
 calidad: ## Informe de calidad (lint, formato, tipos y pruebas)
 	uv run python -m ppe_detection.tools.calidad
