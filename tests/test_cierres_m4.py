@@ -1,7 +1,8 @@
-"""Cierre documental de HUs ya implementadas (HU-073, 078, 081, 014 y 015).
+"""Cierre documental de HUs ya implementadas.
 
-Pruebas estáticas: leen los archivos del entregable y fijan su contrato. El
-comportamiento real se verificó en el servidor y en la SPA.
+Cubre HU-073, HU-042, HU-078, HU-081, HU-014 y HU-015. Pruebas estáticas: leen los
+archivos del entregable y fijan su contrato. El comportamiento real se verificó en el
+servidor y en la SPA.
 """
 
 from __future__ import annotations
