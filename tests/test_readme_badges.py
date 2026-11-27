@@ -16,7 +16,7 @@ CI_BADGE = (
 GITLAB_BADGE = (
     "https://gitlab.com/educacional-group/GPCICD_PPE_Detection/badges/develop/pipeline.svg"
 )
-DOCKER_HUB_ISSUE = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/124"
+DOCKER_HUB_REPO = "https://hub.docker.com/r/guillermozabala/gpcicd-ppe-api"
 HTTPS_REMOTE = "https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection"
 REGISTRY = "https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/container_registry"
 
@@ -45,11 +45,11 @@ def test_badges_de_ci_pipeline_licencia_y_docker_hub_ac_01() -> None:
         "falta el badge de licencia AGPL hacia ./LICENSE"
     )
     assert any("Docker Hub" in alt for alt, _, _ in badges), "falta el badge de Docker Hub"
-    assert DOCKER_HUB_ISSUE in destinos, "el badge de Docker Hub no enlaza HU-068"
+    assert DOCKER_HUB_REPO in destinos, "el badge de Docker Hub no enlaza el repositorio publicado"
 
 
-def test_badge_docker_hub_no_inventa_namespace_ac_01() -> None:
-    """AC-01: el badge de Docker Hub es honesto mientras HU-068 siga abierta."""
+def test_badge_docker_hub_apunta_al_repositorio_publicado_ac_01() -> None:
+    """AC-01: el badge enlaza la imagen pública publicada por HU-068."""
     # Arrange
     text = _text()
 
@@ -58,10 +58,8 @@ def test_badge_docker_hub_no_inventa_namespace_ac_01() -> None:
 
     # Assert
     assert docker_badge, "no hay badge de Docker Hub que validar"
-    assert "pendiente" in docker_badge[0][0].lower()
-    assert "hub.docker.com/r/" not in text
-    assert "registry.hub.docker.com/" not in text
-    assert "docker.io/" not in text
+    assert DOCKER_HUB_REPO in {destino for _, _, destino in docker_badge}
+    assert "gpcicd-ppe-api" in text
 
 
 def test_enlaces_https_registry_y_constitucion_ac_02() -> None:
