@@ -91,3 +91,13 @@
    la PR de otro integrante.
 3. **Las cifras se generan, no se escriben**: `make pruebas` y la matriz eliminaron las
    contradicciones entre documentos.
+
+## Desviaciones del proceso (registro honesto)
+
+1. **Se agruparon HUs por dependencia técnica, contra la regla 1 HU = 1 PR.** Las PR
+   #240 (HU-066/067/068) y #241 (HU-046/071/041/070/069) fusionaron varias HU porque las
+   capas no se sostienen por separado: sin `.gitlab-ci.yml` no hay job de build, sin
+   `compose.prod.yml` no hay Caddy, y sin Droplet no hay despliegue que probar. La
+   trazabilidad se compensó con una spec por HU, la tabla AC → prueba en cada PR y un
+   comentario de cierre por issue; aun así, la regla se cumplió solo en parte y queda
+   registrada aquí. Para el release `v1.0.0` no se repite: una PR por HU.
