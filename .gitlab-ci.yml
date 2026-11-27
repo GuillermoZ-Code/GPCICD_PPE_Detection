@@ -172,7 +172,9 @@ build_image:
     - frontend
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE == "web"
+    # En una rama de trabajo la imagen se construye solo a mano: sirve para
+    # probar el Dockerfile sin pisar `:latest` ni gastar minutos en cada push.
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
       when: manual
   before_script:
     # El registry de GitLab se autentica con el token efímero del job.
