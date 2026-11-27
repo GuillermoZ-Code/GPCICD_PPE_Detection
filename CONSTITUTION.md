@@ -319,8 +319,9 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 - **Test-first:** los AC se convierten en pruebas antes de la implementación;
   `/speckit.analyze` marca error si un AC no tiene prueba. Excepciones: SPI y specs de
   documentación.
-- **Sin umbral de cobertura:** el requisito de la entrega es **≥ 400 pruebas
-  unitarias**; ver [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
+- **Sin umbral de cobertura:** la entrega del M3 exigió **≥ 400 pruebas
+  unitarias**; el M4 exige **≥ 1.200**. El conteo y el reparto vigentes viven en
+  [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
 - Hoy se deja **solo** la spec de la TA de contract-first como ejemplo, sin
   implementar.
 
@@ -367,15 +368,22 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 
 ### M4 — 19/11/2026 a 28/11/2026
 
-- MLOps/despliegue, CI/CD y credenciales.
-- Sustentación: **sábado 28/11/2026**.
-- **M4-S3 (15/11–28/11): HU-014 y HU-015 — 3 SP.**
+- MLOps, CI/CD con GitLab, credenciales y despliegue en Droplet con Caddy y HTTPS.
+- **M4-S3 (19/11–28/11): 100 HU — 200 SP**, con 50 SP por integrante y 24, 26, 25 y
+  25 HU (Guillermo, Eliana, Hernán y Jesús), organizadas en olas 1 a 3 por prioridad.
+- Épicas **ep-05 a ep-15**: despliegue y operación, CI/CD de GitLab, infraestructura,
+  seguridad y cumplimiento, modelo y evaluación, servicio y MaaS, SPA, herramientas
+  para agentes, observabilidad, gobierno técnico, y documentación y entrega.
+- Rúbrica del M4: **40 % pipeline de GitLab** (lint → test → build → deploy → verify),
+  **30 % Droplet con Caddy y HTTPS**, **15 % secretos** y **15 % despliegue en vivo**.
+- **HU-014 y HU-015 están dentro de esas 100 HU**; HU-014 se cierra cuando estén
+  fusionadas las HU-066 a HU-068 y la HU-070.
+- Cierre de issues: **26/11/2026**. Sustentación: **sábado 28/11/2026**.
 
-**Total backlog oficial:** 22 SP (reestimación del 04/11/2026 sobre la planificación del
-documento del M2, aprobada por Jesús). Las actividades de preparación del M3 (P1–P4)
-suman 12 SP y no son issues, por lo que no entran en el total del tablero. Las TA/SPI
-se absorbieron en P1–P4; no se crean como issues salvo decisión expresa de Jesús. Si se
-contaran aparte, serían 25 SP sin TA-EDA y 28 SP con TA-EDA. Ver
+**Total backlog oficial:** **113 HU y 219 SP** (13 HU y 19 SP del M3, más 100 HU y
+200 SP del M4). Las actividades de preparación del M3 (P1–P4) suman 12 SP y no son
+issues, por lo que no entran en el total del tablero. Las TA/SPI se absorbieron en
+P1–P4; no se crean como issues salvo decisión expresa de Jesús. Ver
 `docs/curso/backlog.md`.
 
 ### Riesgos y decisiones pendientes
