@@ -253,17 +253,35 @@ deploy:
   # Dos pipelines simultáneos no deben pisarse en el mismo servidor.
   resource_group: production
   cache: {}
+  variables:
+    # HU-024 — el peso sale del Generic Package Registry y se verifica antes de
+    # tocar el servidor. `yolo26n-clean` se publica con deploy/model/publish.sh.
+    PPE_MODEL_PACKAGE: ppe-detection-models
+    PPE_MODEL_VERSION: yolo26n-clean
+    PPE_MODEL_SHA256: FEFB1F1A120FB3AC7BC0F4DE90E5E594BBEF5E936D8168750AA78FC3FB0F27F9
   before_script:
-    - apk add --no-cache openssh-client
+    - apk add --no-cache openssh-client curl
     - test -n "${SSH_KEY:-}" || { echo "falta la variable SSH_KEY"; exit 1; }
     - chmod 600 "$SSH_KEY"
   script:
     - mkdir -p ~/.ssh
     - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+    # El tag del job no basta: la imagen tiene que ser la del commit desplegado.
+    - >-
+      curl -fsSL --header "JOB-TOKEN: $CI_JOB_TOKEN"
+      "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/$PPE_MODEL_PACKAGE/$PPE_MODEL_VERSION/best.pt"
+      -o best.pt
+    - echo "$PPE_MODEL_SHA256  best.pt" | sha256sum -c -
+    - >-
+      ssh -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new
+      "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p /opt/ppe/models"
     - >-
       scp -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new
       compose.prod.yml docker/Caddyfile deploy/deploy.sh
       "$DEPLOY_USER@$DEPLOY_HOST:/opt/ppe/"
+    - >-
+      scp -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new
+      best.pt "$DEPLOY_USER@$DEPLOY_HOST:/opt/ppe/models/best.pt"
     - >-
       ssh -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new
       -o BatchMode=yes -o ConnectTimeout=10
