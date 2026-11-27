@@ -40,7 +40,6 @@ def test_model_card_distinguishes_selected_from_deployed() -> None:
     assert "YOLO11s" in text
     assert "seleccionado" in text.lower()
 
-
     # Act
     text = _text()
 
@@ -98,6 +97,8 @@ def test_card_compares_yolo11s_and_yolo26() -> None:
 
 def test_card_cites_the_productive_model_adr() -> None:
     """AC-01: la decisión remite al ADR 0009."""
+
+
 def test_model_card_compares_with_the_full_test_metrics() -> None:
     """AC-01: la comparación usa mAP del test completo."""
     # Arrange
