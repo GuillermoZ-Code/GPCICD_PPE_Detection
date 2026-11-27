@@ -57,6 +57,8 @@ services:
       - web
     environment:
       PPE_DOMAIN: ${PPE_DOMAIN:-localhost}
+      # HU-042 — basic auth del sitio publicado; el hash vive en el `.env`.
+      PPE_AUTH_HASH: ${PPE_AUTH_HASH}
     ports:
       - "80:80"
       - "443:443"

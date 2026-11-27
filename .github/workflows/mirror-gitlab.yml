@@ -58,11 +58,20 @@ jobs:
         run: |
           set -euo pipefail
           echo "::add-mask::${GITLAB_TOKEN}"
-          sha=$(curl -fsS --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+          # La API exige el scope `read_api` además de `write_repository`; el
+          # token del espejo solo tiene el segundo. Si la consulta falla (403),
+          # se verifica por git, que usa el mismo permiso del push.
+          if ! sha=$(curl -fsS --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
             "https://gitlab.com/api/v4/projects/${GITLAB_PROJECT}/repository/commits?ref_name=${GITHUB_REF_NAME}&per_page=1" \
-            | python3 -c 'import json, sys; print(json.load(sys.stdin)[0]["id"])')
+            | python3 -c 'import json, sys; print(json.load(sys.stdin)[0]["id"])' 2>/dev/null); then
+            echo "::warning::La API de GitLab rechazó la consulta; se verifica con git ls-remote."
+            git config --local credential.helper \
+              '!f() { echo "username=oauth2"; echo "password=${GITLAB_TOKEN}"; }; f'
+            sha=$(git ls-remote "https://gitlab.com/${GITLAB_REPO}.git" \
+              "refs/heads/${GITHUB_REF_NAME}" | cut -f1)
+          fi
           if [ "${sha}" != "${GITHUB_SHA}" ]; then
-            echo "::error::GitLab tiene ${sha} y GitHub ${GITHUB_SHA}."
+            echo "::error::GitLab tiene ${sha:-nada} y GitHub ${GITHUB_SHA}."
             exit 1
           fi
           echo "GitLab sincronizado en ${sha}."

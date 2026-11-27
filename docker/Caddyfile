@@ -1,13 +1,21 @@
 # =============================================================================
 # HU-041 — Caddy como proxy inverso con HTTPS automático
+# HU-042 — el sitio publicado pide credenciales (basic auth)
 #
 #   /api/*   → FastAPI (api:8000), sin el prefijo
-#   /health* → FastAPI, para el smoke y el monitoreo
+#   /health* → FastAPI, abierto: lo usan el smoke y el monitoreo
 #   resto    → SPA servida por nginx (web:80)
 #
 # El dominio llega por `PPE_DOMAIN`: en el Droplet es el subdominio real; en una
 # prueba local, `localhost` (Caddy usa su CA interna).
+# El hash bcrypt llega por `PPE_AUTH_HASH`; el usuario es `demo`.
 # =============================================================================
+
+(protegido) {
+	basic_auth {
+		demo {env.PPE_AUTH_HASH}
+	}
+}
 
 {$PPE_DOMAIN:localhost} {
 	encode zstd gzip
@@ -24,14 +32,17 @@
 
 	# `handle_path` quita el prefijo: /api/predict → /predict.
 	handle_path /api/* {
+		import protegido
 		reverse_proxy api:8000
 	}
 
+	# El healthcheck queda abierto: el smoke del despliegue no lleva credenciales.
 	handle /health* {
 		reverse_proxy api:8000
 	}
 
 	handle {
+		import protegido
 		reverse_proxy web:80
 	}
 }
