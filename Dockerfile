@@ -65,13 +65,22 @@ WORKDIR /app
 COPY --chown=appuser:appuser --from=runtime-deps /app/.venv /app/.venv
 COPY --chown=appuser:appuser --from=runtime-deps /app/src /app/src
 COPY --chmod=0755 --chown=appuser:appuser docker/entrypoint.sh /entrypoint.sh
+# HU-046 — el contenedor informa si puede atender: REST por HTTP, gRPC por TCP.
+COPY --chmod=0755 --chown=appuser:appuser docker/healthcheck.sh /healthcheck.sh
 
 USER appuser
 EXPOSE 8000 9000
+# `start-period` amplio: importar torch tarda decenas de segundos y sin margen
+# el contenedor se marcaría enfermo antes de poder responder.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
+    CMD ["/healthcheck.sh"]
 ENTRYPOINT ["/entrypoint.sh"]
 
 # --- web: SPA estática servida por nginx --------------------------------------
 FROM nginx:1.29-alpine AS web
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=frontend-builder /app/dist /usr/share/nginx/html
+# HU-046 — nginx tiene que responder antes de que Caddy lo publique.
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget -q --spider http://127.0.0.1/ || exit 1
 EXPOSE 80

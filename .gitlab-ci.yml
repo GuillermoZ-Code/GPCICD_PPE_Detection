@@ -60,6 +60,7 @@ stages:
   - quality
   - test
   - package
+  - deploy
 
 default:
   timeout: 20 minutes
@@ -231,3 +232,39 @@ build_image:
     paths:
       - api-digest.txt
       - web-digest.txt
+
+# -----------------------------------------------------------------------------
+# Despliegue: copia compose, Caddyfile y el script, y ejecuta el rollback por
+# tag en el servidor (HU-070). Si no hay `DEPLOY_HOST` el job no se crea: un
+# pipeline rojo por falta de Droplet no informa nada útil.
+# -----------------------------------------------------------------------------
+deploy:
+  stage: deploy
+  image: alpine:3.22
+  needs:
+    - build_image
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $DEPLOY_HOST
+  environment:
+    name: production
+    url: https://$PPE_DOMAIN
+  # Dos pipelines simultáneos no deben pisarse en el mismo servidor.
+  resource_group: production
+  cache: {}
+  before_script:
+    - apk add --no-cache openssh-client
+    - test -n "${SSH_KEY:-}" || { echo "falta la variable SSH_KEY"; exit 1; }
+    - chmod 600 "$SSH_KEY"
+  script:
+    - mkdir -p ~/.ssh
+    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+    - >-
+      scp -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new
+      compose.prod.yml docker/Caddyfile deploy/deploy.sh
+      "$DEPLOY_USER@$DEPLOY_HOST:/opt/ppe/"
+    - >-
+      ssh -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new
+      -o BatchMode=yes -o ConnectTimeout=10
+      "$DEPLOY_USER@$DEPLOY_HOST"
+      "cd /opt/ppe && PPE_API_REPO=$API_IMAGE PPE_WEB_REPO=$WEB_IMAGE
+      PPE_COMPOSE_DIR=/opt/ppe sh deploy.sh $CI_COMMIT_SHORT_SHA"
