@@ -38,12 +38,12 @@
 
 ## Phase 4: Verification and close
 
-- [ ] T024 Ejecutar `uv run pytest` completo.
-- [ ] T025 Ejecutar Ruff, formato, `ty`, specs y propiedad.
-- [ ] T026 Comitear, hacer push y abrir PR `Closes #119` con revisor Guillermo.
-- [ ] T027 Vigilar CI y mover #119 a *In review*.
-- [ ] T028 Solicitar a Jesús la regeneración de `docs/curso/PRUEBAS.md`.
-- [ ] T029 Publicar el bloqueo de HU-058 en #114 por dependencia de HU-077/#133.
+- [x] T024 Ejecutar `uv run pytest` completo.
+- [x] T025 Ejecutar Ruff, formato, `ty`, specs y propiedad.
+- [x] T026 Comitear, hacer push y abrir PR `Closes #119` con revisor Guillermo.
+- [x] T027 Vigilar CI y mover #119 a *In review*.
+- [x] T028 Solicitar a Jesús la regeneración de `docs/curso/PRUEBAS.md`.
+- [x] T029 Publicar el bloqueo de HU-058 en #114 por dependencia de HU-077/#133.
 
 ## Notes
 
