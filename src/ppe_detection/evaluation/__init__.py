@@ -23,6 +23,15 @@ from ppe_detection.evaluation.evaluate import (
     sha256_file,
     validate_model_names,
 )
+from ppe_detection.evaluation.robustness import (
+    DEFAULT_SEED,
+    PERTURBATIONS,
+    RobustnessError,
+    add_gaussian_noise,
+    adjust_brightness,
+    apply_perturbation,
+    resize_scale,
+)
 from ppe_detection.evaluation.size_bias import (
     BUCKETS,
     SizeBiasError,
@@ -46,6 +55,8 @@ from ppe_detection.evaluation.thresholds import (
 
 __all__ = [
     "BUCKETS",
+    "DEFAULT_SEED",
+    "PERTURBATIONS",
     "ErrorCase",
     "ErrorSummary",
     "EvaluationConfig",
@@ -56,10 +67,14 @@ __all__ = [
     "ImageRecord",
     "Prediction",
     "PredictionBox",
+    "RobustnessError",
     "SizeBiasError",
     "SizeMetrics",
     "ThresholdMetrics",
+    "add_gaussian_noise",
+    "adjust_brightness",
     "analyze_errors",
+    "apply_perturbation",
     "artifact_slug",
     "average_precision_by_size",
     "build_summary",
@@ -72,6 +87,7 @@ __all__ = [
     "load_thresholds",
     "render_error_report",
     "render_markdown",
+    "resize_scale",
     "sha256_file",
     "size_bucket",
     "stable_artifact_name",
