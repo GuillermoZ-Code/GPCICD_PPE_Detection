@@ -41,6 +41,63 @@ def test_model_card_distinguishes_selected_from_deployed() -> None:
     assert "seleccionado" in text.lower()
 
 
+    # Act
+    text = _text()
+
+    # Assert
+    assert "operacion/mlflow.md" in text
+    assert "evaluation/mlflow-comparacion.md" in text
+
+
+def test_model_card_declares_license_and_six_classes() -> None:
+    """AC-01/AC-02: licencia y catálogo de seis clases."""
+
+    # Act
+    text = _text()
+
+    # Assert
+    assert "AGPL-3.0-only" in text
+    for class_name in ("Gloves", "Vest", "goggles", "helmet", "mask", "safety_shoe"):
+        assert class_name in text
+
+
+MODEL_CARD = Path("docs/model-card.md")
+
+
+def _read(path: Path) -> str:
+    """Lee un archivo esperado; la ausencia hace fallar la prueba con contexto."""
+    assert path.is_file(), f"no existe {path}"
+    return path.read_text(encoding="utf-8")
+
+
+# --------------------------------------------------------------- HU-027 · AC-01
+
+
+def test_card_declares_selected_and_deployed_models() -> None:
+    """AC-01: distingue el modelo seleccionado del que está desplegado."""
+    # Arrange
+    card = _read(MODEL_CARD)
+
+    # Assert
+    assert "yolo26n-clean" in card
+    assert "YOLO26n" in card
+    assert "YOLO11s" in card
+    assert "seleccionado" in card.lower()
+
+
+def test_card_compares_yolo11s_and_yolo26() -> None:
+    """AC-01: la comparación existe con las métricas del test completo."""
+    # Arrange
+    card = _read(MODEL_CARD)
+
+    # Assert
+    assert "mAP50-95" in card
+    assert "0.516" in card  # YOLO11s
+    assert "0.614" in card  # YOLO26n
+
+
+def test_card_cites_the_productive_model_adr() -> None:
+    """AC-01: la decisión remite al ADR 0009."""
 def test_model_card_compares_with_the_full_test_metrics() -> None:
     """AC-01: la comparación usa mAP del test completo."""
     # Arrange

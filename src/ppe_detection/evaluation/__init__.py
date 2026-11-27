@@ -23,6 +23,14 @@ from ppe_detection.evaluation.evaluate import (
     sha256_file,
     validate_model_names,
 )
+from ppe_detection.evaluation.size_bias import (
+    BUCKETS,
+    SizeBiasError,
+    SizeMetrics,
+    average_precision_by_size,
+    evaluate_size_bias,
+    size_bucket,
+)
 from ppe_detection.evaluation.thresholds import (
     GroundTruth,
     ImageRecord,
@@ -37,6 +45,7 @@ from ppe_detection.evaluation.thresholds import (
 )
 
 __all__ = [
+    "BUCKETS",
     "ErrorCase",
     "ErrorSummary",
     "EvaluationConfig",
@@ -47,19 +56,24 @@ __all__ = [
     "ImageRecord",
     "Prediction",
     "PredictionBox",
+    "SizeBiasError",
+    "SizeMetrics",
     "ThresholdMetrics",
     "analyze_errors",
     "artifact_slug",
+    "average_precision_by_size",
     "build_summary",
     "calibrate_thresholds",
     "calibration_payload",
     "collect_evaluation_artifacts",
     "evaluate",
+    "evaluate_size_bias",
     "evaluate_thresholds",
     "load_thresholds",
     "render_error_report",
     "render_markdown",
     "sha256_file",
+    "size_bucket",
     "stable_artifact_name",
     "threshold_map",
     "validate_model_names",
