@@ -26,12 +26,19 @@ description: "Task list for HU-049 - Decisión y configuración de exposición d
 
 ## Phase 3: Implementación (documentación)
 
-- [ ] T009 Crear `docs/adr/0010-exposicion-grpc.md` con contexto, decisión, alternativas, consecuencias y referencias.
-- [ ] T010 Añadir la entrada de ADR 0010 en `docs/adr/README.md`.
+- [x] T009 Crear `docs/adr/0010-exposicion-grpc.md` con contexto, decisión, alternativas, consecuencias y referencias.
+- [x] T010 Añadir la entrada de ADR 0010 en `docs/adr/README.md`.
 
 ## Phase 4: Validación y entrega
 
-- [ ] T011 Ejecutar pruebas dirigidas y completas; Ruff, formato, `ty`, specs y propiedad.
-- [ ] T012 Commit convencional y push de la rama.
-- [ ] T013 Abrir PR a `develop` con plantilla UAO, `Closes #105` y revisor Guillermo por propiedad de `docs/adr/`.
-- [ ] T014 Mover #105 a *In review* y dejar la PR sin fusionar ni autoaprobar.
+- [x] T011 Ejecutar pruebas dirigidas y completas; Ruff, formato, `ty`, specs y propiedad.
+- [x] T012 Commit convencional y push de la rama (`1292e69`, `966d4e5`).
+- [x] T013 Abrir PR #263 a `develop` con plantilla UAO, `Closes #105` y revisor Guillermo por propiedad de `docs/adr/`.
+- [x] T014 Mover #105 a *In review* y dejar la PR sin fusionar ni autoaprobar.
+
+## Evidencia
+
+- Fase roja: 1 fallo por ADR ausente; AC-02 y AC-03 ya pasaban con la configuración real.
+- Fase verde: 9 pruebas dirigidas passed; suite completa 945 passed, 2 skipped.
+- Ruff, formato, `ty`, specs (98) y propiedad (6 archivos, 0 avisos) en verde.
+- CI: 9/9 checks en `success` (`gh pr checks 263 --watch`, 2026-11-27).

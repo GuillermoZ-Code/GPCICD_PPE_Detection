@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-27
 
-**Status**: En implementación
+**Status**: En revisión (PR #263, sin fusionar ni autoaprobar)
 
 **Input**: Issue #105 — «HU-049 - Decisión y configuración de exposición de gRPC». Asignada a Eliana (`ElianaCardona`), épica `ep-07`, P1 · ola 3, 1 SP, 4 pruebas objetivo. Depende de HU-041 (#97, *Done*).
 
