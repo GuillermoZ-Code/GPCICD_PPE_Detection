@@ -208,4 +208,23 @@ def test_deploy_pulls_from_the_public_mirror() -> None:
     # Assert
     assert "PPE_API_REPO=$DOCKERHUB_USER/gpcicd-ppe-api" in pipeline
     assert "PPE_WEB_REPO=$DOCKERHUB_USER/gpcicd-ppe-web" in pipeline
+    assert "PPE_CADDY_REPO=$DOCKERHUB_USER/gpcicd-ppe-caddy" in pipeline
     assert "$CI_REGISTRY_IMAGE/api" not in pipeline.split("deploy:", 1)[1]
+
+
+def test_caddy_image_is_published_and_deployed_with_the_same_tag() -> None:
+    """HU-054: Caddy viaja como tercera imagen y entra en el rollback."""
+    # Arrange
+    pipeline = _read(PIPELINE)
+    script = _read(DEPLOY)
+
+    # Assert
+    assert "CADDY_IMAGE:" in pipeline
+    assert "docker/Dockerfile.caddy" in pipeline
+    assert "gpcicd-ppe-caddy" in pipeline
+    assert "--entrypoint caddy" in pipeline
+    assert "list-modules" in pipeline
+    assert "caddy-digest.txt" in pipeline
+    assert "PPE_CADDY_REPO" in script
+    assert "PPE_CADDY_IMAGE=$caddy_repo:$tag" in script
+    assert "ps -q caddy" in script

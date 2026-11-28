@@ -32,9 +32,11 @@ variables:
   # El espejo ya trae el histórico; un clon superficial basta y ahorra minutos.
   GIT_DEPTH: "1"
 
-  # Imágenes del proyecto: backend (API + gRPC) y SPA servida por nginx.
+  # Imágenes del proyecto: backend (API + gRPC), SPA servida por nginx y
+  # Caddy con el módulo rate_limit (HU-054).
   API_IMAGE: $CI_REGISTRY_IMAGE/api
   WEB_IMAGE: $CI_REGISTRY_IMAGE/web
+  CADDY_IMAGE: $CI_REGISTRY_IMAGE/caddy
 
   DOCKER_TLS_CERTDIR: "/certs"
 
@@ -183,6 +185,7 @@ build_image:
     # `|| true`: en el primer build todavía no existe `:latest`.
     - docker pull -q "$API_IMAGE:latest" > /dev/null 2>&1 || true
     - docker pull -q "$WEB_IMAGE:latest" > /dev/null 2>&1 || true
+    - docker pull -q "$CADDY_IMAGE:latest" > /dev/null 2>&1 || true
     - >-
       docker build
       --target runtime
@@ -199,20 +202,35 @@ build_image:
       -t $WEB_IMAGE:$CI_COMMIT_SHORT_SHA
       -t $WEB_IMAGE:latest
       .
+    # HU-054: Caddy se compila con xcaddy para incluir el módulo rate_limit.
+    - >-
+      docker build
+      -f docker/Dockerfile.caddy
+      --cache-from $CADDY_IMAGE:latest
+      --build-arg BUILDKIT_INLINE_CACHE=1
+      -t $CADDY_IMAGE:$CI_COMMIT_SHORT_SHA
+      -t $CADDY_IMAGE:latest
+      .
     # Smoke: la imagen tiene que importar el paquete y construir la app sin
     # modelo montado (la API responderá 503 hasta que exista el artefacto).
     - >-
       docker run --rm --entrypoint python $API_IMAGE:$CI_COMMIT_SHORT_SHA
       -c "from ppe_detection.api import create_app; app = create_app(); print('smoke ok', app.version)"
+    # Smoke de Caddy: el binario debe traer el módulo que usa el Caddyfile.
+    # Se fija el entrypoint porque la imagen final no lo conserva.
+    - docker run --rm --entrypoint caddy $CADDY_IMAGE:$CI_COMMIT_SHORT_SHA list-modules | grep -q rate_limit
     - docker push $API_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $API_IMAGE:latest
     - docker push $WEB_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $WEB_IMAGE:latest
+    - docker push $CADDY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $CADDY_IMAGE:latest
     # HU-068 AC-03: el digest queda como artefacto del job, para poder
     # desplegar exactamente lo que se publicó.
     - docker image inspect --format '{{index .RepoDigests 0}}' $API_IMAGE:$CI_COMMIT_SHORT_SHA > api-digest.txt
     - docker image inspect --format '{{index .RepoDigests 0}}' $WEB_IMAGE:$CI_COMMIT_SHORT_SHA > web-digest.txt
-    - cat api-digest.txt web-digest.txt
+    - docker image inspect --format '{{index .RepoDigests 0}}' $CADDY_IMAGE:$CI_COMMIT_SHORT_SHA > caddy-digest.txt
+    - cat api-digest.txt web-digest.txt caddy-digest.txt
     # HU-068 AC-02: Docker Hub solo si hay credenciales; el Droplet puede
     # bajar la imagen pública sin guardar secretos.
     - |
@@ -222,10 +240,14 @@ build_image:
         docker tag $API_IMAGE:$CI_COMMIT_SHORT_SHA "$DOCKERHUB_USER/gpcicd-ppe-api:latest"
         docker tag $WEB_IMAGE:$CI_COMMIT_SHORT_SHA "$DOCKERHUB_USER/gpcicd-ppe-web:$CI_COMMIT_SHORT_SHA"
         docker tag $WEB_IMAGE:$CI_COMMIT_SHORT_SHA "$DOCKERHUB_USER/gpcicd-ppe-web:latest"
+        docker tag $CADDY_IMAGE:$CI_COMMIT_SHORT_SHA "$DOCKERHUB_USER/gpcicd-ppe-caddy:$CI_COMMIT_SHORT_SHA"
+        docker tag $CADDY_IMAGE:$CI_COMMIT_SHORT_SHA "$DOCKERHUB_USER/gpcicd-ppe-caddy:latest"
         docker push "$DOCKERHUB_USER/gpcicd-ppe-api:$CI_COMMIT_SHORT_SHA"
         docker push "$DOCKERHUB_USER/gpcicd-ppe-api:latest"
         docker push "$DOCKERHUB_USER/gpcicd-ppe-web:$CI_COMMIT_SHORT_SHA"
         docker push "$DOCKERHUB_USER/gpcicd-ppe-web:latest"
+        docker push "$DOCKERHUB_USER/gpcicd-ppe-caddy:$CI_COMMIT_SHORT_SHA"
+        docker push "$DOCKERHUB_USER/gpcicd-ppe-caddy:latest"
       else
         echo "Docker Hub sin configurar: se omite la publicación espejo."
       fi
@@ -234,6 +256,7 @@ build_image:
     paths:
       - api-digest.txt
       - web-digest.txt
+      - caddy-digest.txt
 
 # -----------------------------------------------------------------------------
 # Despliegue: copia compose, Caddyfile y el script, y ejecuta el rollback por
@@ -290,4 +313,5 @@ deploy:
       "$DEPLOY_USER@$DEPLOY_HOST"
       "cd /opt/ppe && PPE_API_REPO=$DOCKERHUB_USER/gpcicd-ppe-api
       PPE_WEB_REPO=$DOCKERHUB_USER/gpcicd-ppe-web
+      PPE_CADDY_REPO=$DOCKERHUB_USER/gpcicd-ppe-caddy
       PPE_COMPOSE_DIR=/opt/ppe sh deploy.sh $CI_COMMIT_SHORT_SHA"
