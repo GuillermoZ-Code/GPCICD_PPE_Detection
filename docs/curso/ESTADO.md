@@ -9,18 +9,18 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-28 04:47 UTC
+**Generado:** 2026-11-28 05:09 UTC
 
 **Rama:** `develop` · limpia · +0/-0 vs `origin/develop`
-**develop:** ec620d3 (2026-11-27)
-**GitLab:** no disponible (glab no está instalado)
+**develop:** e25e70a (2026-11-27)
+**GitLab:** `develop` · manual · `a54ced1` · https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/pipelines/3125869974
 
 **Últimos commits:**
+- `e25e70a docs(cierre): publicar release v1.1.0 y regenerar estado (#283)`
 - `ec620d3 Merge remote-tracking branch 'origin/main' into develop`
 - `c891196 Merge pull request #281 from GuillermoZ-Code/docs/115-estado-jesus`
 - `4f8895a docs(cierre): actualizar arquitectura, rubrica y release v1.1.0 (#280)`
 - `c5c3d6c docs(estado): cerrar backlog, estado y pruebas del M4`
-- `876ab46 Merge pull request #279 from GuillermoZ-Code/docs/059-hu-055-runbook`
 
 **Pull requests abiertas (0):**
 - ninguna
@@ -29,9 +29,6 @@
 
 **En revisión:** ninguna
 **Siguiente por orden:** sin issues abiertas
-
-**Avisos:**
-- glab no está instalado; el estado del pipeline de GitLab no está disponible
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -199,3 +196,11 @@
   imágenes con el tag) y el arranque del perfil `mlflow`, que necesitan acceso.
 - **Siguiente:** verificar el pipeline de GitLab en `main` y desplegar `mlflow` si hay
   SSH; el resto de la entrega está cerrado.
+
+### 2026-11-28 · Guillermo (OpenCode) — cierre de v1.1.0
+
+- **Hecho:** release v1.1.0 publicada y desplegada (`7aa74cc`); pipeline GitLab `main`
+  #54 en verde (`build_image` 252 s, `deploy` 90 s); imágenes `7aa74cce`;
+  `/health` y `/health/ready` 200; #283 fusionada; 0 issues y 0 PRs.
+- **En vuelo:** PR de cierre documental con el estado final.
+- **Siguiente:** sustentación del M4.

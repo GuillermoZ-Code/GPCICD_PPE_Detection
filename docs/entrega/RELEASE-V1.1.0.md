@@ -3,7 +3,7 @@
 > **Tag:** `v1.1.0` · **Commit:** `7aa74ccef6a48b178959473b74168abeae89e707`
 > **Fecha:** 2026-11-28 · **HU:** HU-111 (#167) · **Spec:** `specs/112-hu-111-release/`
 > **Release:** <https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/releases/tag/v1.1.0>
-> **Estado:** publicada; quedan dos verificaciones de GitLab pendientes de acceso.
+> **Estado:** publicada y desplegada; pipeline de GitLab #54 e imágenes verificadas. Perfil `mlflow` opcional no activo (no bloquea el release).
 
 ## 1. Checklist de release
 
@@ -12,10 +12,10 @@
 - [x] `CHANGELOG.md` con `## [1.1.0] - 2026-11-28` y las HUs de accesibilidad,
       historial, manual, capacidad y MLflow.
 - [x] CI de GitHub Actions de las PRs incluidas en verde y en `main`.
-- [ ] Pipeline de GitLab en `main` en verde (`build_image` + `deploy`): el espejo está
-      en verde, pero el proyecto de GitLab es privado y esta estación no tiene token.
-- [ ] Imágenes API, SPA y Caddy publicadas con el tag del commit: no verificable sin
-      acceso al registry.
+- [x] Pipeline de GitLab en `main` en verde (`build_image` + `deploy`): **#54**
+      (`3125842718`), `build_image` 252 s y `deploy` 90 s.
+- [x] Imágenes API, SPA y Caddy publicadas con el tag `7aa74cce`; contenedores
+      `healthy`.
 - [x] Modelo **YOLO26n clean** montado `:ro` con SHA256
       `FEFB1F1A120FB3AC7BC0F4DE90E5E594BBEF5E936D8168750AA78FC3FB0F27F9`.
 - [x] `/health` y `/health/ready` responden en el Droplet: `status: ok`,
@@ -63,8 +63,8 @@ Salida esperada de `/health`:
 
 | Pendiente | Dueño | Estado |
 |---|---|---|
-| Verificar el pipeline de GitLab en `main` (`build_image` + `deploy`) | Guillermo | Pendiente de acceso al proyecto privado |
-| Confirmar las imágenes con el tag de `7aa74cc` en el registry | Guillermo | Pendiente de acceso al registry |
-| Regenerar `ESTADO.md` y `AGENTS.md` §0 | Jesús | Hecho el 2026-11-28 04:47 UTC |
+| Verificar el pipeline de GitLab en `main` (`build_image` + `deploy`) | Guillermo | Hecho: #54 en verde; `build_image` 252 s, `deploy` 90 s |
+| Confirmar las imágenes con el tag de `7aa74cc` en el registry | Guillermo | Hecho: `guillermozabala/gpcicd-ppe-{api,web,caddy}:7aa74cce` |
+| Regenerar `ESTADO.md` y `AGENTS.md` §0 | Jesús | Hecho el 2026-11-28 05:09 UTC |
 | Actualizar estados del `backlog.md` a cerrada | Jesús | Hecho (113/113 cerradas) |
-| Desplegar el perfil `mlflow` en el Droplet | Guillermo | Pendiente de SSH |
+| Activar el perfil `mlflow` en el Droplet | Guillermo | Perfil opcional no activo; corregir el comando a `mlflow server` antes de usarlo (no bloquea el release) |
