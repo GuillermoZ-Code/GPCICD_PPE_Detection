@@ -806,3 +806,24 @@ tbody tr:last-child td {
     height: 38px;
   }
 }
+/* --- Enlace de salto (HU-080) -------------------------------------------- */
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.skip-link:focus {
+  left: 8px;
+  top: 8px;
+}
