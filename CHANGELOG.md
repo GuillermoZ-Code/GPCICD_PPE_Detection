@@ -18,6 +18,7 @@ Sin cambios pendientes.
 - [HU-088](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/144) — Historial de la sesión en la SPA: lista con miniatura, conteo y modelo, detalle por clase y limpieza; solo en `localStorage` (PR #276).
 - [HU-058](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/114) — Manual de usuario de la SPA con capturas (PR #272).
 - [HU-109](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/165) — Registro de capacidad y velocidad real del M4 (PR #273).
+- [HU-110](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/166) — MLflow en el Droplet con autenticación (PR #277).
 
 ### Changed
 
