@@ -669,24 +669,140 @@ tbody tr:last-child td {
   }
 }
 
-/* --- Enlace de salto (HU-080) -------------------------------------------- */
+/* --- Historial de la sesión (HU-088) ------------------------------------- */
 
-.skip-link {
-  position: absolute;
-  top: 0;
-  left: -9999px;
-  z-index: 100;
-  padding: 10px 16px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-family: var(--font-display);
-  font-weight: 700;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.history {
+  margin-top: var(--gap);
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  background: var(--panel-solid);
 }
 
-.skip-link:focus {
-  left: 8px;
-  top: 8px;
+.history__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.history__header h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.02em;
+}
+
+.history__header p {
+  margin: 2px 0 0;
+  font-size: 12px;
+}
+
+.history__empty {
+  margin: 0;
+  padding: 8px 0;
+}
+
+.history__list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history__item {
+  border: 1px solid var(--line);
+}
+
+.history__button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.history__button:hover,
+.history__button.is-selected {
+  background: var(--bg-soft);
+}
+
+.history__thumb {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 48px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  object-fit: cover;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.history__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.history__name {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history__meta,
+.history__model {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.history__detail {
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: var(--bg-soft);
+}
+
+.history__detail ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history__detail li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.history__detail strong {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 560px) {
+  .history__header {
+    flex-direction: column;
+  }
+
+  .history__button {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .history__thumb {
+    width: 48px;
+    height: 38px;
+  }
 }
