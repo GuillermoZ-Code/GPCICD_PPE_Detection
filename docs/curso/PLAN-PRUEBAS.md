@@ -16,8 +16,8 @@
 | **Objetivo** | **1.200** |
 | **Brecha** | **667** |
 | **Fecha de medición** | 2026-11-23 |
-| **Medición actual (2026-11-27)** | **1.219** (1.098 pytest + 121 Vitest) |
-| **Brecha actual** | **0 — meta superada (1.219 ≥ 1.200)** |
+| **Medición actual (2026-11-27)** | **1.229** (1.108 pytest + 121 Vitest) |
+| **Brecha actual** | **0 — meta superada (1.229 ≥ 1.200)** |
 | **Comando** | `make pruebas-write` |
 
 El punto de partida es el conteo real del repositorio, no una cifra congelada: lo
