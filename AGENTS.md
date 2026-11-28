@@ -159,6 +159,8 @@ make app             # levanta API + interfaz con el modelo local
 make docker-build    # imagen backend CPU (HU-011)
 make docker-up       # compose: API + gRPC + SPA (modelo en PPE_MODELS_DIR)
 make docker-smoke    # inferencia REST+gRPC dentro del contenedor
+make deploy          # despliega un tag en el Droplet (TAG=<sha>)
+make verify          # comprueba /health y /health/ready del sitio
 make arch       # regenera el diagrama Archify (si está instalado)
 ```
 

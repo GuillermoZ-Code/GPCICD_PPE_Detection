@@ -20,8 +20,8 @@
 | **Licencia** | **AGPL-3.0-only** |
 | **Rama principal** | `main` |
 | **Rama de integración** | `develop` |
-| **Módulo activo** | M2 (alineación) → M3 (implementación) |
-| **Estado** | En construcción 🚧 |
+| **Módulo activo** | M4 (MLOps, CI/CD y despliegue) |
+| **Estado** | Release v1.0.0 en preparación 🚧 |
 
 ## 1. Equipo y roles
 
@@ -99,7 +99,7 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 | **Procesamiento de imagen** | OpenCV + NumPy |
 | **Experiment tracking** | MLflow (local) |
 | **Contenedor** | Docker CPU (sin CUDA) |
-| **CI/CD** | GitHub Actions + Droplet |
+| **CI/CD** | GitHub Actions + GitLab CI (espejo) + Droplet/Caddy |
 | **Spec-Driven Development** | [GitHub Spec Kit](https://github.com/github/spec-kit) |
 | **Diagramas** | [Archify](https://github.com/tt-a1i/archify) |
 | **Dataset** | [`51ddhesh/PPE_Detection`](https://huggingface.co/datasets/51ddhesh/PPE_Detection) (CC-BY-4.0) |
@@ -202,7 +202,8 @@ Todo en Docker CPU; CI/CD → Droplet
 - Diagrama interactivo: [`docs/architecture/arquitectura.html`](docs/architecture/arquitectura.html)
 - Fuente versionada: [`docs/architecture/arquitectura.json`](docs/architecture/arquitectura.json)
 - Decisiones de despliegue: [ADR 0007](docs/adr/0007-gitlab-ci-espejo.md) (GitLab CI con
-  espejo desde GitHub) y [ADR 0008](docs/adr/0008-droplet-caddy.md) (Droplet + Caddy).
+  espejo desde GitHub), [ADR 0008](docs/adr/0008-droplet-caddy.md) (Droplet + Caddy) y
+  [ADR 0013](docs/adr/0013-basic-auth-y-dominio.md) (basic auth y dominio `sslip.io`).
 
 ### Contract-first
 
@@ -380,6 +381,8 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
   **30 % Droplet con Caddy y HTTPS**, **15 % secretos** y **15 % despliegue en vivo**.
 - **HU-014 y HU-015 están dentro de esas 100 HU**; HU-014 se cierra cuando estén
   fusionadas las HU-066 a HU-068 y la HU-070.
+- **Release v1.0.0:** `develop → main` con merge commit, tag `v1.0.0` y despliegue en
+  el Droplet; el cambio del docente en la sustentación se despliega por el pipeline.
 - Cierre de issues: **26/11/2026**. Sustentación: **sábado 28/11/2026**.
 
 **Total backlog oficial:** **113 HU y 219 SP** (13 HU y 19 SP del M3, más 100 HU y

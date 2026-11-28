@@ -5,7 +5,7 @@
 > no negociables para Spec Kit y se sincroniza **en el mismo commit** que la
 > constitución. Si hay conflicto, manda `CONSTITUTION.md`.
 
-**Versión:** 1.1 · **Fecha:** 2026-11-12 · **Proyecto:** GPCICD PPE Detection
+**Versión:** 1.2 · **Fecha:** 2026-11-28 · **Proyecto:** GPCICD PPE Detection
 **Licencia:** AGPL-3.0-only
 
 ## Principios no negociables
@@ -71,8 +71,8 @@
 - Las pruebas se escriben antes de la implementación; deben fallar primero.
 - Excepciones: SPI y specs de documentación.
 - `/speckit.analyze` marca como error un AC sin prueba.
-- **Sin umbral de cobertura:** la entrega del M3 exige **≥ 400 pruebas unitarias**
-  (mínimo, no techo); el plan vive en `docs/curso/PLAN-PRUEBAS.md`.
+- **Sin umbral de cobertura:** el M3 exigió **≥ 400 pruebas unitarias** y el M4 exige
+  **≥ 1.200** (mínimo, no techo); el plan vive en `docs/curso/PLAN-PRUEBAS.md`.
 
 ### X. Cómputo GPU
 
@@ -80,6 +80,34 @@
 - Colab/Kaggle solo como cómputo GPU, ejecutando un script versionado del repo con
   `uv`.
 - No se versionan `.ipynb` ni se usa la UI de notebooks como fuente de verdad.
+
+## Stack, roadmap y riesgos del M4
+
+### Stack y despliegue
+
+- **Modelo productivo:** YOLO26n fine-tuneado + exportación **ONNX 640** (ADR 0009);
+  YOLO11s queda como rollback.
+- **Servicio:** FastAPI REST, gRPC, SPA React 19 + Vite y MLflow.
+- **CI/CD:** GitHub Actions (fuente de verdad) + **GitLab CI** por espejo de *push* y
+  despliegue en el **Droplet** con **Caddy** y HTTPS automático (ADR 0007 y 0008).
+- **Seguridad:** basic auth en Caddy (`PPE_AUTH_HASH`), `/health*` abierto, gitleaks y
+  variables enmascaradas (ADR 0013).
+- **Pruebas:** el M4 exige **≥ 1.200** pruebas unitarias; no hay umbral de cobertura.
+
+### Roadmap
+
+- **M4:** 19/11/2026 → 28/11/2026; **100 HU y 200 SP** (50 SP por integrante).
+- **Rúbrica:** 40 % pipeline de GitLab, 30 % Droplet con Caddy y HTTPS, 15 % secretos,
+  15 % despliegue en vivo.
+- **Cierre:** release `develop → main` con merge commit, tag `v1.0.0` y despliegue por
+  el pipeline de GitLab.
+
+### Decisiones y riesgos
+
+- Decisiones: ADR 0007 (espejo GitLab), ADR 0008 (Droplet + Caddy), ADR 0009 (YOLO26n +
+  ONNX), ADR 0012 (CODEOWNERS y checks) y ADR 0013 (basic auth y `sslip.io`).
+- Riesgos: AGPL en el servicio público, Droplet como punto único, repo privado frente a
+  AGPL y artefacto del modelo fuera de Git con SHA256.
 
 ## Sincronización
 

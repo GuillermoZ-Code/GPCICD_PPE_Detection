@@ -63,7 +63,7 @@ def test_badge_docker_hub_apunta_al_repositorio_publicado_ac_01() -> None:
 
 
 def test_enlaces_https_registry_y_constitucion_ac_02() -> None:
-    """AC-02: el README enlaza el remoto HTTPS, el Registry y CONSTITUTION."""
+    """AC-02: el README enlaza el remoto HTTPS, el Registry, CONSTITUTION y la URL pública."""
     # Arrange
     text = _text()
 
@@ -74,7 +74,7 @@ def test_enlaces_https_registry_y_constitucion_ac_02() -> None:
     assert HTTPS_REMOTE in enlaces, "falta la URL HTTPS del repositorio"
     assert REGISTRY in enlaces, "falta el enlace al Registry de GitLab"
     assert "./CONSTITUTION.md" in enlaces, "falta el enlace a CONSTITUTION.md"
-    assert "<URL_PUBLICA>" in text, "falta la plantilla de URL pública de HU-053"
+    assert "https://143.198.10.157.sslip.io" in text, "falta la URL pública desplegada"
 
 
 def test_enlaces_internos_resuelven_y_toc_existe_ac_03() -> None:
