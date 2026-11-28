@@ -67,11 +67,13 @@ la API por HTTP; el detector nunca vive dentro del cliente.
 | API REST FastAPI (`/predict`, `/health`) | ✅ |
 | Servicio gRPC | ✅ |
 | SPA React + Vite + TypeScript | ✅ |
+| Accesibilidad WCAG 2.2 AA | ✅ |
+| Historial de sesión en la SPA | ✅ |
 | MLflow: runs, comparación y Model Registry | ✅ |
 | Docker CPU (REST + gRPC + SPA) | ✅ |
 | Suite de pruebas (pytest + Vitest, más de 1.000) | ✅ |
 | Módulo 3 (HU-001 a HU-013) | ✅ 13/13 |
-| Módulo 4 (CI/CD y despliegue) | 🚧 Release v1.0.0 en preparación |
+| Módulo 4 (CI/CD y despliegue) | 🚧 Release v1.1.0 en preparación |
 
 ## Enlaces públicos del M4
 
