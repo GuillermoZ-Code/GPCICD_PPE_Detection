@@ -9,20 +9,21 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-14 03:38 UTC
+**Generado:** 2026-11-28 04:31 UTC
 
-**Rama:** `docs/estado-release-m3` · limpia · +0/-0 vs `origin/develop`
-**develop:** 9486439 (2026-11-13)
+**Rama:** `docs/115-estado-jesus` · 4 archivo(s) sin commit · +0/-0 vs `origin/develop`
+**develop:** 876ab46 (2026-11-27)
+**GitLab:** `develop` · manual · `876ab46` · https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/pipelines/3125800400
 
 **Últimos commits:**
-- `9486439 Merge pull request #68 from GuillermoZ-Code/docs/ficha-m3`
-- `7eb23c9 docs(mlflow): corregir la ruta del almacen de artefactos`
-- `5bb7bff docs(entrega): agregar ficha del M3 y actualizar runbook`
-- `dc707f3 Merge pull request #67 from GuillermoZ-Code/docs/readme-profesional`
-- `8c791bb Merge pull request #66 from GuillermoZ-Code/docs/model-card`
+- `876ab46 Merge pull request #279 from GuillermoZ-Code/docs/059-hu-055-runbook`
+- `477ce68 Merge pull request #278 from GuillermoZ-Code/docs/113-changelog-v1.1.0`
+- `aa9864c test(runbook): evitar la cadena de clave privada en la prueba`
+- `6f8c78d docs(release): incluir HU-110 en el changelog v1.1.0`
+- `07d7372 Merge remote-tracking branch 'origin/develop' into docs/113-changelog-v1.1.0`
 
-**Pull requests abiertas (0):**
-- ninguna
+**Pull requests abiertas (1):**
+- #280 docs(cierre): actualizar arquitectura, rubrica y release v1.1.0 → `develop` · revisión: — · CI: ok
 
 **Issues abiertas: 0 · 0 SP**
 
@@ -179,3 +180,9 @@
   equipo, licencia, ambiente y commit en los runs y en el modelo.
 - **En vuelo:** release `develop → main` con el cierre de la rúbrica.
 - **Siguiente:** sustentación del M3 (14/11); en M4, HU-014 y HU-015.
+
+### 2026-11-28 · Guillermo (OpenCode) — cierre del M4
+
+- **Hecho:** v1.0.0 publicada y desplegada; cerradas #111, #114, #136, #144, #165, #166 y #167; tablero 113/113 Done; rúbrica 14/14; Archify actualizado con MLflow; backlog 113 cerradas; PRUEBAS 1.229.
+- **En vuelo:** PR #280 (cierre documental) y release v1.1.0 pendiente de aprobación, tag y deploy.
+- **Siguiente:** fusionar #280, crear PR v1.1.0, tag y verificar el pipeline de main.

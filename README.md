@@ -62,16 +62,31 @@ la API por HTTP; el detector nunca vive dentro del cliente.
 | Repositorio, gobernanza y entorno (`uv`) | ✅ |
 | Gitflow `develop`/`main`, plantilla UAO y CI | ✅ |
 | Contrato `ImageData → list[Detection]` y `FakeDetector` | ✅ |
-| Detector YOLO11s ajustado (inferencia CPU) | ✅ |
+| Detector YOLO26n + ONNX 640 (inferencia CPU) | ✅ |
 | Validación, carga y visualización de imágenes | ✅ |
 | API REST FastAPI (`/predict`, `/health`) | ✅ |
 | Servicio gRPC | ✅ |
 | SPA React + Vite + TypeScript | ✅ |
+| Accesibilidad WCAG 2.2 AA | ✅ |
+| Historial de sesión en la SPA | ✅ |
 | MLflow: runs, comparación y Model Registry | ✅ |
 | Docker CPU (REST + gRPC + SPA) | ✅ |
-| Suite de pruebas (375 pytest + 76 Vitest) | ✅ |
+| Suite de pruebas (pytest + Vitest, más de 1.000) | ✅ |
 | Módulo 3 (HU-001 a HU-013) | ✅ 13/13 |
-| Módulo 4 (CI/CD y despliegue) | 🚧 19/11 → 28/11 |
+| Módulo 4 (CI/CD y despliegue) | 🚧 Release v1.1.0 en preparación |
+
+## Enlaces públicos del M4
+
+| Recurso | Enlace | Estado |
+|:---|:---|:---|
+| Código fuente (HTTPS) | [GuillermoZ-Code/GPCICD_PPE_Detection](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection) | Público |
+| Pipeline espejo | [Pipeline de GitLab](https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/pipelines) | Activo (HU-065) |
+| Registry de imágenes | [Container Registry del proyecto](https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/container_registry) | API, SPA y Caddy publicadas (HU-068) |
+| API pública del modelo | <https://143.198.10.157.sslip.io> | Activa con basic auth y `/health` abierto (HU-054) |
+| Gobernanza del proyecto | [`CONSTITUTION.md`](./CONSTITUTION.md) | Público |
+
+> La API pública usa basic auth en Caddy; `/health` queda abierto para el smoke y el
+> monitoreo. El modelo se monta desde fuera de Git y se verifica por SHA256.
 
 ## Enlaces públicos del M4
 
@@ -95,7 +110,7 @@ cd GPCICD_PPE_Detection
 uv sync
 
 # El artefacto del modelo vive fuera de Git
-export PPE_MODEL_PATH=artifacts/drive/yolo11s_clean/weights/best.pt
+export PPE_MODEL_PATH=artifacts/drive/yolo26n_clean/weights/best.pt
 
 make app        # API en http://localhost:8000 y SPA en http://localhost:5173
 ```
@@ -133,7 +148,7 @@ Navegador ──HTTP/JSON──► FastAPI ──► capa de servicio ──► 
     ▲                        │                                   │
     └──── SPA React ◄────────┘                                   └──► MLflow (runs y métricas)
                     gRPC ──► servidor gRPC ──► mismo detector
-Todo en Docker CPU; CI/CD en GitHub Actions → Droplet (M4)
+Todo en Docker CPU; CI/CD en GitHub Actions + GitLab CI → Droplet con Caddy (M4)
 ```
 
 El sistema respeta tres capas:
@@ -168,10 +183,10 @@ avancen en paralelo ([ADR 0005](./docs/adr/0005-contract-first.md)).
 | **API REST** | FastAPI + Pydantic |
 | **RPC** | gRPC + Protocol Buffers |
 | **Interfaz** | React 19 + Vite + TypeScript (`frontend/`) |
-| **Visión** | Ultralytics YOLO11s + PyTorch CPU |
+| **Visión** | Ultralytics YOLO26n + ONNX Runtime (PyTorch CPU para evaluación) |
 | **Experiment tracking** | MLflow 3 (runs + Model Registry) |
-| **Contenedor** | Docker CPU multi-stage |
-| **CI/CD** | GitHub Actions + Droplet (M4) |
+| **Contenedor** | Docker CPU multi-stage + Caddy |
+| **CI/CD** | GitHub Actions + GitLab CI (espejo) + Droplet/Caddy (M4) |
 | **Spec-Driven Development** | [GitHub Spec Kit](https://github.com/github/spec-kit) |
 | **Dataset** | [`51ddhesh/PPE_Detection`](https://huggingface.co/datasets/51ddhesh/PPE_Detection) |
 | **Licencia** | AGPL-3.0-only |
@@ -221,7 +236,7 @@ uv build              # sdist + wheel
 ### API REST
 
 ```bash
-export PPE_MODEL_PATH=artifacts/drive/yolo11s_clean/weights/best.pt
+export PPE_MODEL_PATH=artifacts/drive/yolo26n_clean/weights/best.pt
 uv run --extra inference python -m ppe_detection.api
 ```
 
@@ -235,7 +250,7 @@ uv run --extra inference python -m ppe_detection.api
 # Healthcheck: estado + contrato publicado
 curl http://127.0.0.1:8000/health
 # {"status":"ok","api_version":"0.1.0","model_loaded":true,
-#  "model_version":"yolo11s-clean","model_reference":"sha256:E51EB0…"}
+#  "model_version":"yolo26n-clean","model_reference":"sha256:FEFB1F…"}
 
 # Inferencia
 curl -F "file=@foto.jpg" -F "conf=0.35" http://127.0.0.1:8000/predict
@@ -309,23 +324,22 @@ El contenedor expone REST (8000) y gRPC (9000) sin GPU; el artefacto se monta
 
 | Campo | Valor |
 |---|---|
-| Modelo | YOLO11s ajustado para 6 clases (`yolo11s_clean`) |
-| Artefacto | `best.pt` (18,3 MB, fuera de Git) |
-| SHA256 | `E51EB08078F8ABADA1D5F3D15BFB17D94E32DA0C70467D7C79E43C338D7A9959` |
+| Modelo | YOLO26n fine-tuneado para 6 clases (`yolo26n_clean`) + ONNX 640 |
+| Artefacto | `best.pt` (5,47 MB) y `best.onnx` (9,86 MB), fuera de Git |
+| SHA256 | `FEFB1F1A120FB3AC7BC0F4DE90E5E594BBEF5E936D8168750AA78FC3FB0F27F9` |
 | Dataset | `51ddhesh/PPE_Detection` (CC-BY-4.0), 10.941 imágenes limpias |
 
-| Métrica (test limpio, 1.094 imágenes) | Valor |
+| Métrica (test limpio, 1.095 imágenes) | Valor |
 |---|---:|
-| Precisión | 0.800 |
-| Recall | 0.767 |
-| mAP@0.5 | 0.810 |
-| mAP@0.5:0.95 | 0.516 |
-| Latencia medida (CPU, 640 px) | 82 ms media · 90 ms p95 · 12 fps |
-| Latencia medida (CPU, 416 px) | 41 ms media · 44 ms p95 · 24 fps |
+| Precisión | 0.893 |
+| Recall | 0.842 |
+| mAP@0.5 | 0.892 |
+| mAP@0.5:0.95 | 0.614 |
+| Latencia ONNX 640 (i5-1235U) | 53,92 ms p50 · 88,05 ms p95 |
 
 La Model Card completa —modelo base, dataset, sesgos, limitaciones y licencia— está
 en [`docs/model-card.md`](./docs/model-card.md); el informe de evaluación, en
-[`docs/evaluation/HU-008.md`](./docs/evaluation/HU-008.md).
+[`docs/evaluation/YOLO26.md`](./docs/evaluation/YOLO26.md).
 
 ## Calidad y automatización
 
@@ -355,7 +369,7 @@ en [`docs/model-card.md`](./docs/model-card.md); el informe de evaluación, en
 | `make docker-up` / `make docker-down` | Compose: API + gRPC + SPA |
 | `make docker-smoke` | Inferencia REST + gRPC en el contenedor |
 
-La suite suma **451 pruebas** (375 pytest + 76 Vitest) y no depende de GPU, del
+La suite supera las **1.000 pruebas** (pytest + Vitest) y no depende de GPU, del
 dataset completo ni de red. El conteo y el reparto por integrante están en
 [`docs/curso/PRUEBAS.md`](./docs/curso/PRUEBAS.md) y
 [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
@@ -419,8 +433,8 @@ Ver [`CONTRIBUTING.md`](./CONTRIBUTING.md) para el detalle.
 |--------|--------|-----|----|--------|
 | **M3-S1** | 31/10–07/11 | HU-001 a HU-007 | 11 | ✅ |
 | **M3-S2** | 08/11–14/11 | HU-008 a HU-013 | 8 | ✅ |
-| **M4-S3** | 15/11–28/11 | HU-014 y HU-015 | 3 | 🚧 |
-| **Total** | | | **22** | |
+| **M4-S3** | 15/11–28/11 | 100 HU (ep-05 a ep-15) | 200 | 🚧 |
+| **Total** | | **113 HU** | **219** | |
 
 Sustentaciones: **M3 14/11/2026** y **M4 28/11/2026**. El detalle vive en
 [`docs/curso/backlog.md`](./docs/curso/backlog.md).

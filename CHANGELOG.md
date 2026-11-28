@@ -4,26 +4,28 @@ Todas las notas significativas de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) y el
 versionamiento [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-> `v1.0.0` tiene **fecha prevista de entrega** 2026-11-27 según
-> `docs/entrega/RUBRICA-M4.md`. Las PR marcadas como «en revisión» están abiertas y
-> aún no se han fusionado en `develop`: se enlazan como evidencia de la HU, no como
-> contenido ya publicado en la rama de entrega.
+> `v1.0.0` se publicó el **2026-11-28**; `v1.1.0` documenta las HUs de accesibilidad, historial, manual y capacidad. Las notas de v1.0.0 se conservan como registro histórico.
 
 ## [Unreleased]
 
+Sin cambios pendientes.
+
+## [1.1.0] - 2026-11-28
+
 ### Added
 
-- [HU-064](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/120) — Registro de cambios y notas de v1.0.0 con enlaces a HUs y PRs; PR en preparación.
+- [HU-080](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/136) — Accesibilidad WCAG 2.2 AA: enlace de salto, foco al resultado, `aria-live`/`aria-busy`, foco del diálogo y contraste AA en ambos temas (PR #275).
+- [HU-088](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/144) — Historial de la sesión en la SPA: lista con miniatura, conteo y modelo, detalle por clase y limpieza; solo en `localStorage` (PR #276).
+- [HU-058](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/114) — Manual de usuario de la SPA con capturas (PR #272).
+- [HU-109](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/165) — Registro de capacidad y velocidad real del M4 (PR #273).
+- [HU-110](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/issues/166) — MLflow en el Droplet con autenticación (PR #277).
 
 ### Changed
 
-- Sin cambios adicionales desde la fecha de corte de `v1.0.0`.
+- SPA: flujo de carga, progreso y resultados de HU-077 integrado en la entrega.
+- Documentación de release v1.0.0 y runbook de despliegue actualizados.
 
-### Fixed
-
-- Sin correcciones adicionales desde la fecha de corte de `v1.0.0`.
-
-## [1.0.0] - 2026-11-27
+## [1.0.0] - 2026-11-28
 
 Estas son las notas de v1.0.0 de la entrega M4 (fecha prevista). Las entradas enlazan la historia y su PR;
 cuando el PR sigue abierto se indica explícitamente para no afirmar una fusión que

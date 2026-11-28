@@ -9,13 +9,13 @@
 > **Este bloque caduca.** Si tiene más de 3 días o no coincide con `git log`, ignóralo
 > y reconstruye el estado con `make estado`.
 
-Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/2026.
+Sprint activo: **M4-S3** (19/11 → 28/11/2026). Sustentación del M4: 28/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-14 03:38 UTC
-- **Rama:** `docs/estado-release-m3` · +0/-0 vs `origin/develop`
+**Actualizado:** 2026-11-28 04:31 UTC
+- **Rama:** `docs/115-estado-jesus` · +0/-0 vs `origin/develop`
 - **Issues abiertas:** 0 · 0 SP
-- **En vuelo:** ninguna
+- **En vuelo:** #280 docs(cierre): actualizar arquitectura, rubrica y release v1.1.0 (PR, revisión: —)
 - **Siguiente:** sin issues abiertas
 <!-- estado:fin -->
 
@@ -99,7 +99,7 @@ con visión por computador. Curso **GPCICD M2-M4**. Licencia **AGPL-3.0-only**.
 | Guillermo Zabala | `GuillermoZ-Code` | Entorno, arquitectura y repositorio, evidencias y **Code Reviewer** |
 | Jesús Riveros | `jesusriverosUAO` | Planificación, Gantt, CPM, HU, AC, estimación, Cap. 3 y 5, tablero Kanban |
 
-> Los responsables de las HU se definen al iniciar el M3; la tabla vigente está en
+> Los responsables de las HU se definen al iniciar el M4; la tabla vigente está en
 > [`docs/curso/backlog.md`](./docs/curso/backlog.md#responsables).
 
 ## Flujo de trabajo
@@ -142,7 +142,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
   con los principios no negociables y se sincroniza en el mismo commit.
 - Spec Kit **v1.2.5** está inicializado en `.specify/`; los comandos viven en
   `.opencode/commands/` y `branch_template` es `feature/{number}-{slug}`.
-- Specs `001`–`013` en `specs/` (HU-001 a HU-012); HU-013 usará la `014`.
+- Cada HU tiene su carpeta en `specs/`; `make specs-check` valida la trazabilidad.
 
 ## Comandos
 
@@ -159,6 +159,8 @@ make app             # levanta API + interfaz con el modelo local
 make docker-build    # imagen backend CPU (HU-011)
 make docker-up       # compose: API + gRPC + SPA (modelo en PPE_MODELS_DIR)
 make docker-smoke    # inferencia REST+gRPC dentro del contenedor
+make deploy          # despliega un tag en el Droplet (TAG=<sha>)
+make verify          # comprueba /health y /health/ready del sitio
 make arch       # regenera el diagrama Archify (si está instalado)
 ```
 
@@ -202,7 +204,7 @@ make arch       # regenera el diagrama Archify (si está instalado)
 - **Entrenamiento:** CPU local no es viable; Colab/Kaggle solo como cómputo GPU,
   ejecutando un script versionado con `uv`, sin `.ipynb`.
 - **Test-first:** cada AC tiene una prueba pytest antes de la implementación; sin
-  umbral de cobertura. La entrega del M3 exige **≥ 400 pruebas unitarias**; el plan y
+  umbral de cobertura. La entrega del M4 exige **≥ 1.200 pruebas unitarias**; el plan y
   el reparto por integrante están en `docs/curso/PLAN-PRUEBAS.md`.
 - Pesos y dataset fuera de Git; artefacto con SHA256 y versión.
 - Toda inferencia registra semilla, versión del modelo, tamaño de imagen y umbrales.
