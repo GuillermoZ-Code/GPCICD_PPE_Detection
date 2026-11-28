@@ -21,7 +21,7 @@
 | **Rama principal** | `main` |
 | **Rama de integración** | `develop` |
 | **Módulo activo** | M4 (MLOps, CI/CD y despliegue) |
-| **Estado** | v1.0.0 publicada · v1.1.0 en preparación 🚧 |
+| **Estado** | v1.1.0 publicada y desplegada · M4 cerrado ✅ |
 
 ## 1. Equipo y roles
 
@@ -359,6 +359,7 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-11-25 | GitLab CI/CD con espejo de *push* desde GitHub | Pipeline del M4 sin GitLab Premium y con SHA trazable (ADR 0007) |
 | 2026-11-25 | Despliegue en Droplet con Docker Compose y Caddy | HTTPS automático en el entorno del curso, sin PaaS (ADR 0008) |
 | 2026-11-27 | Basic auth en Caddy y dominio gratuito `sslip.io` | Sitio protegido sin proveedor de identidad ni dominio propio (ADR 0013) |
+| 2026-11-28 | Release **v1.1.0** publicada y desplegada (`7aa74cc`); cierre del M4 | Accesibilidad, historial, MLflow opcional y entrega final documentada |
 
 ## 12. Roadmap M3–M4
 

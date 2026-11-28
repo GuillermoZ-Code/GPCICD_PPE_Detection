@@ -12,7 +12,7 @@
 - Credenciales y secretos gestionados con variables protegidas.
 - Despliegue en Droplet con Docker CPU, Caddy y HTTPS.
 - Healthcheck, logs y prueba funcional del sistema desplegado.
-- Informe de cumplimiento de la rúbrica y release v1.0.0.
+- Informe de cumplimiento de la rúbrica y release v1.1.0.
 
 ## 2. Sprint M4-S3 — 100 HU y 200 SP
 
@@ -48,7 +48,7 @@
 | `ep-12` | Herramientas para agentes: MCP de GitLab, `glab`, skills de GitLab y `frontend-design`, GGA y Engram. |
 | `ep-13` | Observabilidad y operación: liveness y readiness, `HEALTHCHECK`, logs JSON con `request_id`, verificación remota, carga y deriva. |
 | `ep-14` | Gobierno técnico y trazabilidad: `models.lock`, CODEOWNERS, tablero, matriz HU → issue → spec → PR, MLflow y riesgos. |
-| `ep-15` | Documentación y entrega: Model Card, Dataset Card, runbooks, README, release v1.0.0, retrospectiva e informe de rúbrica. |
+| `ep-15` | Documentación y entrega: Model Card, Dataset Card, runbooks, README, release v1.1.0, retrospectiva e informe de rúbrica. |
 
 ## 4. Entregables del M4
 
@@ -60,7 +60,7 @@
 - Secrets gestionados en variables protegidas y enmascaradas de GitLab CI/CD.
 - Healthcheck, logs técnicos sin secretos y una inferencia real contra el sistema
   desplegado.
-- Informe de cumplimiento de la rúbrica y release v1.0.0 `develop → main`.
+- Informe de cumplimiento de la rúbrica y release v1.1.0 `develop → main`.
 - Documentación de operación y recuperación (runbooks de despliegue y diagnóstico).
 
 ## 5. Requisito de pruebas
