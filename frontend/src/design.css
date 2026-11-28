@@ -55,6 +55,9 @@
   --accent-strong: #c79f00;
   --accent-2: #1f6b45;
   --on-accent: #14170f;
+  --success: #1f6b45;
+  --warning: #7a5a00;
+  --error: #b23d34;
   --blob-opacity: 0;
 }
 

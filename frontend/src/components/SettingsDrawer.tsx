@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+
 import {
   ACCENTS,
   BACKGROUNDS,
@@ -27,6 +29,15 @@ export function SettingsDrawer({
   onReset,
   onDownload,
 }: SettingsDrawerProps) {
+  const closeRef = useRef<HTMLButtonElement>(null)
+
+  // HU-080 AC-01: al abrir el diálogo, el foco entra por el primer control.
+  useEffect(() => {
+    if (open) {
+      closeRef.current?.focus()
+    }
+  }, [open])
+
   return (
     <>
       <div className={`backdrop${open ? ' is-open' : ''}`} onClick={onClose} aria-hidden="true" />
@@ -39,7 +50,13 @@ export function SettingsDrawer({
       >
         <header className="drawer__header">
           <h2>Configuración</h2>
-          <button className="icon-button" type="button" onClick={onClose} aria-label="Cerrar">
+          <button
+            ref={closeRef}
+            className="icon-button"
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar"
+          >
             ✕
           </button>
         </header>
