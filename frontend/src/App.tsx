@@ -3,7 +3,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createClient, type DetectorClient } from './api/client'
 import { AnnotatedCanvas } from './components/AnnotatedCanvas'
 import { Background } from './components/Background'
+import { DetectionLegend } from './components/DetectionLegend'
+import { DetectionSummary } from './components/DetectionSummary'
 import { DetectionTable } from './components/DetectionTable'
+import { FlowSteps, type FlowStep } from './components/FlowSteps'
 import { ModelInfo } from './components/ModelInfo'
 import { SettingsDrawer } from './components/SettingsDrawer'
 import { StatusBanner } from './components/StatusBanner'
@@ -99,6 +102,13 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
     analysis.status === 'ready'
       ? filterDetections(analysis.response.detections, settings)
       : []
+
+  let currentStep: FlowStep = 'select'
+  if (analysis.status === 'ready') {
+    currentStep = 'results'
+  } else if (analysis.status === 'loading' || (analysis.status === 'error' && Boolean(file))) {
+    currentStep = 'analyze'
+  }
 
   function updateSettings(patch: Partial<Settings>) {
     setSettings((current) => ({ ...current, ...patch }))
@@ -199,7 +209,7 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
           <span className="brand__name">Vision</span>
         </div>
         <div className="topbar__actions">
-          <span className="badge">GPCICD · M3</span>
+          <span className="badge">GPCICD · M4</span>
           <button
             className="icon-button"
             type="button"
@@ -240,6 +250,8 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
             reporta detecciones; no evalúa cumplimiento normativo.
           </p>
         </section>
+
+        <FlowSteps current={currentStep} />
 
         <div className="workspace">
           <UploadPanel
@@ -295,6 +307,14 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
                       {Math.round(slowAfterMs / 1000)} s.
                     </p>
                   )}
+                  <div
+                    className="progress"
+                    role="progressbar"
+                    aria-label="Progreso del análisis"
+                    aria-valuetext="Analizando imagen"
+                  >
+                    <span className="progress__bar" />
+                  </div>
                 </div>
                 <div className="skeleton" aria-hidden="true">
                   <span />
@@ -321,20 +341,11 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
 
             {analysis.status === 'ready' && (
               <div className="result">
-                <div className="stats">
-                  <div className="stat">
-                    <span>Detecciones</span>
-                    <strong>{visible.length}</strong>
-                  </div>
-                  <div className="stat">
-                    <span>Tiempo</span>
-                    <strong>{Math.round(analysis.response.elapsed_ms ?? 0)} ms</strong>
-                  </div>
-                  <div className="stat">
-                    <span>Modelo</span>
-                    <strong>{analysis.response.model_version ?? '—'}</strong>
-                  </div>
-                </div>
+                <DetectionSummary
+                  detections={visible}
+                  elapsedMs={analysis.response.elapsed_ms}
+                  modelVersion={analysis.response.model_version}
+                />
 
                 <AnnotatedCanvas
                   src={analysis.imageUrl}
@@ -361,6 +372,8 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
                       clase.
                     </StatusBanner>
                   )}
+
+                {visible.length > 0 && <DetectionLegend detections={visible} />}
 
                 {visible.length > 0 && (
                   <DetectionTable detections={visible} />
