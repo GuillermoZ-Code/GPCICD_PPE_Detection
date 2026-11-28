@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shutil
 import subprocess
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -23,6 +24,8 @@ ESTADO_PATH = REPO_ROOT / "docs" / "curso" / "ESTADO.md"
 AGENTS_PATH = REPO_ROOT / "AGENTS.md"
 GENERATED_START = "<!-- estado:inicio -->"
 GENERATED_END = "<!-- estado:fin -->"
+GITLAB_PROJECT = "educacional-group%2FGPCICD_PPE_Detection"
+GITLAB_BRANCH = "develop"
 
 HU_HEADING = re.compile(r"^### (HU-\d{3})\b")
 ANY_HEADING = re.compile(r"^#{1,4} ")
@@ -63,6 +66,15 @@ class Issue:
 
 
 @dataclass(frozen=True)
+class Pipeline:
+    """Último pipeline de GitLab de la rama de integración."""
+
+    status: str
+    sha: str
+    web_url: str
+
+
+@dataclass(frozen=True)
 class Report:
     """Foto del estado del proyecto en un momento dado."""
 
@@ -78,6 +90,8 @@ class Report:
     warnings: tuple[str, ...]
     git_ok: bool = True
     github_ok: bool = True
+    pipeline: Pipeline | None = None
+    gitlab_note: str | None = None
 
 
 def run(command: Sequence[str]) -> str | None:
@@ -128,6 +142,48 @@ def parse_backlog_sp(text: str) -> dict[str, int]:
         if match:
             points[current] = int(match.group(1))
     return points
+
+
+def parse_pipeline(output: str) -> Pipeline | None:
+    """Primer pipeline de la respuesta JSON de `glab api` (HU-106)."""
+    try:
+        data = json.loads(output)
+    except json.JSONDecodeError:
+        return None
+    if isinstance(data, dict):
+        data = [data]
+    if not isinstance(data, list) or not data:
+        return None
+    first = data[0]
+    if not isinstance(first, dict):
+        return None
+    status = first.get("status")
+    sha = first.get("sha")
+    web_url = first.get("web_url")
+    if not all(isinstance(value, str) and value for value in (status, sha, web_url)):
+        return None
+    return Pipeline(status=str(status), sha=str(sha), web_url=str(web_url))
+
+
+def _collect_gitlab(warnings: list[str]) -> tuple[Pipeline | None, str | None]:
+    """Último pipeline vía `glab`; si no está disponible, lo indica sin fallar."""
+    glab = shutil.which("glab")
+    if glab is None:
+        note = "glab no está instalado"
+        warnings.append(f"{note}; el estado del pipeline de GitLab no está disponible")
+        return None, note
+    output = run(
+        [glab, "api", f"projects/{GITLAB_PROJECT}/pipelines?ref={GITLAB_BRANCH}&per_page=1"]
+    )
+    if output is None:
+        note = "no se pudo consultar el pipeline de GitLab"
+        warnings.append(note)
+        return None, note
+    pipeline = parse_pipeline(output)
+    if pipeline is None:
+        note = "respuesta inesperada de glab"
+        warnings.append(note)
+    return pipeline, None
 
 
 def summarize_review(decision: str) -> str:
@@ -276,6 +332,7 @@ def collect() -> Report:
         warnings.append("no se pudieron leer los SP de `docs/curso/backlog.md`")
     prs, prs_ok = _collect_prs(warnings)
     issues, issues_ok = _collect_issues(points, warnings)
+    pipeline, gitlab_note = _collect_gitlab(warnings)
     return Report(
         generated_at=datetime.now(UTC),
         branch=str(git_state["branch"]),
@@ -289,6 +346,8 @@ def collect() -> Report:
         warnings=tuple(warnings),
         git_ok=bool(git_state["ok"]),
         github_ok=prs_ok and issues_ok,
+        pipeline=pipeline,
+        gitlab_note=gitlab_note,
     )
 
 
@@ -296,6 +355,17 @@ def _next_issue(report: Report) -> Issue | None:
     linked = {pr.issue for pr in report.prs if pr.issue is not None}
     pending = [issue for issue in report.issues if issue.number not in linked]
     return pending[0] if pending else None
+
+
+def _pipeline_line(report: Report) -> str:
+    """Línea del pipeline de GitLab para el bloque de estado (HU-106)."""
+    if report.pipeline is not None:
+        sha = report.pipeline.sha[:7]
+        return (
+            f"**GitLab:** `{GITLAB_BRANCH}` · {report.pipeline.status} · "
+            f"`{sha}` · {report.pipeline.web_url}"
+        )
+    return f"**GitLab:** no disponible ({report.gitlab_note or 'sin datos'})"
 
 
 def render(report: Report) -> str:
@@ -310,6 +380,7 @@ def render(report: Report) -> str:
         "",
         branch_line,
         f"**develop:** {report.develop}",
+        _pipeline_line(report),
         "",
         "**Últimos commits:**",
     ]
