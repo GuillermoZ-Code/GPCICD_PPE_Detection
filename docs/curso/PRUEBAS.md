@@ -34,6 +34,7 @@
 | tests/test_caddy.py | pytest | 10 | sin dueño |
 | tests/test_caddyfile_cors_ratelimit.py | pytest | 3 | sin dueño |
 | tests/test_calidad.py | pytest | 5 | sin dueño |
+| tests/test_capacidad.py | pytest | 10 | sin dueño |
 | tests/test_changelog.py | pytest | 4 | sin dueño |
 | tests/test_ci_docker_trivy.py | pytest | 8 | sin dueño |
 | tests/test_cierres_m4.py | pytest | 14 | sin dueño |
