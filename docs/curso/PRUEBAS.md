@@ -1,6 +1,6 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Generado:** 2026-11-28 03:43 UTC · `make pruebas`
+> **Generado:** 2026-11-28 03:57 UTC · `make pruebas`
 > **Requisito del curso:** ≥ 400 pruebas unitarias (mínimo, no techo).
 > **Fuente:** casos recolectados por pytest y por Vitest; no se edita a mano.
 
@@ -8,9 +8,9 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend | pytest | 110 | 1067 | `make test` |
-| Frontend | Vitest | 13 | 101 | `make frontend-test` |
-| **Total** | | **123** | **1168** | `make check` + `make frontend-check` |
+| Backend | pytest | 113 | 1098 | `make test` |
+| Frontend | Vitest | 15 | 121 | `make frontend-test` |
+| **Total** | | **128** | **1219** | `make check` + `make frontend-check` |
 
 ## 2. Desglose por archivo
 
@@ -80,9 +80,11 @@
 | tests/test_launcher.py | pytest | 5 | sin dueño |
 | tests/test_load_test.py | pytest | 16 | sin dueño |
 | tests/test_make_deploy.py | pytest | 6 | sin dueño |
+| tests/test_manual_usuario_spa.py | pytest | 4 | sin dueño |
 | tests/test_metrics.py | pytest | 35 | sin dueño |
 | tests/test_metrics_golden.py | pytest | 9 | sin dueño |
 | tests/test_mirror_gitlab.py | pytest | 13 | sin dueño |
+| tests/test_mlflow_droplet.py | pytest | 17 | sin dueño |
 | tests/test_model_card_v2.py | pytest | 11 | sin dueño |
 | tests/test_model_manifest.py | pytest | 10 | sin dueño |
 | tests/test_model_publish.py | pytest | 8 | sin dueño |
@@ -127,7 +129,9 @@
 | tests/test_tracking_report.py | pytest | 7 | Jesús Riveros |
 | tests/test_training.py | pytest | 15 | sin dueño |
 | tests/test_yolo_detector.py | pytest | 20 | sin dueño |
+| frontend/src/App.a11y.test.tsx | vitest | 8 | Guillermo Zabala |
 | frontend/src/App.flow.test.tsx | vitest | 8 | Guillermo Zabala |
+| frontend/src/App.history.test.tsx | vitest | 12 | Guillermo Zabala |
 | frontend/src/App.states.test.tsx | vitest | 5 | Guillermo Zabala |
 | frontend/src/App.test.tsx | vitest | 16 | Guillermo Zabala |
 | frontend/src/api/client.test.ts | vitest | 19 | Guillermo Zabala |
@@ -146,10 +150,10 @@
 | Integrante | pytest | Vitest | Total |
 |---|---:|---:|---:|
 | Eliana Cardona | 110 | 0 | 110 |
-| Guillermo Zabala | 17 | 101 | 118 |
+| Guillermo Zabala | 17 | 121 | 138 |
 | Hernán Estrada | 40 | 0 | 40 |
 | Jesús Riveros | 159 | 0 | 159 |
-| sin dueño | 741 | 0 | 741 |
+| sin dueño | 772 | 0 | 772 |
 
 ## 4. Cómo se actualiza
 
