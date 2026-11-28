@@ -192,3 +192,42 @@ artefactos.
 | `database is locked` | Cierra la UI u otro proceso que use `mlflow.db` |
 | La UI no ve los runs | Usa el mismo `--backend-store-uri` con el que registraste |
 | `No se encontró el run` | Revisa el `run_id` y el backend; los IDs son locales |
+
+## 9. MLflow en el Droplet (HU-110)
+
+El perfil `mlflow` de `compose.prod.yml` levanta MLflow detrás de Caddy, con la misma
+autenticación básica del sitio y el backend persistente en el host.
+
+### 9.1 Variables
+
+| Variable | Uso | Por omisión |
+|---|---|---|
+| `PPE_MLFLOW_IMAGE` | Imagen de MLflow | `ghcr.io/mlflow/mlflow:v3.18.0` |
+| `PPE_MLFLOW_DATA` | Carpeta del host para SQLite y artefactos | `/opt/ppe/mlflow` |
+| `PPE_AUTH_HASH` | Hash bcrypt del usuario `demo` (ya lo usa Caddy) | obligatorio |
+
+Ningún valor sensible se versiona: el hash vive en el `.env` del servidor y el
+`Caddyfile` solo referencia `{env.PPE_AUTH_HASH}`.
+
+### 9.2 Arranque
+
+```bash
+docker compose -f compose.prod.yml --profile mlflow up -d mlflow
+```
+
+La UI queda en `https://<dominio>/mlflow` y pide las mismas credenciales que el sitio.
+Sin el perfil, `/mlflow` responde 502 y el resto del sistema no se ve afectado.
+
+### 9.3 Persistencia y respaldo
+
+- La base SQLite (`mlflow.db`) y los artefactos (`artifacts/`) viven en
+  `${PPE_MLFLOW_DATA}`, fuera del contenedor.
+- Respaldo: `tar -czf mlflow-$(date +%F).tgz -C /opt/ppe mlflow`.
+- Los pesos y el dataset siguen fuera de Git y del contenedor.
+
+### 9.4 Seguridad
+
+- Sin puerto publicado: solo Caddy alcanza `mlflow:5000` por la red interna.
+- Basic auth en el proxy; MLflow no expone autenticación propia.
+- Para rotar la contraseña, se regenera el hash con `caddy hash-password` y se recrea
+  el contenedor `caddy` (ADR 0013).

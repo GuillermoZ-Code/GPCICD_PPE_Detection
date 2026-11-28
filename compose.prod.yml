@@ -15,6 +15,8 @@
 #   PPE_WEB_IMAGE   registry.../web:<tag>
 #   PPE_DOMAIN      dominio público del equipo (por ejemplo ppe.midominio.net)
 #   PPE_CADDY_IMAGE imagen Caddy con rate_limit (Dockerfile: docker/Dockerfile.caddy)
+#   PPE_MLFLOW_IMAGE imagen de MLflow para el perfil `mlflow` (opcional)
+#   PPE_MLFLOW_DATA  carpeta del host para SQLite y artefactos (opcional)
 # Opcionales:
 #   PPE_MODELS_DIR  carpeta del host con best.pt (por omisión /opt/ppe/models)
 #   PPE_CORS_ORIGIN origen permitido por CORS (por omisión https://PPE_DOMAIN)
@@ -52,6 +54,34 @@ services:
     restart: unless-stopped
     expose:
       - "80"
+
+  mlflow:
+    # HU-110 — MLflow bajo demanda (perfil `mlflow`): backend persistente en el host,
+    # basic auth del sitio en Caddy y sin puerto publicado.
+    image: ${PPE_MLFLOW_IMAGE:-ghcr.io/mlflow/mlflow:v3.18.0}
+    profiles: ["mlflow"]
+    restart: unless-stopped
+    command:
+      - server
+      - --host=0.0.0.0
+      - --port=5000
+      - --backend-store-uri=sqlite:////mlflow/mlflow.db
+      - --default-artifact-root=/mlflow/artifacts
+      - --static-prefix=/mlflow
+    volumes:
+      - ${PPE_MLFLOW_DATA:-/opt/ppe/mlflow}:/mlflow
+    expose:
+      - "5000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health')
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   caddy:
     # HU-054 — imagen con el módulo rate_limit, construida con docker/Dockerfile.caddy.

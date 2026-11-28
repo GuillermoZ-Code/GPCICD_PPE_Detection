@@ -73,6 +73,14 @@
 		reverse_proxy api:8000
 	}
 
+	# HU-110 — MLflow bajo /mlflow con la misma autenticación básica del sitio.
+	# No se usa handle_path: MLflow arranca con --static-prefix /mlflow y espera
+	# el prefijo en la petición.
+	handle /mlflow/* {
+		import protegido
+		reverse_proxy mlflow:5000
+	}
+
 	handle {
 		import protegido
 		reverse_proxy web:80
