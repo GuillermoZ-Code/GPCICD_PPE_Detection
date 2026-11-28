@@ -1,6 +1,6 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Generado:** 2026-11-28 03:09 UTC · `make pruebas`
+> **Generado:** 2026-11-28 03:28 UTC · `make pruebas`
 > **Requisito del curso:** ≥ 400 pruebas unitarias (mínimo, no techo).
 > **Fuente:** casos recolectados por pytest y por Vitest; no se edita a mano.
 
@@ -8,9 +8,9 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend | pytest | 106 | 1023 | `make test` |
+| Backend | pytest | 108 | 1047 | `make test` |
 | Frontend | Vitest | 13 | 101 | `make frontend-test` |
-| **Total** | | **119** | **1124** | `make check` + `make frontend-check` |
+| **Total** | | **121** | **1148** | `make check` + `make frontend-check` |
 
 ## 2. Desglose por archivo
 
@@ -30,6 +30,7 @@
 | tests/test_arquitectura_despliegue.py | pytest | 4 | sin dueño |
 | tests/test_artifact_fetch.py | pytest | 8 | sin dueño |
 | tests/test_backlog_mirror.py | pytest | 4 | sin dueño |
+| tests/test_board_m4.py | pytest | 12 | sin dueño |
 | tests/test_caddy.py | pytest | 10 | sin dueño |
 | tests/test_caddyfile_cors_ratelimit.py | pytest | 3 | sin dueño |
 | tests/test_calidad.py | pytest | 5 | sin dueño |
@@ -54,6 +55,7 @@
 | tests/test_engram_config.py | pytest | 8 | sin dueño |
 | tests/test_engram_protocol.py | pytest | 7 | sin dueño |
 | tests/test_estado.py | pytest | 10 | Jesús Riveros |
+| tests/test_estado_gitlab.py | pytest | 12 | Jesús Riveros |
 | tests/test_estado_tools.py | pytest | 10 | Jesús Riveros |
 | tests/test_evaluation.py | pytest | 9 | Hernán Estrada |
 | tests/test_evaluation_artifacts.py | pytest | 5 | Hernán Estrada |
@@ -143,8 +145,8 @@
 | Eliana Cardona | 110 | 0 | 110 |
 | Guillermo Zabala | 17 | 101 | 118 |
 | Hernán Estrada | 40 | 0 | 40 |
-| Jesús Riveros | 147 | 0 | 147 |
-| sin dueño | 709 | 0 | 709 |
+| Jesús Riveros | 159 | 0 | 159 |
+| sin dueño | 721 | 0 | 721 |
 
 ## 4. Cómo se actualiza
 
