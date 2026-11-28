@@ -1,7 +1,7 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Generado:** 2026-11-28 04:00 UTC · `make pruebas`
-> **Requisito del curso:** ≥ 400 pruebas unitarias (mínimo, no techo).
+> **Generado:** 2026-11-28 04:31 UTC · `make pruebas`
+> **Requisito del curso:** ≥ 1.200 pruebas unitarias (mínimo, no techo).
 > **Fuente:** casos recolectados por pytest y por Vitest; no se edita a mano.
 
 ## 1. Resumen

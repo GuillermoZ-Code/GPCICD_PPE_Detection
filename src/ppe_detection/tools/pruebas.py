@@ -112,7 +112,7 @@ def render_report(rows: list[ReportRow], generated_at: str | None = None) -> str
         "# Inventario de pruebas — GPCICD PPE Detection",
         "",
         f"> **Generado:** {stamp} · `make pruebas`",
-        "> **Requisito del curso:** ≥ 400 pruebas unitarias (mínimo, no techo).",
+        "> **Requisito del curso:** ≥ 1.200 pruebas unitarias (mínimo, no techo).",
         "> **Fuente:** casos recolectados por pytest y por Vitest; no se edita a mano.",
         "",
         "## 1. Resumen",
