@@ -1,6 +1,6 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Generado:** 2026-11-28 03:31 UTC · `make pruebas`
+> **Generado:** 2026-11-28 03:38 UTC · `make pruebas`
 > **Requisito del curso:** ≥ 400 pruebas unitarias (mínimo, no techo).
 > **Fuente:** casos recolectados por pytest y por Vitest; no se edita a mano.
 
@@ -8,9 +8,9 @@
 
 | Suite | Herramienta | Archivos | Pruebas | Comando |
 |-------|-------------|---------:|--------:|---------|
-| Backend | pytest | 109 | 1057 | `make test` |
+| Backend | pytest | 110 | 1067 | `make test` |
 | Frontend | Vitest | 13 | 101 | `make frontend-test` |
-| **Total** | | **122** | **1158** | `make check` + `make frontend-check` |
+| **Total** | | **123** | **1168** | `make check` + `make frontend-check` |
 
 ## 2. Desglose por archivo
 
@@ -34,6 +34,7 @@
 | tests/test_caddy.py | pytest | 10 | sin dueño |
 | tests/test_caddyfile_cors_ratelimit.py | pytest | 3 | sin dueño |
 | tests/test_calidad.py | pytest | 5 | sin dueño |
+| tests/test_capacidad.py | pytest | 10 | sin dueño |
 | tests/test_changelog.py | pytest | 4 | sin dueño |
 | tests/test_ci_docker_trivy.py | pytest | 8 | sin dueño |
 | tests/test_cierres_m4.py | pytest | 14 | sin dueño |
@@ -147,7 +148,7 @@
 | Guillermo Zabala | 17 | 101 | 118 |
 | Hernán Estrada | 40 | 0 | 40 |
 | Jesús Riveros | 159 | 0 | 159 |
-| sin dueño | 731 | 0 | 731 |
+| sin dueño | 741 | 0 | 741 |
 
 ## 4. Cómo se actualiza
 

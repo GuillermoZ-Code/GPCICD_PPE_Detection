@@ -82,4 +82,19 @@ def deviation(planned: int, delivered: int) -> float:
     return round((delivered - planned) / planned * 100, 1)
 
 
-__all__ = ["Closed", "Point", "SprintError", "burndown", "deviation", "velocity_by_person"]
+def capacity(delivered_sp: int, people: int, days: int) -> float:
+    """SP entregados por persona y día (capacidad real del equipo)."""
+    if people <= 0 or days <= 0:
+        raise SprintError("people y days deben ser positivos")
+    return round(delivered_sp / (people * days), 2)
+
+
+__all__ = [
+    "Closed",
+    "Point",
+    "SprintError",
+    "burndown",
+    "capacity",
+    "deviation",
+    "velocity_by_person",
+]
