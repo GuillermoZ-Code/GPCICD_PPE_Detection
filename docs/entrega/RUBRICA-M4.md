@@ -1,7 +1,7 @@
 # Cumplimiento de la rúbrica — M4
 
-> **Generado:** 2026-11-24 02:54 UTC · `make rubrica-write`
-> **Ítems:** 14 · cumplidos: 12 · pendientes: 2
+> **Generado:** 2026-11-28 04:26 UTC · `make rubrica-write`
+> **Ítems:** 14 · cumplidos: 14 · pendientes: 0
 > **Fecha de corte:** 27/11/2026
 
 | ID | Área | Criterio | Evidencia | Responsable | Estado |
@@ -18,8 +18,8 @@
 | R-10 | Interfaz | SPA React operativa | `frontend/src/App.tsx` | Guillermo | ✔ |
 | R-11 | Operación | Runbook de Docker | `docs/operacion/docker.md` | Eliana | ✔ |
 | R-12 | Documentación | Mapa de documentación y glosario | `docs/README.md` | Jesús | ✔ |
-| R-13 | Riesgos | Registro de riesgos del cierre | `docs/curso/M4/RIESGOS.md` | Jesús | ✘ |
-| R-14 | Equipo | Retrospectiva y acciones | `docs/curso/M4/RETRO.md` | Jesús | ✘ |
+| R-13 | Riesgos | Registro de riesgos del cierre | `docs/curso/M4/RIESGOS.md` | Jesús | ✔ |
+| R-14 | Equipo | Retrospectiva y acciones | `docs/curso/M4/RETRO.md` | Jesús | ✔ |
 
 ## Criterio
 

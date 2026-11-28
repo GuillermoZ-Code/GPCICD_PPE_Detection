@@ -69,3 +69,5 @@ Salida esperada de `/health`:
 | Suite ≥ 1.200 | Equipo | Se completa con las HU abiertas (#111, #114, #136, #144, #166) |
 | #166 MLflow en el Droplet | Jesús | 5 SP; requiere acceso SSH |
 | Tag posterior si cambia `main` | Guillermo | Publicar `v1.0.1` con el cierre de pruebas |
+
+> **Actualización 2026-11-28:** la suite cerró con **1.229 pruebas** (1.108 pytest + 121 Vitest); #111, #114, #136, #144 y #166 están cerradas. El cierre se publica como **v1.1.0**.

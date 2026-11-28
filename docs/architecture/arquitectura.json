@@ -84,7 +84,7 @@
       "id": "mlflow",
       "type": "database",
       "label": "MLflow",
-      "sublabel": "runs / métricas",
+      "sublabel": "runs / métricas · Droplet",
       "pos": [1180, 130],
       "size": [120, 60]
     },
@@ -186,6 +186,12 @@
       "from": "caddy",
       "to": "api",
       "label": "/api/* · /health"
+    },
+    {
+      "id": "caddy-to-mlflow",
+      "from": "caddy",
+      "to": "mlflow",
+      "label": "/mlflow · basic auth"
     },
     {
       "id": "api-to-validate",
@@ -290,7 +296,8 @@
       "items": [
         "GitHub → GitLab → Registry → Droplet",
         "Tag = CI_COMMIT_SHORT_SHA (8 caracteres)",
-        "deploy.sh con rollback por tag"
+        "deploy.sh con rollback por tag",
+        "MLflow opcional bajo /mlflow con basic auth"
       ]
     },
     {

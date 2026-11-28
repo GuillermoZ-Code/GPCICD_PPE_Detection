@@ -18,15 +18,15 @@ Si Archify está en otra ruta, usa `ARCHIFY_BIN=/ruta/al/archify.mjs make arch`.
 
 ## Lectura
 
-El diagrama muestra el flujo objetivo del M3–M4:
+El diagrama muestra el flujo objetivo del M4:
 
 ```text
 Imagen → validación → preprocesamiento → YOLO → postprocesamiento
        → FastAPI / gRPC → SPA React
 ```
 
-Incluye el artefacto del modelo, MLflow, Docker CPU, CI/CD hacia Droplet y
-health/logs. Las tarjetas resumen el contrato, el modelo, la operación y los límites
+Incluye el artefacto del modelo, Docker CPU, CI/CD hacia Droplet y health/logs;
+MLflow aparece como servicio opcional del Droplet bajo `/mlflow`. Las tarjetas resumen el contrato, el modelo, la operación y los límites
 del dataset.
 
 ## Flujo de despliegue (HU-086)
@@ -41,6 +41,8 @@ GitHub → GitLab CI → Container Registry → Droplet → Caddy → usuario
   API REST (interno `:8000`); gRPC permanece interno en `:9000`.
 - Caddy publica `80/443` con TLS automático y basic auth; `/health` queda abierto para
   el smoke y `/health/ready` se consulta con credenciales.
+- MLflow se levanta con el perfil `mlflow` y queda bajo `/mlflow` con la misma
+  basic auth; no publica el puerto 5000.
 - Los secretos se nombran, nunca se versionan: `SSH_KEY`, `DOCKERHUB_TOKEN` y
   `PPE_AUTH_HASH` (en `/opt/ppe/.env`). El detalle operativo está en
   [`../operacion/despliegue.md`](../operacion/despliegue.md).
@@ -53,5 +55,5 @@ artefacto.
 
 - Es una **arquitectura objetivo**, no una implementación terminada.
 - Las clases son las seis del dataset; no hay `person` ni `no-EPP`.
-- El detector es nivel 3 (YOLO nano/small); la variante exacta se confirma en SPI-01.
+- El detector es YOLO26n + ONNX 640 (ADR 0009); YOLO11s queda como rollback.
 - El HTML es un artefacto generado; los cambios van en el JSON.

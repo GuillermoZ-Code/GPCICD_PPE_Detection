@@ -21,7 +21,7 @@
 | **Rama principal** | `main` |
 | **Rama de integración** | `develop` |
 | **Módulo activo** | M4 (MLOps, CI/CD y despliegue) |
-| **Estado** | Release v1.0.0 en preparación 🚧 |
+| **Estado** | v1.0.0 publicada · v1.1.0 en preparación 🚧 |
 
 ## 1. Equipo y roles
 
