@@ -88,6 +88,20 @@ la API por HTTP; el detector nunca vive dentro del cliente.
 > La API pública usa basic auth en Caddy; `/health` queda abierto para el smoke y el
 > monitoreo. El modelo se monta desde fuera de Git y se verifica por SHA256.
 
+## Enlaces públicos del M4
+
+| Recurso | Enlace | Estado |
+|:---|:---|:---|
+| Código fuente (HTTPS) | [GuillermoZ-Code/GPCICD_PPE_Detection](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection) | Público |
+| Pipeline espejo | [Pipeline de GitLab](https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/pipelines) | Activo (HU-065) |
+| Registry de imágenes | [Container Registry del proyecto](https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/container_registry) | Sin imágenes publicadas (HU-068) |
+| API pública del modelo | `<URL_PUBLICA>` | Plantilla: el Space de HU-053 aún no se crea |
+| Gobernanza del proyecto | [`CONSTITUTION.md`](./CONSTITUTION.md) | Público |
+
+> Los marcadores `<URL_PUBLICA>` y `<SPACE_URL>` son plantillas del contrato MaaS, no
+> dominios publicados: se sustituyen por la URL real cuando HU-053 y HU-068 terminen.
+> El badge de Docker Hub también queda marcado como **pendiente** hasta HU-068.
+
 ## Inicio rápido
 
 ```bash
