@@ -12,10 +12,10 @@
 Sprint activo: **M4-S3** (19/11 → 28/11/2026). Sustentación del M4: 28/11/2026.
 
 <!-- estado:inicio -->
-**Actualizado:** 2026-11-28 04:31 UTC
-- **Rama:** `docs/115-estado-jesus` · +0/-0 vs `origin/develop`
+**Actualizado:** 2026-11-28 04:47 UTC
+- **Rama:** `develop` · +0/-0 vs `origin/develop`
 - **Issues abiertas:** 0 · 0 SP
-- **En vuelo:** #280 docs(cierre): actualizar arquitectura, rubrica y release v1.1.0 (PR, revisión: —)
+- **En vuelo:** ninguna
 - **Siguiente:** sin issues abiertas
 <!-- estado:fin -->
 

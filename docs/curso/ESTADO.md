@@ -9,26 +9,29 @@
 > antes de actuar.
 
 <!-- estado:inicio -->
-**Generado:** 2026-11-28 04:31 UTC
+**Generado:** 2026-11-28 04:47 UTC
 
-**Rama:** `docs/115-estado-jesus` · 4 archivo(s) sin commit · +0/-0 vs `origin/develop`
-**develop:** 876ab46 (2026-11-27)
-**GitLab:** `develop` · manual · `876ab46` · https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/pipelines/3125800400
+**Rama:** `develop` · limpia · +0/-0 vs `origin/develop`
+**develop:** ec620d3 (2026-11-27)
+**GitLab:** no disponible (glab no está instalado)
 
 **Últimos commits:**
+- `ec620d3 Merge remote-tracking branch 'origin/main' into develop`
+- `c891196 Merge pull request #281 from GuillermoZ-Code/docs/115-estado-jesus`
+- `4f8895a docs(cierre): actualizar arquitectura, rubrica y release v1.1.0 (#280)`
+- `c5c3d6c docs(estado): cerrar backlog, estado y pruebas del M4`
 - `876ab46 Merge pull request #279 from GuillermoZ-Code/docs/059-hu-055-runbook`
-- `477ce68 Merge pull request #278 from GuillermoZ-Code/docs/113-changelog-v1.1.0`
-- `aa9864c test(runbook): evitar la cadena de clave privada en la prueba`
-- `6f8c78d docs(release): incluir HU-110 en el changelog v1.1.0`
-- `07d7372 Merge remote-tracking branch 'origin/develop' into docs/113-changelog-v1.1.0`
 
-**Pull requests abiertas (1):**
-- #280 docs(cierre): actualizar arquitectura, rubrica y release v1.1.0 → `develop` · revisión: — · CI: ok
+**Pull requests abiertas (0):**
+- ninguna
 
 **Issues abiertas: 0 · 0 SP**
 
 **En revisión:** ninguna
 **Siguiente por orden:** sin issues abiertas
+
+**Avisos:**
+- glab no está instalado; el estado del pipeline de GitLab no está disponible
 <!-- estado:fin -->
 
 ## Bitácora de sesiones
@@ -186,3 +189,13 @@
 - **Hecho:** v1.0.0 publicada y desplegada; cerradas #111, #114, #136, #144, #165, #166 y #167; tablero 113/113 Done; rúbrica 14/14; Archify actualizado con MLflow; backlog 113 cerradas; PRUEBAS 1.229.
 - **En vuelo:** PR #280 (cierre documental) y release v1.1.0 pendiente de aprobación, tag y deploy.
 - **Siguiente:** fusionar #280, crear PR v1.1.0, tag y verificar el pipeline de main.
+
+### 2026-11-28 · Jesús (OpenCode) — release v1.1.0
+
+- **Hecho:** tag `v1.1.0` sobre `7aa74cc` y release de GitHub publicada; checklist
+  `docs/entrega/RELEASE-V1.1.0.md` actualizado; `ESTADO.md` y `AGENTS.md` §0
+  regenerados; 0 issues y 0 PRs abiertas; 1.229 pruebas.
+- **En vuelo:** ninguna PR; quedan dos verificaciones de GitLab (pipeline de `main` e
+  imágenes con el tag) y el arranque del perfil `mlflow`, que necesitan acceso.
+- **Siguiente:** verificar el pipeline de GitLab en `main` y desplegar `mlflow` si hay
+  SSH; el resto de la entrega está cerrado.
