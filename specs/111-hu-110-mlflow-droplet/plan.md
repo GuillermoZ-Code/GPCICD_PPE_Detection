@@ -22,6 +22,9 @@ autenticación básica del sitio (ADR 0013).
 
 - **Perfil `mlflow`**: el servicio no arranca por omisión; se habilita con
   `--profile mlflow`.
+- **Sin ENTRYPOINT**: la imagen `ghcr.io/mlflow/mlflow:v3.18.0` no define `ENTRYPOINT`
+  (su `Cmd` es `python3`), así que el `command` debe empezar por `mlflow server ...`.
+  Una prueba lo fija para evitar la regresión.
 - **`--static-prefix /mlflow`**: MLflow genera URLs con el prefijo; Caddy usa `handle`
   (no `handle_path`) para no quitarlo.
 - **SQLite en el host**: suficiente para una demo; el volumen permite respaldar con

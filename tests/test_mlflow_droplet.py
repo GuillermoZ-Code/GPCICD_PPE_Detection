@@ -89,6 +89,26 @@ def test_mlflow_uses_static_prefix() -> None:
     assert "--static-prefix=/mlflow" in block
 
 
+def test_mlflow_command_invokes_the_cli() -> None:
+    """La imagen no trae ENTRYPOINT: el argv debe empezar por `mlflow server`."""
+    # Arrange
+    tokens: list[str] = []
+    in_command = False
+    for line in _service("mlflow").splitlines():
+        stripped = line.strip()
+        if stripped == "command:":
+            in_command = True
+            continue
+        if not in_command:
+            continue
+        if not stripped.startswith("- "):
+            break
+        tokens.append(stripped[2:])
+
+    # Act / Assert
+    assert tokens[:2] == ["mlflow", "server"]
+
+
 def test_mlflow_restarts() -> None:
     # Act / Assert
     assert "restart: unless-stopped" in _service("mlflow")

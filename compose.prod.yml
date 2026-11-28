@@ -61,7 +61,9 @@ services:
     image: ${PPE_MLFLOW_IMAGE:-ghcr.io/mlflow/mlflow:v3.18.0}
     profiles: ["mlflow"]
     restart: unless-stopped
+    # La imagen no trae ENTRYPOINT: el argv debe invocar la CLI `mlflow`.
     command:
+      - mlflow
       - server
       - --host=0.0.0.0
       - --port=5000
