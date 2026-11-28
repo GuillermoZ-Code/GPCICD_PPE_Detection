@@ -45,3 +45,14 @@ repos:
     rev: 0.12.2
     hooks:
       - id: uv-lock
+
+  # --- GGA: revisión con IA, opcional (HU-075) ---
+  # El wrapper termina con 0 si GGA no está instalado; no bloquea al equipo.
+  - repo: local
+    hooks:
+      - id: gga-optional
+        name: GGA (opcional)
+        entry: uv run python -m ppe_detection.tools.gga_hook
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]

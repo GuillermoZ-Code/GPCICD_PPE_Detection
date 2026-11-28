@@ -14,6 +14,7 @@ nueva se agrega con su propio número; no se reescribe la historia.
 | [0007](0007-gitlab-ci-espejo.md) | GitLab CI/CD con espejo de *push* desde GitHub (sin Premium) |
 | [0008](0008-droplet-caddy.md) | Despliegue en Droplet con Docker Compose y Caddy (HTTPS automático) |
 | [0009](0009-modelo-productivo.md) | Modelo productivo: YOLO26n fine-tuneado + ONNX 640; YOLO11s como rollback |
+| [0010](0010-exposicion-grpc.md) | gRPC interno en el Droplet; sin publicación de 9000 ni ruta `/grpc` |
 | [0011](0011-memoria-agentes.md) | Memoria local de agentes con Engram, subordinada al repositorio |
 | [0012](0012-codeowners-checks-obligatorios.md) | CODEOWNERS generado y checks obligatorios (actualiza 0004) |
 | [0013](0013-basic-auth-y-dominio.md) | Basic auth del sitio en Caddy y dominio gratuito `sslip.io` |
