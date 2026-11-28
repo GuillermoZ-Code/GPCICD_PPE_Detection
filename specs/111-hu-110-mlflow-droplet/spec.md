@@ -1,67 +1,83 @@
-# Feature Specification: HU-110 — MLflow en el Droplet (decisión de alcance)
+# Feature Specification: HU-110 — MLflow accesible en el Droplet con autenticación
 
-**Feature Branch**: No aplica (HU cerrada por alcance)
+**Feature Branch**: `feature/111-hu-110-mlflow-droplet`
 
-**Created**: 2026-11-28
+**Created**: 2026-11-27
 
-**Status**: Cerrada por alcance
+**Status**: En implementación
 
-**Input**: Issue #166 — «HU-110 — MLflow accesible en el Droplet con autenticación».
-Asignada a Jesús (`jesusriverosUAO`), épica `ep-14`, P2 · ola 3, 5 SP, 16 pruebas
-objetivo. Depende de HU-071.
+**Input**: Issue #166 — «MLflow accesible en el Droplet con autenticación». Asignada a
+Jesús (`jesusriverosUAO`), épica `ep-14`, P2, Ola 3, 5 SP, 16 pruebas objetivo. Depende
+de HU-071 (`compose.prod.yml`), cerrada. Entregable: `compose.prod.yml` (perfil
+`mlflow`) + `docs/operacion/mlflow.md`.
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Decidir si MLflow se publica (Priority: P2)
+### User Story 1 - Mostrar los experimentos en la sustentación (Priority: P2)
 
-Como equipo, queremos decidir si MLflow se expone en el Droplet o se mantiene local,
-para no añadir superficie, credenciales y carga a la entrega sin un requisito de la
-rúbrica.
+Como evaluador, quiero consultar MLflow en una URL protegida, para mostrar los
+experimentos del proyecto sin abrir puertos adicionales.
 
-**Acceptance Scenarios**:
+**Why this priority**: el M4 exige evidencia de experimentos; publicar MLflow sin
+autenticación expondría datos y ampliaría la superficie de ataque.
 
-1. **AC-01**: **Dado** el despliegue, **Cuando** se revisa `compose.prod.yml` y el
-   `Caddyfile`, **Entonces** MLflow **no** aparece como servicio ni como ruta pública;
-   se usa en local con el extra `tracking` (HU-009).
-2. **AC-02**: **Dado** el repositorio, **Cuando** se revisan los archivos de despliegue,
-   **Entonces** no hay credenciales nuevas ni un backend persistente para MLflow.
-3. **AC-03**: **Dada** la decisión, **Cuando** se ejecutan las pruebas, **Entonces** una
-   prueba estructural verifica la ausencia de MLflow en producción y la documentación
-   del alcance en `docs/operacion/mlflow.md`.
+**Independent Test**: levantar `docker compose -f compose.prod.yml --profile mlflow up -d
+mlflow` y abrir `https://<dominio>/mlflow`; debe pedir las credenciales del sitio y
+mostrar los runs. Ejecutar `uv run pytest tests/test_mlflow_droplet.py`.
+
+**Acceptance Scenarios** (AC de la issue #166):
+
+1. **AC-01**: **Dado** el despliegue, **Cuando** se abre `/mlflow`, **Entonces** Caddy
+   aplica basic auth y enruta al servicio.
+2. **AC-02**: **Dado** el contenedor, **Cuando** se recrea, **Entonces** la base y los
+   artefactos sobreviven en el host.
+3. **AC-03**: **Dado** el repositorio, **Cuando** se revisa, **Entonces** no hay
+   credenciales: solo variables y el hash del `.env`.
 
 ### Edge Cases
 
-- MLflow local sigue disponible para evaluación y comparación de runs; no se elimina.
-- Si en el futuro se requiere MLflow público, se abre una HU nueva con autenticación,
-  almacenamiento persistente y presupuesto de CPU/RAM.
-- El Droplet de 1 vCPU no debe cargar un servicio adicional durante la sustentación.
+- **Perfil apagado**: `/mlflow` devuelve 502; el resto del sitio sigue funcionando.
+- **Prefijo**: MLflow usa `--static-prefix /mlflow`; Caddy no debe quitar el prefijo.
+- **Sin volumen**: si `PPE_MLFLOW_DATA` no existe, Docker crea la carpeta del host.
+- **Rotación de contraseña**: se regenera el hash y se recrea Caddy (ADR 0013).
 
 ## Requirements *(mandatory)*
 
-- **FR-001**: `compose.prod.yml` MUST NOT declarar un servicio `mlflow`.
-- **FR-002**: `docker/Caddyfile` MUST NOT publicar una ruta `/mlflow`.
-- **FR-003**: `docs/operacion/mlflow.md` MUST documentar que MLflow es local (HU-009).
-- **FR-004**: La decisión MUST quedar registrada en esta spec y en el cierre de #166.
-- **FR-005**: Al menos una prueba pytest MUST referenciar HU-110 y verificar la decisión.
+### Functional Requirements
+
+- **FR-001**: MUST existir un servicio `mlflow` con `profiles: ["mlflow"]`.
+- **FR-002**: MUST usar `--static-prefix /mlflow` y no publicar el puerto 5000.
+- **FR-003**: MUST persistir SQLite y artefactos en `PPE_MLFLOW_DATA`.
+- **FR-004**: Caddy MUST enrutar `/mlflow/*` con `import protegido`.
+- **FR-005**: El repo MUST NOT contener contraseñas ni hashes reales.
+- **FR-006**: El runbook MUST documentar variables, arranque, respaldo y seguridad.
+
+### Key Entities
+
+- **Servicio mlflow**: imagen, comando, volumen y healthcheck.
+- **Ruta /mlflow**: bloque de Caddy con autenticación.
 
 ## Acceptance → Test
 
 | AC | Evidencia prevista |
 |----|--------------------|
-| AC-01 MLflow no se publica | `tests/test_mlflow_droplet_scope.py::test_ac01_mlflow_is_not_a_production_service` |
-| AC-02 Sin credenciales nuevas | `tests/test_mlflow_droplet_scope.py::test_ac02_no_new_deployment_secrets` |
-| AC-03 Decisión documentada | `tests/test_mlflow_droplet_scope.py::test_ac03_scope_is_documented` |
+| AC-01 Caddy con auth | `tests/test_mlflow_droplet.py::test_caddy_routes_mlflow_with_auth`, `::test_caddy_mlflow_proxies_to_service` |
+| AC-02 Persistencia | `tests/test_mlflow_droplet.py::test_mlflow_keeps_backend_store_on_host`, `::test_mlflow_serves_artifacts_from_volume` |
+| AC-03 Sin credenciales | `tests/test_mlflow_droplet.py::test_caddyfile_has_no_hardcoded_credentials`, `::test_env_example_documents_mlflow_variables` |
 
-## Success Criteria
+## Success Criteria *(mandatory)*
 
-- **SC-001**: `trazabilidad --check` acepta HU-110 con spec y pruebas.
-- **SC-002**: `make check` en verde.
-- **SC-003**: No se añade ningún servicio ni credencial al despliegue.
+- **SC-001**: `/mlflow` queda protegido con las credenciales del sitio.
+- **SC-002**: El backend sobrevive a `docker compose up --force-recreate`.
+- **SC-003**: `make check` pasa con las pruebas nuevas.
 
-## Test Mapping
+## Out of Scope
 
-| AC | Prueba |
-|---|---|
-| AC-01 | `tests/test_mlflow_droplet_scope.py::test_ac01_mlflow_is_not_a_production_service` |
-| AC-02 | `tests/test_mlflow_droplet_scope.py::test_ac02_no_new_deployment_secrets` |
-| AC-03 | `tests/test_mlflow_droplet_scope.py::test_ac03_scope_is_documented` |
+- Instalar o migrar runs en el Droplet (lo hace quien tiene SSH).
+- Autenticación propia de MLflow (se usa la de Caddy).
+- Exponer MLflow en un subdominio distinto.
+
+## Assumptions
+
+- El Droplet ya tiene `compose.prod.yml` y Caddy con basic auth (ADR 0013).
+- La imagen oficial de MLflow incluye Python y el comando `mlflow`.

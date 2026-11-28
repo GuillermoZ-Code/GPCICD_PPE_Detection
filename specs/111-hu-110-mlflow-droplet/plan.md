@@ -1,38 +1,44 @@
-# Implementation Plan: HU-110 — MLflow en el Droplet (decisión de alcance)
+# Plan — HU-110 MLflow en el Droplet
 
-**Branch**: No aplica | **Date**: 2026-11-28 | **Spec**: [spec.md](./spec.md)
+**Branch**: `feature/111-hu-110-mlflow-droplet` · **Issue**: #166 · **Spec**: `spec.md`
 
-## Summary
+## Enfoque
 
-No se implementa un MLflow público en el Droplet. MLflow se mantiene como extra local
-(`tracking`, HU-009) para evaluación y comparación de runs. La decisión se documenta y
-se protege con pruebas estructurales que verifican que `compose.prod.yml` y el
-`Caddyfile` no publican el servicio.
+Añadir un servicio opcional `mlflow` al compose de producción y una ruta en Caddy. El
+servicio no publica puertos: solo Caddy lo alcanza por la red interna, con la misma
+autenticación básica del sitio (ADR 0013).
 
-## Technical Context
+## Componentes
 
-**Language/Version**: Python 3.13 (pytest)
+| Pieza | Cambio |
+|---|---|
+| `compose.prod.yml` | Servicio `mlflow` con perfil, volumen, comando y healthcheck |
+| `docker/Caddyfile` | `handle /mlflow/*` con `import protegido` y proxy a `mlflow:5000` |
+| `.env.example` | `PPE_MLFLOW_IMAGE` y `PPE_MLFLOW_DATA` |
+| `docs/operacion/mlflow.md` | Sección 9: variables, arranque, respaldo y seguridad |
+| `tests/test_mlflow_droplet.py` | 17 pruebas estáticas del compose, Caddy y runbook |
 
-**Testing**: pytest estático sobre `compose.prod.yml`, `docker/Caddyfile` y documentación
+## Decisiones
 
-**Constraints**: sin servicios nuevos, sin credenciales nuevas, sin carga adicional en
-el Droplet de 1 vCPU
+- **Perfil `mlflow`**: el servicio no arranca por omisión; se habilita con
+  `--profile mlflow`.
+- **`--static-prefix /mlflow`**: MLflow genera URLs con el prefijo; Caddy usa `handle`
+  (no `handle_path`) para no quitarlo.
+- **SQLite en el host**: suficiente para una demo; el volumen permite respaldar con
+  `tar` sin tocar el contenedor.
+- **Sin credenciales nuevas**: se reutiliza `PPE_AUTH_HASH` del sitio.
 
-## Constitution Check
+## Riesgos
 
-- **Test-first**: la prueba estructural se añade con la decisión. ✅
-- **Sin secretos**: no se añaden credenciales. ✅
-- **Sin cambios de despliegue**: el servicio vivo no se toca. ✅
-- **Trazabilidad**: la spec y la prueba permiten cerrar #166. ✅
+- **Imagen no disponible**: el tag `v3.18.0` debe existir en ghcr; se puede sobrescribir
+  con `PPE_MLFLOW_IMAGE`.
+- **502 si el perfil está apagado**: documentado; no afecta al resto.
+- **Crecimiento del SQLite**: se respalda y se purga fuera de la demo.
 
-## Decision
+## Verificación
 
-- **MLflow local**: se conserva `docs/operacion/mlflow.md` y el extra `tracking`.
-- **Sin ruta pública**: no hay `/mlflow` en Caddy ni servicio en compose.
-- **Reapertura**: si se necesita, se abre una HU nueva con autenticación y persistencia.
-
-## Verification
-
-- `uv run pytest -q tests/test_mlflow_droplet_scope.py`
-- `uv run python -m ppe_detection.tools.trazabilidad --check`
-- `make check`
+```bash
+uv run pytest -q tests/test_mlflow_droplet.py
+docker compose -f compose.prod.yml --profile mlflow config
+make check
+```

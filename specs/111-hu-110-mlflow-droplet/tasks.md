@@ -1,25 +1,23 @@
-﻿# Tasks: HU-110 â€” MLflow en el Droplet (decisiÃ³n de alcance)
+# Tareas — HU-110 MLflow en el Droplet
 
-**Input**: Design documents from `specs/111-hu-110-mlflow-droplet/`
+**Issue**: #166 · **Spec**: `spec.md` · **Plan**: `plan.md`
 
-**Prerequisites**: `plan.md`, `spec.md`
+## Implementación
 
-**Tests**: obligatorias. La prueba verifica la decisiÃ³n de no publicar MLflow.
+- [x] T1. Servicio `mlflow` con perfil, volumen, comando y healthcheck.
+- [x] T2. Ruta `/mlflow/*` en Caddy con basic auth y sin quitar el prefijo.
+- [x] T3. Variables en `.env.example` y sección 9 del runbook.
 
-## Phase 1: DecisiÃ³n
+## Pruebas (16 objetivo)
 
-- [x] T001 Revisar el alcance de #166 y la rÃºbrica del M4.
-- [x] T002 Confirmar que MLflow local (HU-009) cubre la evaluaciÃ³n y comparaciÃ³n.
-- [x] T003 Documentar la decisiÃ³n en `spec.md` y `plan.md`.
+- [x] T4. Servicio, perfil, imagen y ausencia de puertos publicados.
+- [x] T5. Persistencia de SQLite y artefactos en el host.
+- [x] T6. Prefijo, healthcheck y reinicio.
+- [x] T7. Caddy: auth, proxy y ausencia de credenciales.
+- [x] T8. Runbook: arranque, respaldo y seguridad.
 
-## Phase 2: Pruebas
+## Cierre
 
-- [x] T004 [AC-01] `compose.prod.yml` no declara un servicio `mlflow`.
-- [x] T005 [AC-01/03] `docker/Caddyfile` no publica `/mlflow`.
-- [x] T006 [AC-03] `docs/operacion/mlflow.md` documenta el uso local.
-
-## Phase 3: Cierre
-
-- [x] T007 `trazabilidad --check` acepta HU-110.
-- [x] T008 `make check` en verde.
-- [x] T009 Cerrar #166 con el enlace a esta spec.
+- [ ] T9. `make check` en verde.
+- [ ] T10. `make ownership-check` sin bloqueos.
+- [ ] T11. PR con la plantilla UAO y `Closes #166`.
