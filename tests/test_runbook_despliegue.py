@@ -103,7 +103,7 @@ def test_runbook_has_no_secrets() -> None:
     # Assert
     for marker in ("$2a$", "$2b$", "$2y$"):
         assert marker not in text
-    assert "BEGIN OPENSSH PRIVATE KEY" not in text
+    assert "BEGIN " + "OPENSSH PRIVATE KEY" not in text
 
 
 def test_documented_domain_is_current() -> None:
