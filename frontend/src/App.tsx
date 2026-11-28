@@ -233,7 +233,7 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
       <header className="topbar">
         <div className="brand">
           <span className="brand__mark">EPP</span>
-          <span className="brand__name">Vision</span>
+          <span className="brand__name">igoyihio8p9hn978ohi</span>
         </div>
         <div className="topbar__actions">
           <span className="badge">GPCICD · M4</span>
