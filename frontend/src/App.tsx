@@ -7,6 +7,7 @@ import { DetectionLegend } from './components/DetectionLegend'
 import { DetectionSummary } from './components/DetectionSummary'
 import { DetectionTable } from './components/DetectionTable'
 import { FlowSteps, type FlowStep } from './components/FlowSteps'
+import { History } from './components/History'
 import { ModelInfo } from './components/ModelInfo'
 import { SettingsDrawer } from './components/SettingsDrawer'
 import { StatusBanner } from './components/StatusBanner'
@@ -21,6 +22,13 @@ import {
 } from './config'
 import { detectionsToCsv, downloadBlob, downloadText } from './download'
 import { filterDetections } from './filter'
+import {
+  addHistoryEntry,
+  clearHistory,
+  loadHistory,
+  makeHistoryEntry,
+  type HistoryEntry,
+} from './history'
 import type { PredictResponse } from './types'
 import { validateFile } from './validate'
 
@@ -41,6 +49,7 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
   const detector = useMemo(() => client ?? createClient(), [client])
   const [settings, setSettings] = useState<Settings>(loadSettings)
   const [analysis, setAnalysis] = useState<Analysis>({ status: 'idle' })
+  const [history, setHistory] = useState<HistoryEntry[]>(() => loadHistory())
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [modelInfoOpen, setModelInfoOpen] = useState(false)
   // HU-081: aviso de espera larga y contador de reintentos.
@@ -121,6 +130,7 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
     try {
       const response = await detector.detect(target, settings.modelConfidence)
       setAnalysis({ status: 'ready', file: target, imageUrl: url, response })
+      setHistory(addHistoryEntry(makeHistoryEntry(response, target, url)))
     } catch (error) {
       const detail = error instanceof Error ? error.message : ''
       setAnalysis({
@@ -153,6 +163,11 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
     if (file && imageUrl) {
       void analyze(file, imageUrl)
     }
+  }
+
+  function handleClearHistory() {
+    clearHistory()
+    setHistory([])
   }
 
   function handleDownload(kind: 'json' | 'csv' | 'png') {
@@ -382,6 +397,8 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
             )}
           </section>
         </div>
+
+        <History entries={history} onClear={handleClearHistory} />
 
         {modelInfoOpen && <ModelInfo />}
       </main>
