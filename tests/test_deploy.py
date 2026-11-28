@@ -222,6 +222,7 @@ def test_caddy_image_is_published_and_deployed_with_the_same_tag() -> None:
     assert "CADDY_IMAGE:" in pipeline
     assert "docker/Dockerfile.caddy" in pipeline
     assert "gpcicd-ppe-caddy" in pipeline
+    assert "--entrypoint caddy" in pipeline
     assert "list-modules" in pipeline
     assert "caddy-digest.txt" in pipeline
     assert "PPE_CADDY_REPO" in script

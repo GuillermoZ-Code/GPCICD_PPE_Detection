@@ -217,8 +217,8 @@ build_image:
       docker run --rm --entrypoint python $API_IMAGE:$CI_COMMIT_SHORT_SHA
       -c "from ppe_detection.api import create_app; app = create_app(); print('smoke ok', app.version)"
     # Smoke de Caddy: el binario debe traer el módulo que usa el Caddyfile.
-    # La imagen oficial ya trae `caddy` como entrypoint.
-    - docker run --rm $CADDY_IMAGE:$CI_COMMIT_SHORT_SHA list-modules | grep -q rate_limit
+    # Se fija el entrypoint porque la imagen final no lo conserva.
+    - docker run --rm --entrypoint caddy $CADDY_IMAGE:$CI_COMMIT_SHORT_SHA list-modules | grep -q rate_limit
     - docker push $API_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $API_IMAGE:latest
     - docker push $WEB_IMAGE:$CI_COMMIT_SHORT_SHA
