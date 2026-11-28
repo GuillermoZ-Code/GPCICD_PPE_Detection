@@ -11,6 +11,7 @@
 #   PPE_SSH_KEY       llave privada                    (~/.ssh/ppe_deploy2)
 #   PPE_DOCKERHUB_USER usuario de Docker Hub           (guillermozabala)
 #   PPE_PUBLIC_URL    URL pública, para `verify`
+#   PPE_CADDY_REPO    repo de la imagen de Caddy       (por omisión el espejo)
 # =============================================================================
 
 set -eu
@@ -33,7 +34,8 @@ deploy)
     scp -i "$key" -o StrictHostKeyChecking=accept-new \
         compose.prod.yml docker/Caddyfile deploy/deploy.sh "$user@$host:$dir/" >/dev/null
     remote "cd $dir && PPE_API_REPO=$hub/gpcicd-ppe-api \
-        PPE_WEB_REPO=$hub/gpcicd-ppe-web PPE_COMPOSE_DIR=$dir sh deploy.sh $tag"
+        PPE_WEB_REPO=$hub/gpcicd-ppe-web \
+        PPE_CADDY_REPO=$hub/gpcicd-ppe-caddy PPE_COMPOSE_DIR=$dir sh deploy.sh $tag"
     ;;
 verify)
     url="${PPE_PUBLIC_URL:?falta PPE_PUBLIC_URL}"

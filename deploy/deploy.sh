@@ -10,6 +10,7 @@
 # Entorno:
 #   PPE_API_REPO    registry.../api
 #   PPE_WEB_REPO    registry.../web
+#   PPE_CADDY_REPO  registry.../caddy (HU-054: imagen con rate_limit)
 #   PPE_COMPOSE_DIR carpeta del compose en el servidor (por omisión /opt/ppe)
 # =============================================================================
 
@@ -24,6 +25,7 @@ fi
 compose_dir="${PPE_COMPOSE_DIR:-/opt/ppe}"
 api_repo="${PPE_API_REPO:?falta PPE_API_REPO}"
 web_repo="${PPE_WEB_REPO:?falta PPE_WEB_REPO}"
+caddy_repo="${PPE_CADDY_REPO:?falta PPE_CADDY_REPO}"
 
 cd "$compose_dir"
 
@@ -33,11 +35,12 @@ if [ -f "$state" ]; then
     previous="$(cat "$state")"
 fi
 
-# Estado nuevo: las dos imágenes con el mismo tag.
+# Estado nuevo: las tres imágenes con el mismo tag.
 tmp="$state.tmp"
 {
     echo "PPE_API_IMAGE=$api_repo:$tag"
     echo "PPE_WEB_IMAGE=$web_repo:$tag"
+    echo "PPE_CADDY_IMAGE=$caddy_repo:$tag"
 } > "$tmp"
 mv "$tmp" "$state"
 
@@ -54,6 +57,11 @@ all_healthy() {
         status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "$container" 2>/dev/null || echo unknown)"
         [ "$status" = "healthy" ] || return 1
     done
+    # Caddy no trae HEALTHCHECK en la imagen: basta con que siga corriendo.
+    caddy_container="$(docker compose -f compose.prod.yml ps -q caddy 2>/dev/null || true)"
+    [ -n "$caddy_container" ] || return 1
+    running="$(docker inspect --format '{{.State.Running}}' "$caddy_container" 2>/dev/null || echo false)"
+    [ "$running" = "true" ] || return 1
     return 0
 }
 

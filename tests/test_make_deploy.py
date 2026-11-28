@@ -71,6 +71,7 @@ def test_remote_script_uses_the_public_mirror() -> None:
     # Assert
     assert "gpcicd-ppe-api" in script
     assert "gpcicd-ppe-web" in script
+    assert "gpcicd-ppe-caddy" in script
     assert "docker login" not in script
 
 
