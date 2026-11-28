@@ -1,6 +1,6 @@
 # Inventario de pruebas — GPCICD PPE Detection
 
-> **Generado:** 2026-11-28 03:38 UTC · `make pruebas`
+> **Generado:** 2026-11-28 03:43 UTC · `make pruebas`
 > **Requisito del curso:** ≥ 400 pruebas unitarias (mínimo, no techo).
 > **Fuente:** casos recolectados por pytest y por Vitest; no se edita a mano.
 
@@ -101,6 +101,7 @@
 | tests/test_predict_batch.py | pytest | 4 | sin dueño |
 | tests/test_preprocessing.py | pytest | 8 | Hernán Estrada |
 | tests/test_readme_badges.py | pytest | 4 | sin dueño |
+| tests/test_release_v1.py | pytest | 10 | sin dueño |
 | tests/test_reproducibilidad.py | pytest | 4 | sin dueño |
 | tests/test_results.py | pytest | 10 | sin dueño |
 | tests/test_retro_m4.py | pytest | 4 | sin dueño |
