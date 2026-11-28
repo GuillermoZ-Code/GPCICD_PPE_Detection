@@ -6,9 +6,11 @@
 
 API REST + gRPC · SPA React · YOLO en CPU · MLflow · Docker
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](./LICENSE)
 [![Python 3.13+](https://img.shields.io/badge/python-3.13%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/actions/workflows/ci.yml/badge.svg)](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection/actions/workflows/ci.yml)
+[![Pipeline GitLab](https://gitlab.com/educacional-group/GPCICD_PPE_Detection/badges/develop/pipeline.svg)](https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/pipelines)
+[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-gpcicd--ppe--api-blue)](https://hub.docker.com/r/guillermozabala/gpcicd-ppe-api)
 [![Managed with uv](https://img.shields.io/badge/managed%20with-uv-de5fe9.svg)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=precommit&logoColor=white)](./.pre-commit-config.yaml)
@@ -18,6 +20,20 @@ API REST + gRPC · SPA React · YOLO en CPU · MLflow · Docker
 </div>
 
 ---
+
+## Sistema desplegado
+
+| | |
+|---|---|
+| **URL** | <https://143.198.10.157.sslip.io> |
+| **Acceso** | usuario `demo` y la contraseña del equipo (basic auth en Caddy) |
+| **Modelo** | `yolo26n-clean` · SHA256 `FEFB1F1A…F27F9` · montado `:ro` |
+| **Salud** | <https://143.198.10.157.sslip.io/health> (abierto, sin credenciales) |
+| **Runbook** | [`docs/operacion/despliegue.md`](docs/operacion/despliegue.md) |
+
+> Corre en un Droplet con Docker Compose, Caddy y HTTPS automático. Las imágenes se
+> publican en Docker Hub y en el registry de GitLab; el peso del modelo vive en el
+> Generic Package Registry del proyecto.
 
 ## Descripción
 
@@ -57,6 +73,20 @@ la API por HTTP; el detector nunca vive dentro del cliente.
 | Módulo 3 (HU-001 a HU-013) | ✅ 13/13 |
 | Módulo 4 (CI/CD y despliegue) | 🚧 19/11 → 28/11 |
 
+## Enlaces públicos del M4
+
+| Recurso | Enlace | Estado |
+|:---|:---|:---|
+| Código fuente (HTTPS) | [GuillermoZ-Code/GPCICD_PPE_Detection](https://github.com/GuillermoZ-Code/GPCICD_PPE_Detection) | Público |
+| Pipeline espejo | [Pipeline de GitLab](https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/pipelines) | Activo (HU-065) |
+| Registry de imágenes | [Container Registry del proyecto](https://gitlab.com/educacional-group/GPCICD_PPE_Detection/-/container_registry) | Sin imágenes publicadas (HU-068) |
+| API pública del modelo | `<URL_PUBLICA>` | Plantilla: el Space de HU-053 aún no se crea |
+| Gobernanza del proyecto | [`CONSTITUTION.md`](./CONSTITUTION.md) | Público |
+
+> Los marcadores `<URL_PUBLICA>` y `<SPACE_URL>` son plantillas del contrato MaaS, no
+> dominios publicados: se sustituyen por la URL real cuando HU-053 y HU-068 terminen.
+> El badge de Docker Hub también queda marcado como **pendiente** hasta HU-068.
+
 ## Inicio rápido
 
 ```bash
@@ -81,6 +111,7 @@ make app        # API en http://localhost:8000 y SPA en http://localhost:5173
 
 - [Descripción](#descripción)
 - [Estado del proyecto](#estado-del-proyecto)
+- [Enlaces públicos del M4](#enlaces-públicos-del-m4)
 - [Inicio rápido](#inicio-rápido)
 - [Arquitectura](#arquitectura)
 - [Stack tecnológico](#stack-tecnológico)
@@ -233,8 +264,9 @@ make frontend-build   # build estático en frontend/dist/
 ```
 
 Flujo de la SPA: seleccionar imagen → estados `idle` / `loading` / `success` /
-`error` → inferencia → cajas con clase y confianza → descarga de resultados. Si
-`VITE_API_URL` no está definida, usa un cliente simulado determinista.
+`error` → inferencia → cajas con clase y confianza → descarga de resultados. La SPA
+llama a `/api` en el mismo origen: el proxy de Vite en desarrollo y nginx en el
+contenedor reenvían a la API (HU-072).
 
 ### MLflow
 

@@ -8,11 +8,14 @@ from ppe_detection.tracking.mlflow_tracker import (
     DEFAULT_TRACKING_URI,
     LatencyStats,
     MlflowTracker,
+    ResolutionLatency,
     RunPayload,
     RunTracker,
     RunView,
     TrackingError,
     build_benchmark_payload,
+    build_comparison_payloads,
+    build_latency_payload,
     build_model_bundle,
     build_run_payload,
     compare_runs,
@@ -22,6 +25,7 @@ from ppe_detection.tracking.mlflow_tracker import (
     main,
     parse_args,
     render_comparison,
+    render_comparison_report,
 )
 
 __all__ = [
@@ -32,11 +36,14 @@ __all__ = [
     "DEFAULT_TRACKING_URI",
     "LatencyStats",
     "MlflowTracker",
+    "ResolutionLatency",
     "RunPayload",
     "RunTracker",
     "RunView",
     "TrackingError",
     "build_benchmark_payload",
+    "build_comparison_payloads",
+    "build_latency_payload",
     "build_model_bundle",
     "build_run_payload",
     "compare_runs",
@@ -46,4 +53,5 @@ __all__ = [
     "main",
     "parse_args",
     "render_comparison",
+    "render_comparison_report",
 ]

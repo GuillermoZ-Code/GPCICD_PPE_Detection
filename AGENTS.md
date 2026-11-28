@@ -31,12 +31,46 @@ Sprint activo: **M3-S2** (08/11 → 14/11/2026). Sustentación del M3: 14/11/202
 
 ### 0.2 Protocolo de cierre (obligatorio)
 
-1. `make estado-write` regenera `docs/curso/ESTADO.md` y el bloque del §0.
+1. `make estado-write` regenera `docs/curso/ESTADO.md` y el bloque del §0
+   **solo en una sesión de cierre, nunca en cada PR**: con cuatro agentes en
+   paralelo, ese bloque es el archivo que más conflictos genera. Lo corre una
+   sola persona y se commitea aparte.
 2. Si cambió el stack, una decisión o el estado del proyecto, actualiza también
    `CONSTITUTION.md`, `README.md` y el ADR correspondiente en el mismo PR.
 3. Añade una entrada a la bitácora con: **hecho**, **en vuelo**, **siguiente**.
 4. Commit: `docs(estado): registrar cierre de sesion`.
 5. Si no puedes commitear, deja el archivo modificado y dilo explícitamente.
+
+### 0.4 Trabajo en paralelo (M4)
+
+Cuatro integrantes con sus agentes trabajan a la vez. Reglas duras:
+
+1. **Un solo escritor por archivo.** El manifiesto
+   [`docs/curso/propiedad.toml`](./docs/curso/propiedad.toml) declara el dueño de
+   cada ruta; `.github/CODEOWNERS` se genera de ahí (`make codeowners`, nunca a mano).
+2. **Compuerta:** `make ownership-check` falla si tocas un archivo `[[locked]]`
+   de otro dueño. Corre en cada PR (`.github/workflows/ownership.yml`). El resto
+   de archivos ajenos solo genera aviso y revisión obligatoria.
+3. **WIP 1:** antes del primer commit, mueve tu HU a *In progress* en el tablero.
+   Si ya está ocupada, toma la siguiente. El assignee es el candado.
+4. **Sin push directo** a `develop` ni a `main`. Todo entra por PR con la
+   aprobación de otra persona; el autor nunca se autoaprueba. Toda PR lleva como
+   revisor a **uno de los otros tres integrantes**: el workflow `Revisores` lo
+   asigna por turno según el número de PR. Si la elección no encaja, se cambia a mano.
+5. **Reparto vigente:** [`docs/curso/M4/ASIGNACION.md`](./docs/curso/M4/ASIGNACION.md).
+   Es el contrato: si no está ahí, no es tu tarea.
+6. **Archivos de un solo escritor:** `ESTADO.md`, `backlog.md`, `PRUEBAS.md`,
+   `uv.lock` y `package-lock.json`. Son generados o los bloquea un gestor de
+   dependencias; si necesitas un cambio, pídelo en el issue.
+7. **Archivos compartidos con dueño** (`AGENTS.md`, `CONSTITUTION.md`,
+   `Makefile`, `tests/conftest.py`): puedes tocarlos, pero la revisión la pide
+   CODEOWNERS. En el `Makefile`, añade objetivos; no reordenes lo existente.
+8. **Una HU por PR.** Nada de arreglos colaterales: se abren en su propia HU.
+9. **Plantilla obligatoria.** Toda PR usa `.github/PULL_REQUEST_TEMPLATE.md`,
+   también las que se crean por `gh` o por el MCP. El job `Plantilla` falla si
+   falta una sección del autor (1, 3, 4, 5, 6, 7 y 8).
+
+
 
 ### 0.3 Precedencia de fuentes
 
@@ -139,13 +173,24 @@ make arch       # regenera el diagrama Archify (si está instalado)
 | Spec Kit | CLI/SDD | Especificaciones ejecutables y flujo por HU | Diseñar e implementar cada HU |
 | `archify` | Skill | Diagramas interactivos de arquitectura | Actualizar `docs/architecture/` |
 | `find-skills` | Skill | Descubrir skills instalables | Buscar una capacidad nueva |
+| `frontend-design` | Skill | Dirección visual, tipografía y sistema de diseño | Rediseñar la SPA (HU-076) |
+| `glab` | Skill | Uso correcto y seguro de `glab` y la API de GitLab | Cualquier operación de GitLab (HU-073) |
 | **GitHub MCP** | MCP | Issues, PRs, labels, milestones, revisiones | Operar el repositorio con la cuenta UAO `GuillermoZ-Code` |
 | **context7** | MCP | Documentación vigente de librerías | FastAPI, gRPC, MLflow, Ultralytics, Spec Kit |
 | **fetch** | MCP | Descargar documentación o datasets | Verificar fuentes externas |
-| **Engram** | MCP | Memoria local de cada agente | **Fase 3**; no reemplaza CONSTITUTION ni ADR |
-| **GGA** | CLI | Revisión de código con IA | **Fase 3**; no bloquea a quien no lo tenga |
+| **Engram** | MCP | Memoria local de cada agente | Disponible y opcional (protocolo: **ADR 0011**); **no** coordina agentes entre máquinas ni sustituye CONSTITUTION ni ADR |
+| **GGA** | CLI | Revisión de código con IA | Opcional y **no bloqueante**; sin él, `make check` y la revisión humana son suficientes |
+| **GitLab MCP** | MCP | Proyecto, MRs, pipelines, jobs y logs de GitLab | Operar la entrega y el despliegue (solo el Code Reviewer) |
+| **`glab`** | CLI | GitLab desde la terminal | Pipelines, variables y releases |
 
-> Engram y GGA se habilitan **después de la entrega del M2**, en un PR aparte.
+> **Ninguna de estas herramientas se descubre sola:** un agente solo conoce lo
+> que está escrito aquí o en `.opencode/rules/`. Si instalas una y no la
+> documentas, nadie la usará. Engram y GGA **no** son requisito para abrir un PR.
+
+> Las skills `frontend-design` y `glab` están versionadas en
+> [`.agents/skills/`](./.agents/skills/README.md); las demás se instalan en
+> `~/.agents/skills/`. El README de esa carpeta documenta origen y actualización.
+
 
 ## Dominio y límites
 

@@ -10,7 +10,7 @@ SHELL := C:/PROGRA~1/Git/bin/bash.exe
 endif
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build estado protos estado-write frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
+.PHONY: help install dev pre-commit-install pre-commit secrets lint format format-check typecheck test check build ownership-check codeowners estado protos estado-write pruebas pruebas-write trazabilidad trazabilidad-write trazabilidad-check specs-check rubrica rubrica-write rubrica-check frontend-install frontend-dev frontend-preview frontend-lint frontend-test frontend-build frontend-check docker-build docker-build-web docker-up docker-down docker-logs docker-smoke app mlflow-ui mlflow-benchmark mlflow-register arch clean
 
 # Ruta al CLI de Archify (skill instalado). Sobrescribe con ARCHIFY_BIN=...
 ifeq ($(OS),Windows_NT)
@@ -33,6 +33,9 @@ pre-commit-install: ## Instala los hooks de pre-commit en el repositorio local
 pre-commit: ## Ejecuta todos los hooks de pre-commit sobre el repositorio
 	uv run pre-commit run --all-files
 
+secrets: ## Escanea secretos con gitleaks en local (HU-043)
+	gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
+
 lint: ## Ejecuta Ruff (lint)
 	uv run ruff check .
 
@@ -50,6 +53,15 @@ test: ## Ejecuta las pruebas
 
 check: lint format-check typecheck test ## Verificación completa (lint + formato + tipos + pruebas)
 
+deploy: ## Despliega un tag en el Droplet (TAG=<sha>) — requiere PPE_DEPLOY_HOST
+	sh deploy/remote.sh deploy
+
+verify: ## Comprueba el sistema desplegado (health) — requiere PPE_PUBLIC_URL
+	sh deploy/remote.sh verify
+
+model-publish: ## Publica el modelo en el registry (ARCHIVO=<ruta> VERSION=<tag>)
+	sh deploy/model/publish.sh "$(ARCHIVO)" "$(VERSION)"
+
 calidad: ## Informe de calidad (lint, formato, tipos y pruebas)
 	uv run python -m ppe_detection.tools.calidad
 
@@ -64,6 +76,39 @@ protos: ## Regenera los módulos protobuf de HU-010 (grpcio-tools)
 
 estado-write: ## Actualiza el bloque generado de docs/curso/ESTADO.md
 	uv run python -m ppe_detection.tools.estado --write
+
+pruebas: ## Cuenta pytest y Vitest e imprime el resumen (HU-094)
+	uv run python -m ppe_detection.tools.pruebas
+
+pruebas-write: ## Regenera docs/curso/PRUEBAS.md con el conteo real (HU-094)
+	uv run python -m ppe_detection.tools.pruebas --write
+
+trazabilidad: ## Imprime la matriz HU -> issue -> spec -> PR -> pruebas (HU-093)
+	uv run python -m ppe_detection.tools.trazabilidad
+
+trazabilidad-write: ## Regenera docs/curso/TRAZABILIDAD.md (HU-093)
+	uv run python -m ppe_detection.tools.trazabilidad --write
+
+trazabilidad-check: ## Falla si una HU cerrada no tiene spec o pruebas (HU-093)
+	uv run python -m ppe_detection.tools.trazabilidad --check
+
+specs-check: ## Valida las specs SDD del repositorio (HU-096)
+	uv run python -m ppe_detection.tools.check_specs --check
+
+rubrica: ## Imprime el informe de la rubrica del M4 (HU-113)
+	uv run python -m ppe_detection.tools.rubrica
+
+rubrica-write: ## Regenera docs/entrega/RUBRICA-M4.md (HU-113)
+	uv run python -m ppe_detection.tools.rubrica --write
+
+rubrica-check: ## Valida los items de la rubrica del M4 (HU-113)
+	uv run python -m ppe_detection.tools.rubrica --check
+
+ownership-check: ## Verifica que el cambio no toque archivos bloqueados de otro (HU-082)
+	uv run python -m ppe_detection.tools.ownership --base $${BASE:-origin/develop}
+
+codeowners: ## Regenera .github/CODEOWNERS desde docs/curso/propiedad.toml (HU-082)
+	uv run python -m ppe_detection.tools.ownership --write-codeowners
 
 frontend-install: ## Instala las dependencias del frontend (npm ci)
 	cd frontend && npm ci

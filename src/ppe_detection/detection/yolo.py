@@ -63,6 +63,7 @@ class YoloDetector:
         iou: float = DEFAULT_IOU,
         imgsz: int = DEFAULT_IMGSZ,
         device: str = DEFAULT_DEVICE,
+        nms: bool | None = None,
         model: ModelProtocol | None = None,
     ) -> None:
         if model is None and model_path is None:
@@ -72,6 +73,7 @@ class YoloDetector:
         self.iou = iou
         self.imgsz = imgsz
         self.device = device
+        self.nms = nms
         if model is not None:
             self._model = model
         elif model_path is not None:
@@ -81,6 +83,11 @@ class YoloDetector:
         self._names = _normalize_names(self._model.names)
         self._validate_catalog()
         self.classes: tuple[str, ...] = tuple(self._names[index] for index in range(len(CLASSES)))
+
+    @property
+    def model_version(self) -> str:
+        """Versión legible inferida del nombre del artefacto."""
+        return self.model_path.stem if self.model_path is not None else "unknown"
 
     def _validate_catalog(self) -> None:
         expected = dict(enumerate(CLASSES))
@@ -97,16 +104,16 @@ class YoloDetector:
         """
         threshold = self.conf if conf is None else conf
         bgr = cv2.cvtColor(image.array, cv2.COLOR_RGB2BGR)
-        results = list(
-            self._model.predict(
-                source=bgr,
-                conf=threshold,
-                iou=self.iou,
-                imgsz=self.imgsz,
-                device=self.device,
-                verbose=False,
-            )
-        )
+        kwargs: dict[str, Any] = {
+            "conf": threshold,
+            "iou": self.iou,
+            "imgsz": self.imgsz,
+            "device": self.device,
+            "verbose": False,
+        }
+        if self.nms is not None:
+            kwargs["nms"] = self.nms
+        results = list(self._model.predict(source=bgr, **kwargs))
         if not results:
             return []
         boxes = getattr(results[0], "boxes", None)

@@ -16,6 +16,7 @@ import re
 import shutil
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -227,21 +228,52 @@ def build_run_payload(
     )
 
 
+COMPARISON_KEYS = ("imgsz", "conf", "iou", "seed", "dataset_split")
+
+
+def build_comparison_payloads(
+    summaries: Sequence[Mapping[str, Any]],
+    *,
+    dataset_sha256: str | None = None,
+    artifacts: Sequence[Path] = (),
+) -> list[tuple[str, RunPayload]]:
+    """Payloads de dos o más evaluaciones comparables (HU-097).
+
+    Todos los resumenes deben compartir ``imgsz``, ``conf``, ``iou``, ``seed`` y la
+    partición; el nombre del run sale de :func:`default_run_name` y el artefacto se
+    referencia por ``sha256:<hash>``, sin copiar pesos.
+    """
+    if len(summaries) < 2:
+        raise TrackingError("Se requieren al menos dos resumenes para comparar.")
+    runs: list[tuple[str, RunPayload]] = []
+    shared: dict[str, str] | None = None
+    for summary in summaries:
+        payload = build_run_payload(summary, dataset_sha256=dataset_sha256, artifacts=artifacts)
+        current = {key: payload.params[key] for key in COMPARISON_KEYS}
+        if shared is None:
+            shared = current
+        elif current != shared:
+            raise TrackingError("Los runs no comparten imgsz, conf, iou, seed y particion.")
+        runs.append((default_run_name(summary), payload))
+    return runs
+
+
 @dataclass(frozen=True, slots=True)
 class LatencyStats:
     """Resumen de latencias de inferencia (ms) y throughput derivado."""
 
     mean_ms: float
+    p50_ms: float
     p95_ms: float
     max_ms: float
     throughput_fps: float
 
 
 def latency_stats(samples_ms: Sequence[float]) -> LatencyStats:
-    """Resume latencias con p95 por rango más cercano y throughput en fps.
+    """Resume latencias con p50/p95 por rango más cercano y throughput en fps.
 
-    Las muestras deben ser finitas y positivas; el p95 usa el rango más cercano
-    (índice ``ceil(0.95 * n) - 1``), que es el criterio conservador para muestras
+    Las muestras deben ser finitas y positivas; ambos percentiles usan el rango más
+    cercano (índice ``ceil(p * n) - 1``), que es el criterio conservador para muestras
     pequeñas.
     """
     values = [float(value) for value in samples_ms]
@@ -250,14 +282,60 @@ def latency_stats(samples_ms: Sequence[float]) -> LatencyStats:
     if any(not math.isfinite(value) or value <= 0 for value in values):
         raise TrackingError("Las latencias deben ser finitas y positivas.")
     ordered = sorted(values)
-    index = max(0, math.ceil(0.95 * len(ordered)) - 1)
+    index50 = max(0, math.ceil(0.50 * len(ordered)) - 1)
+    index95 = max(0, math.ceil(0.95 * len(ordered)) - 1)
     mean = sum(ordered) / len(ordered)
     return LatencyStats(
         mean_ms=mean,
-        p95_ms=ordered[index],
+        p50_ms=ordered[index50],
+        p95_ms=ordered[index95],
         max_ms=ordered[-1],
         throughput_fps=1000.0 / mean,
     )
+
+
+@dataclass(frozen=True, slots=True)
+class ResolutionLatency:
+    """Muestras de latencia (ms) de una resolución de entrada."""
+
+    imgsz: int
+    samples_ms: tuple[float, ...]
+
+
+def build_latency_payload(
+    measurements: Sequence[ResolutionLatency],
+    *,
+    hardware: str,
+    model_version: str,
+    model_sha256: str,
+) -> RunPayload:
+    """Payload de latencia por resolución (HU-100).
+
+    Registra ``p50``, ``p95``, ``mean`` y ``fps`` por resolución como métricas, y el
+    hardware, la versión y el SHA256 del modelo como parámetros y etiquetas.
+    """
+    if not measurements:
+        raise TrackingError("Se requiere al menos una medicion de latencia.")
+    if not MODEL_SHA_PATTERN.fullmatch(model_sha256):
+        raise TrackingError("'model_sha256' debe ser un SHA256 hexadecimal de 64 caracteres.")
+    metrics: dict[str, float] = {}
+    for measurement in measurements:
+        stats = latency_stats(measurement.samples_ms)
+        metrics[f"p50_ms_{measurement.imgsz}"] = stats.p50_ms
+        metrics[f"p95_ms_{measurement.imgsz}"] = stats.p95_ms
+        metrics[f"mean_ms_{measurement.imgsz}"] = stats.mean_ms
+        metrics[f"fps_{measurement.imgsz}"] = stats.throughput_fps
+    params = {
+        "hardware": hardware,
+        "model_version": model_version,
+        "model_sha256": model_sha256,
+        "resolutions": ",".join(str(measurement.imgsz) for measurement in measurements),
+    }
+    tags = {
+        "source": "ppe_detection.tracking.latency",
+        "model_reference": f"sha256:{model_sha256}",
+    }
+    return RunPayload(params=params, metrics=metrics, tags=tags)
 
 
 def build_benchmark_payload(
@@ -451,6 +529,42 @@ def render_comparison(runs: Sequence[RunView]) -> str:
             "",
         ]
     )
+    return "\n".join(lines)
+
+
+def _format_metric(value: float | None) -> str:
+    """Formatea una métrica o devuelve un guion si falta."""
+    return "—" if value is None else f"{value:.3f}"
+
+
+def render_comparison_report(
+    runs: Sequence[RunView], *, tracking_uri: str, generated_at: str | None = None
+) -> str:
+    """Informe Markdown con la tabla y los enlaces a cada run (HU-099)."""
+    stamp = generated_at or datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
+    base = tracking_uri.rstrip("/")
+    lines = [
+        "# Comparación de runs",
+        "",
+        f"> **Generado:** {stamp}",
+        f"> **Tracking URI:** `{tracking_uri}`",
+        "> **Fuente:** runs registrados en MLflow; el artefacto se referencia por SHA256.",
+        "",
+        "| Run | mAP50 | mAP50-95 | Precision | Recall | Artefacto | Enlace |",
+        "|---|---:|---:|---:|---:|---|---|",
+    ]
+    for run in runs:
+        artifact = run.params.get("model_path", "—")
+        reference = run.tags.get("model_reference", "")
+        link = f"[{run.run_name}]({base}/#/runs/{run.run_id})"
+        lines.append(
+            f"| {run.run_name} | {_format_metric(run.metrics.get('map50'))} | "
+            f"{_format_metric(run.metrics.get('map50_95'))} | "
+            f"{_format_metric(run.metrics.get('precision'))} | "
+            f"{_format_metric(run.metrics.get('recall'))} | "
+            f"`{artifact}` {reference} | {link} |"
+        )
+    lines.append("")
     return "\n".join(lines)
 
 

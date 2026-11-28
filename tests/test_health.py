@@ -81,9 +81,14 @@ def test_health_exposes_the_published_model_identity() -> None:
     assert body["model_artifact"].endswith("best.pt")
 
 
-def test_health_default_identity_is_explicitly_unknown(monkeypatch) -> None:
+def test_health_default_identity_is_explicitly_unknown(tmp_path, monkeypatch) -> None:
     """AC-015.1: sin configuración la referencia no inventa un artefacto."""
     # Arrange
+    monkeypatch.setattr(
+        "ppe_detection.detector_config.DEFAULT_MANIFEST_PATH",
+        tmp_path / "missing-models.lock",
+    )
+    monkeypatch.delenv("PPE_MODEL_MANIFEST", raising=False)
     monkeypatch.delenv("PPE_MODEL_PATH", raising=False)
     monkeypatch.delenv("PPE_MODEL_VERSION", raising=False)
     monkeypatch.delenv("PPE_MODEL_SHA256", raising=False)
@@ -97,6 +102,25 @@ def test_health_default_identity_is_explicitly_unknown(monkeypatch) -> None:
     assert body["model_reference"] == "version:unknown"
     assert body["model_sha256"] is None
     assert body["model_artifact"] is None
+
+
+def test_health_uses_artifact_version(tmp_path, monkeypatch) -> None:
+    """AC-02 de HU-021: /health infiere la versión del artefacto configurado."""
+
+    # Arrange
+    artifact = tmp_path / "yolo26n_clean.pt"
+    artifact.write_bytes(b"modelo")
+    monkeypatch.setenv("PPE_MODEL_PATH", str(artifact))
+    monkeypatch.delenv("PPE_MODEL_VERSION", raising=False)
+    monkeypatch.delenv("PPE_MODEL_SHA256", raising=False)
+    client = TestClient(create_app(detector=FakeDetector([])))
+
+    # Act
+    body = client.get("/health").json()
+
+    # Assert
+    assert body["model_version"] == "yolo26n_clean"
+    assert body["model_artifact"] == str(artifact)
 
 
 def test_health_does_not_build_the_detector(monkeypatch) -> None:

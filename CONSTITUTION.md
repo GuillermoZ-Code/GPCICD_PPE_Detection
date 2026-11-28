@@ -95,7 +95,7 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 | **Pruebas del frontend** | Vitest + Testing Library |
 | **Lint del frontend** | ESLint 9/10 + typescript-eslint |
 | **Runtime del frontend** | Node.js 24 + npm |
-| **Visión por computador** | Ultralytics YOLO (nano/small) + PyTorch CPU |
+| **Visión por computador** | Ultralytics YOLO26n (nano) + ONNX Runtime; PyTorch CPU para evaluación |
 | **Procesamiento de imagen** | OpenCV + NumPy |
 | **Experiment tracking** | MLflow (local) |
 | **Contenedor** | Docker CPU (sin CUDA) |
@@ -109,8 +109,9 @@ despliegue en CPU. Es el proyecto integrador del curso **GPCICD M2-M4**.
 > **prohibido** `pip` y `requirements.txt`. El frontend usa `npm` con
 > `package-lock.json` versionado (ADR 0006).
 
-> La variante exacta de YOLO y la compatibilidad con Python 3.13 + torch CPU se
-> confirman en **SPI-01**; hasta entonces no se fija una versión.
+> La variante productiva seleccionada es **YOLO26n + ONNX 640** (ADR 0009);
+> YOLO11s queda como rollback. La compatibilidad con Python 3.13 + torch CPU se
+> verificó en **SPI-01** y **SPI-03**.
 
 ## 5. Estructura del repositorio
 
@@ -200,6 +201,8 @@ Todo en Docker CPU; CI/CD → Droplet
 
 - Diagrama interactivo: [`docs/architecture/arquitectura.html`](docs/architecture/arquitectura.html)
 - Fuente versionada: [`docs/architecture/arquitectura.json`](docs/architecture/arquitectura.json)
+- Decisiones de despliegue: [ADR 0007](docs/adr/0007-gitlab-ci-espejo.md) (GitLab CI con
+  espejo desde GitHub) y [ADR 0008](docs/adr/0008-droplet-caddy.md) (Droplet + Caddy).
 
 ### Contract-first
 
@@ -218,7 +221,7 @@ Con un `FakeDetector` determinista, las HU de API (HU-006), interfaz (HU-007) y 
 |-------|---------|---------------------|
 | 1 — Frontera | LLM/VLM general | Latencia y costo altos; no requiere razonamiento abierto. |
 | 2 — Gama media | Detector mediano | Más latencia en CPU; sobredimensionado para 6 clases. |
-| 3 — Especializado | YOLO nano/small | **Elegido:** local, CPU, <100 ms objetivo, AGPL compatible. |
+| 3 — Especializado | YOLO26n nano + ONNX | **Elegido:** local, CPU, <100 ms objetivo, AGPL compatible (ADR 0009). |
 
 No hay LLM en inferencia: la tarea es detección de objetos acotada, con clases fijas,
 requisito de CPU y necesidad de reproducibilidad.
@@ -246,6 +249,7 @@ falsos positivos/negativos y la ausencia de detecciones no son prueba de incumpl
 | `ty` | Verificación de tipos | `make typecheck` |
 | `pytest` | Pruebas | `make test` |
 | `pre-commit` | Hooks antes de cada commit | `make pre-commit` |
+| `gitleaks` | Escaneo de secretos en CI y en local | `make secrets` |
 | `npm` | Dependencias del frontend | `npm ci` |
 | ESLint | Lint del frontend | `make frontend-lint` |
 | Vitest | Pruebas del frontend | `make frontend-test` |
@@ -316,8 +320,9 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 - **Test-first:** los AC se convierten en pruebas antes de la implementación;
   `/speckit.analyze` marca error si un AC no tiene prueba. Excepciones: SPI y specs de
   documentación.
-- **Sin umbral de cobertura:** el requisito de la entrega es **≥ 400 pruebas
-  unitarias**; ver [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
+- **Sin umbral de cobertura:** la entrega del M3 exigió **≥ 400 pruebas
+  unitarias**; el M4 exige **≥ 1.200**. El conteo y el reparto vigentes viven en
+  [`docs/curso/PLAN-PRUEBAS.md`](./docs/curso/PLAN-PRUEBAS.md).
 - Hoy se deja **solo** la spec de la TA de contract-first como ejemplo, sin
   implementar.
 
@@ -349,6 +354,10 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 | 2026-11-11 | Contenedor Docker CPU con `uv sync --frozen` y torch desde el índice `pytorch-cpu` (Linux); SPA servida por nginx; modelo montado `:ro` | Reproducibilidad del sistema completo sin CUDA ni pesos en Git (HU-011); en Windows/macOS la resolución sigue siendo PyPI |
 | 2026-11-11 | MLflow como extra opcional `tracking`; registro en `src/ppe_detection/tracking/` | Evita ~150 dependencias en el paquete base y en la CI; el run referencia el modelo por SHA256 sin copiar pesos |
 | 2026-11-12 | Requisito de la entrega: **≥ 400 pruebas unitarias**; se cierra sin umbral de cobertura porcentual | Indicación del docente; el plan y el reparto por integrante viven en `docs/curso/PLAN-PRUEBAS.md` |
+| 2026-11-23 | Modelo productivo **YOLO26n + ONNX 640**; YOLO11s como rollback | Mejor mAP50-95 (0,614 vs 0,516) y p95 88,05 ms vs 280,63 ms; decisión en ADR 0009, rollout pendiente |
+| 2026-11-25 | GitLab CI/CD con espejo de *push* desde GitHub | Pipeline del M4 sin GitLab Premium y con SHA trazable (ADR 0007) |
+| 2026-11-25 | Despliegue en Droplet con Docker Compose y Caddy | HTTPS automático en el entorno del curso, sin PaaS (ADR 0008) |
+| 2026-11-27 | Basic auth en Caddy y dominio gratuito `sslip.io` | Sitio protegido sin proveedor de identidad ni dominio propio (ADR 0013) |
 
 ## 12. Roadmap M3–M4
 
@@ -361,15 +370,22 @@ issue → /speckit.specify → /speckit.clarify → /speckit.plan
 
 ### M4 — 19/11/2026 a 28/11/2026
 
-- MLOps/despliegue, CI/CD y credenciales.
-- Sustentación: **sábado 28/11/2026**.
-- **M4-S3 (15/11–28/11): HU-014 y HU-015 — 3 SP.**
+- MLOps, CI/CD con GitLab, credenciales y despliegue en Droplet con Caddy y HTTPS.
+- **M4-S3 (19/11–28/11): 100 HU — 200 SP**, con 50 SP por integrante y 24, 26, 25 y
+  25 HU (Guillermo, Eliana, Hernán y Jesús), organizadas en olas 1 a 3 por prioridad.
+- Épicas **ep-05 a ep-15**: despliegue y operación, CI/CD de GitLab, infraestructura,
+  seguridad y cumplimiento, modelo y evaluación, servicio y MaaS, SPA, herramientas
+  para agentes, observabilidad, gobierno técnico, y documentación y entrega.
+- Rúbrica del M4: **40 % pipeline de GitLab** (lint → test → build → deploy → verify),
+  **30 % Droplet con Caddy y HTTPS**, **15 % secretos** y **15 % despliegue en vivo**.
+- **HU-014 y HU-015 están dentro de esas 100 HU**; HU-014 se cierra cuando estén
+  fusionadas las HU-066 a HU-068 y la HU-070.
+- Cierre de issues: **26/11/2026**. Sustentación: **sábado 28/11/2026**.
 
-**Total backlog oficial:** 22 SP (reestimación del 04/11/2026 sobre la planificación del
-documento del M2, aprobada por Jesús). Las actividades de preparación del M3 (P1–P4)
-suman 12 SP y no son issues, por lo que no entran en el total del tablero. Las TA/SPI
-se absorbieron en P1–P4; no se crean como issues salvo decisión expresa de Jesús. Si se
-contaran aparte, serían 25 SP sin TA-EDA y 28 SP con TA-EDA. Ver
+**Total backlog oficial:** **113 HU y 219 SP** (13 HU y 19 SP del M3, más 100 HU y
+200 SP del M4). Las actividades de preparación del M3 (P1–P4) suman 12 SP y no son
+issues, por lo que no entran en el total del tablero. Las TA/SPI se absorbieron en
+P1–P4; no se crean como issues salvo decisión expresa de Jesús. Ver
 `docs/curso/backlog.md`.
 
 ### Riesgos y decisiones pendientes

@@ -16,26 +16,17 @@ WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend/ ./
-# URL de la API que la SPA hornea en el bundle (por omisión, el puerto de la API).
-ARG VITE_API_URL=http://localhost:8000
-ENV VITE_API_URL=$VITE_API_URL
+# HU-072 — sin VITE_API_URL el bundle usa la ruta relativa `/api` y nginx la
+# reenvía al servicio `api` del mismo compose (sin CORS ni localhost horneado).
 RUN npm run build
 
-# --- runtime: backend CPU con dependencias de uv.lock ------------------------
-FROM python:3.13-slim AS runtime
+# --- runtime-deps: entorno resuelto, no se publica ---------------------------
+FROM python:3.13-slim AS runtime-deps
 ENV UV_PYTHON_DOWNLOADS=never \
+    UV_NO_CACHE=1 \
     UV_LINK_MODE=copy \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
-
-# Bibliotecas del sistema en Debian trixie:
-#   OpenCV headless → libgl1, libglib2.0-0t64, libxcb1
-#   torch CPU       → libgomp1 (OpenMP), libquadmath0
-#   TLS del cliente → ca-certificates
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        ca-certificates libgl1 libglib2.0-0t64 libgomp1 libquadmath0 libxcb1 \
-    && rm -rf /var/lib/apt/lists/*
 
 # uv como único gestor de dependencias; sin pip ni requirements.txt.
 COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /usr/local/bin/uv
@@ -51,15 +42,45 @@ RUN uv sync --frozen --no-dev --no-install-project --extra inference --extra grp
 COPY src ./src
 RUN uv sync --frozen --no-dev --extra inference --extra grpc
 
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod 0755 /entrypoint.sh
+# --- runtime: backend CPU publicado, sin uv y con usuario no root -------------
+FROM python:3.13-slim AS runtime
+ENV UV_PYTHON_DOWNLOADS=never \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/app/.venv/bin:$PATH"
 
-ENV PATH="/app/.venv/bin:$PATH"
+# Bibliotecas del sistema en Debian trixie:
+#   OpenCV headless → libgl1, libglib2.0-0t64, libxcb1
+#   torch CPU       → libgomp1 (OpenMP), libquadmath0
+#   TLS del cliente → ca-certificates
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates libgl1 libglib2.0-0t64 libgomp1 libquadmath0 libxcb1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --gid 10001 appuser \
+    && useradd --uid 10001 --gid appuser --create-home --shell /bin/sh appuser \
+    && install -d -o appuser -g appuser /app
+
+WORKDIR /app
+COPY --chown=appuser:appuser --from=runtime-deps /app/.venv /app/.venv
+COPY --chown=appuser:appuser --from=runtime-deps /app/src /app/src
+COPY --chmod=0755 --chown=appuser:appuser docker/entrypoint.sh /entrypoint.sh
+# HU-046 — el contenedor informa si puede atender: REST por HTTP, gRPC por TCP.
+COPY --chmod=0755 --chown=appuser:appuser docker/healthcheck.sh /healthcheck.sh
+
+USER appuser
 EXPOSE 8000 9000
+# `start-period` amplio: importar torch tarda decenas de segundos y sin margen
+# el contenedor se marcaría enfermo antes de poder responder.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
+    CMD ["/healthcheck.sh"]
 ENTRYPOINT ["/entrypoint.sh"]
 
 # --- web: SPA estática servida por nginx --------------------------------------
 FROM nginx:1.29-alpine AS web
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=frontend-builder /app/dist /usr/share/nginx/html
+# HU-046 — nginx tiene que responder antes de que Caddy lo publique.
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget -q --spider http://127.0.0.1/ || exit 1
 EXPOSE 80

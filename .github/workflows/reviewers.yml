@@ -1,0 +1,53 @@
+name: Revisores
+
+# Regla del equipo: toda PR lleva como revisor a uno de los otros tres
+# integrantes. Se elige por turno según el número de PR, para repartir la carga
+# sin depender de que alguien se acuerde de asignarlo a mano.
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, reopened, synchronize]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  asignar:
+    name: Asignar revisor
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pedir revisión a otro integrante
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          gh pr edit "$PR" --add-assignee "$AUTHOR"
+
+          existing=$(gh pr view "$PR" --json reviewRequests \
+            --jq '[.reviewRequests[].login] | join(" ")')
+          if [ -n "$existing" ]; then
+            echo "La PR ya tiene revisor asignado: $existing"
+            exit 0
+          fi
+
+          reviewers=(GuillermoZ-Code ElianaCardona HestradaUAO jesusriverosUAO)
+          pool=()
+          for person in "${reviewers[@]}"; do
+            if [ "$person" != "$AUTHOR" ]; then
+              pool+=("$person")
+            fi
+          done
+
+          if [ "${#pool[@]}" -eq 0 ]; then
+            echo "El autor no está en la lista del equipo; no se asigna revisor."
+            exit 0
+          fi
+
+          chosen="${pool[$(( PR % ${#pool[@]} ))]}"
+          echo "PR #$PR de $AUTHOR -> revisor $chosen"
+          gh pr edit "$PR" --add-reviewer "$chosen"

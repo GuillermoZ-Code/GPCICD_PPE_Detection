@@ -1,0 +1,29 @@
+# Gentleman Guardian Angel (GGA) — revisión de código con IA
+#
+# Configuración del repositorio. No contiene credenciales: el proveedor usa el
+# entorno local de OpenCode. La revisión es opcional y no reemplaza la revisión
+# humana ni `make check`.
+#
+# Uso:
+#   gga run --ci        # revisa el último commit
+#   gga run --pr-mode   # revisa los cambios de la rama contra develop
+#   make gga            # desde el Makefile, si GGA está instalado
+#
+# Reglas: se reutiliza CONSTITUTION.md para no duplicar la fuente de verdad.
+
+PROVIDER="opencode"
+
+# Código que aporta valor a la revisión; se excluyen artefactos y documentación.
+# GGA compara el patrón completo del archivo; por eso se usan prefijos de ruta en
+# lugar de `*.py`, que en Windows no resuelve bien.
+FILE_PATTERNS="src/*,tests/*,frontend/src/*,deploy/*"
+
+# Evita ruido de dependencias, artefactos y archivos generados.
+EXCLUDE_PATTERNS=".venv/*,node_modules/*,dist/*,build/*,*.lock,frontend/dist/*"
+
+# Fuente única de las reglas del proyecto.
+RULES_FILE="CONSTITUTION.md"
+
+STRICT_MODE="true"
+TIMEOUT="300"
+PR_BASE_BRANCH="develop"

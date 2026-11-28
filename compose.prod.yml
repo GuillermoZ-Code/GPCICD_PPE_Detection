@@ -1,0 +1,82 @@
+# =============================================================================
+# HU-071 — aplicación completa en producción (Droplet)
+#
+#   caddy → 80/443, TLS automático y rutas
+#   web   → SPA estática (nginx)
+#   api   → REST            (interno, 8000)
+#   grpc  → gRPC            (interno, 9000)
+#
+# A diferencia de `compose.yml`, aquí NO se construye nada: se baja la imagen
+# que publicó el pipeline con el tag del commit. El modelo se monta read-only
+# desde el host; nunca viaja dentro de la imagen (ADR 0008).
+#
+# Variables obligatorias (en `.env` del servidor o en el entorno del job):
+#   PPE_API_IMAGE   registry.../api:<tag>
+#   PPE_WEB_IMAGE   registry.../web:<tag>
+#   PPE_DOMAIN      dominio público del equipo (por ejemplo ppe.midominio.net)
+#   PPE_CADDY_IMAGE imagen Caddy con rate_limit (Dockerfile: docker/Dockerfile.caddy)
+# Opcionales:
+#   PPE_MODELS_DIR  carpeta del host con best.pt (por omisión /opt/ppe/models)
+#   PPE_CORS_ORIGIN origen permitido por CORS (por omisión https://PPE_DOMAIN)
+#   PPE_RATE_LIMIT_EVENTS  peticiones permitidas por IP y ventana (60)
+#   PPE_RATE_LIMIT_WINDOW  ventana del límite (1m)
+# =============================================================================
+
+name: gpcicd-ppe-detection
+
+x-backend: &backend
+  image: ${PPE_API_IMAGE:?define PPE_API_IMAGE con la imagen a desplegar}
+  restart: unless-stopped
+  env_file:
+    - .env
+  volumes:
+    - ${PPE_MODELS_DIR:-/opt/ppe/models}:/models:ro
+
+services:
+  api:
+    <<: *backend
+    environment:
+      PPE_SERVICES: rest
+    expose:
+      - "8000"
+
+  grpc:
+    <<: *backend
+    environment:
+      PPE_SERVICES: grpc
+    expose:
+      - "9000"
+
+  web:
+    image: ${PPE_WEB_IMAGE:?define PPE_WEB_IMAGE con la imagen a desplegar}
+    restart: unless-stopped
+    expose:
+      - "80"
+
+  caddy:
+    # HU-054 — imagen con el módulo rate_limit, construida con docker/Dockerfile.caddy.
+    image: ${PPE_CADDY_IMAGE:?define PPE_CADDY_IMAGE con la imagen de docker/Dockerfile.caddy}
+    restart: unless-stopped
+    depends_on:
+      - api
+      - web
+    environment:
+      PPE_DOMAIN: ${PPE_DOMAIN:-localhost}
+      # HU-042 — basic auth del sitio publicado; el hash vive en el `.env`.
+      PPE_AUTH_HASH: ${PPE_AUTH_HASH}
+      # HU-054 — CORS solo permite el dominio público.
+      PPE_CORS_ORIGIN: ${PPE_CORS_ORIGIN:-https://${PPE_DOMAIN:-localhost}}
+      # HU-054 — rate limit por IP (eventos/ventana).
+      PPE_RATE_LIMIT_EVENTS: ${PPE_RATE_LIMIT_EVENTS:-60}
+      PPE_RATE_LIMIT_WINDOW: ${PPE_RATE_LIMIT_WINDOW:-1m}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

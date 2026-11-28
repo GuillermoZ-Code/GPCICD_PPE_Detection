@@ -1,0 +1,37 @@
+name: Trazabilidad
+
+# Compuerta de la matriz HU → issue → spec → PR → pruebas (HU-093).
+# Falla si una HU cerrada no tiene spec o pruebas, salvo las exenciones
+# documentales declaradas en src/ppe_detection/tools/trazabilidad.py.
+on:
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  matriz:
+    name: Matriz
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Sincronizar entorno
+        run: uv sync --all-groups
+
+      - name: Verificar trazabilidad
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: uv run python -m ppe_detection.tools.trazabilidad --check

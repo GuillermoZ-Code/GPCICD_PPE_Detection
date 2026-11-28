@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import os
 import re
+import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -41,6 +42,89 @@ class ModelIdentity:
         return f"version:{self.version}"
 
 
+DEFAULT_MANIFEST_PATH = Path(__file__).resolve().parents[2] / "models.lock"
+
+
+class ModelManifestError(ValueError):
+    """El manifiesto del modelo no existe, no es TOML válido o está incompleto."""
+
+
+@dataclass(frozen=True, slots=True)
+class ModelManifest:
+    """Manifiesto canónico del artefacto que se despliega."""
+
+    name: str
+    version: str
+    sha256: str
+    url: str
+
+    @property
+    def identity(self) -> ModelIdentity:
+        """Identidad compatible con REST, gRPC, `/health` y MLflow."""
+        return ModelIdentity(version=self.version, sha256=self.sha256, artifact=self.url)
+
+
+def _resolve_manifest_path(path: str | Path | None = None) -> Path | None:
+    """Resuelve la ruta del manifiesto; una ruta explícita debe existir."""
+    if path is not None:
+        candidate = Path(path)
+        if not candidate.is_file():
+            raise ModelManifestError(f"No existe el manifiesto del modelo: {candidate}")
+        return candidate
+
+    explicit = os.getenv("PPE_MODEL_MANIFEST")
+    if explicit:
+        candidate = Path(explicit)
+        if not candidate.is_file():
+            raise ModelManifestError(f"No existe el manifiesto del modelo: {candidate}")
+        return candidate
+
+    return DEFAULT_MANIFEST_PATH if DEFAULT_MANIFEST_PATH.is_file() else None
+
+
+def _parse_manifest(path: Path) -> ModelManifest:
+    """Lee y valida un manifiesto TOML."""
+    try:
+        raw = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
+        raise ModelManifestError(f"El manifiesto {path} no es TOML válido: {exc}") from exc
+
+    values: dict[str, str] = {}
+    for field in ("name", "version", "sha256", "url"):
+        value = raw.get(field)
+        if not isinstance(value, str) or not value.strip():
+            raise ModelManifestError(
+                f"El manifiesto {path} no define el campo obligatorio '{field}'."
+            )
+        values[field] = value.strip()
+
+    if not SHA256_PATTERN.fullmatch(values["sha256"]):
+        raise ModelManifestError(
+            f"El SHA256 del manifiesto {path} debe tener 64 caracteres hexadecimales."
+        )
+
+    return ModelManifest(
+        name=values["name"],
+        version=values["version"],
+        sha256=values["sha256"].upper(),
+        url=values["url"],
+    )
+
+
+def load_model_manifest(path: str | Path | None = None) -> ModelManifest:
+    """Carga el manifiesto indicado o el canónico del repositorio."""
+    resolved = _resolve_manifest_path(path)
+    if resolved is None:
+        raise ModelManifestError(f"No existe el manifiesto del modelo en {DEFAULT_MANIFEST_PATH}.")
+    return _parse_manifest(resolved)
+
+
+def _optional_model_manifest() -> ModelManifest | None:
+    """Carga el manifiesto si existe; una ruta explícita inexistente es un error."""
+    resolved = _resolve_manifest_path()
+    return _parse_manifest(resolved) if resolved is not None else None
+
+
 def sha256_file(path: Path) -> str:
     """Calcula el SHA256 de un archivo por bloques, en hexadecimal mayúscula."""
     digest = hashlib.sha256()
@@ -51,19 +135,34 @@ def sha256_file(path: Path) -> str:
 
 
 def default_model_identity() -> ModelIdentity:
-    """Construye la identidad desde el entorno y, si hace falta, calcula el SHA256."""
-    version = default_model_version()
+    """Construye la identidad desde overrides, el artefacto o el manifiesto."""
+    explicit_version = os.getenv("PPE_MODEL_VERSION")
+    explicit_sha = os.getenv("PPE_MODEL_SHA256")
+    if explicit_sha and not SHA256_PATTERN.fullmatch(explicit_sha):
+        raise ValueError("PPE_MODEL_SHA256 debe ser un SHA256 hexadecimal de 64 caracteres.")
+
+    manifest = None
+    if not explicit_version or not explicit_sha:
+        manifest = _optional_model_manifest()
+
     model_path = os.getenv("PPE_MODEL_PATH")
-    artifact = model_path or None
-    explicit = os.getenv("PPE_MODEL_SHA256")
-    if explicit:
-        if not SHA256_PATTERN.fullmatch(explicit):
-            raise ValueError("PPE_MODEL_SHA256 debe ser un SHA256 hexadecimal de 64 caracteres.")
-        digest: str | None = explicit.upper()
+    version = (
+        explicit_version
+        or (Path(model_path).stem if model_path else None)
+        or (manifest.version if manifest else None)
+        or "unknown"
+    )
+    artifact = model_path or (manifest.url if manifest else None)
+
+    if explicit_sha:
+        digest: str | None = explicit_sha.upper()
     elif model_path and Path(model_path).is_file():
         digest = sha256_file(Path(model_path))
+    elif manifest is not None:
+        digest = manifest.sha256
     else:
         digest = None
+
     return ModelIdentity(version=version, sha256=digest, artifact=artifact)
 
 
@@ -90,12 +189,17 @@ def env_int(name: str, default: int) -> int:
 
 
 def default_model_version() -> str:
-    """Versión del modelo: `PPE_MODEL_VERSION`, o el nombre del artefacto, o `unknown`."""
+    """Versión del modelo: override, artefacto, manifiesto o `unknown`."""
     explicit = os.getenv("PPE_MODEL_VERSION")
     if explicit:
         return explicit
     model_path = os.getenv("PPE_MODEL_PATH")
-    return Path(model_path).stem if model_path else "unknown"
+    if model_path:
+        return Path(model_path).stem
+    manifest = _optional_model_manifest()
+    if manifest is not None:
+        return manifest.version
+    return "unknown"
 
 
 def build_detector() -> Detector:
@@ -104,6 +208,7 @@ def build_detector() -> Detector:
     Raises:
         DetectorNotConfiguredError: si `PPE_MODEL_PATH` no está definida.
     """
+    from ppe_detection.detection.onnx import resolve_backend_path
     from ppe_detection.detection.yolo import (
         DEFAULT_CONF,
         DEFAULT_DEVICE,
@@ -115,6 +220,9 @@ def build_detector() -> Detector:
     model_path = os.getenv("PPE_MODEL_PATH")
     if not model_path:
         raise DetectorNotConfiguredError("No hay modelo configurado: define PPE_MODEL_PATH.")
+    model_format = os.getenv("PPE_MODEL_FORMAT")
+    if model_format:
+        model_path = str(resolve_backend_path(model_path, model_format))
     return YoloDetector(
         model_path,
         conf=env_float("PPE_CONF", DEFAULT_CONF),

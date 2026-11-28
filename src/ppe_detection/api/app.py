@@ -9,10 +9,14 @@ from dataclasses import replace
 from time import perf_counter
 from typing import Annotated, Literal, cast
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from ppe_detection.api.logging import RequestLoggingMiddleware
+from ppe_detection.api.security import API_KEY_HEADER, configured_keys, is_authorized
+from ppe_detection.api.settings import DEFAULT_SOURCE_URL, load_settings
 from ppe_detection.contracts import Detection, Detector
 from ppe_detection.detector_config import (
     DetectorNotConfiguredError,
@@ -21,6 +25,29 @@ from ppe_detection.detector_config import (
     default_model_identity,
 )
 from ppe_detection.io import InvalidImageError, validate_image_bytes
+
+_EXAMPLE_MODEL_SHA = "FEFB1F1A120FB3AC7BC0F4DE90E5E594BBEF5E936D8168750AA78FC3FB0F27F9"
+
+#: Ejemplo estático de la respuesta publicada en `/predict` (HU-052).
+PREDICT_EXAMPLE = {
+    "detections": [
+        {
+            "class_id": 3,
+            "class_name": "helmet",
+            "confidence": 0.93,
+            "bbox": [12.0, 8.0, 96.0, 84.0],
+            "image_width": 640,
+            "image_height": 480,
+        }
+    ],
+    "image_width": 640,
+    "image_height": 480,
+    "model_version": "yolo11s-clean",
+    "model_sha256": None,
+    "model_artifact": None,
+    "model_reference": "artifacts/drive/yolo11s_clean/weights/best.pt",
+    "elapsed_ms": 42.5,
+}
 
 
 class DetectionOut(BaseModel):
@@ -57,6 +84,49 @@ class HealthResponse(BaseModel):
     model_reference: str
     model_sha256: str | None
     model_artifact: str | None
+    source_url: str
+    commit: str | None
+
+
+ALLOWED_IMAGE_TYPES = ("image/png", "image/jpeg")
+
+
+def _configured_upload_bytes() -> tuple[int, float] | None:
+    """Devuelve bytes y MB si `PPE_MAX_UPLOAD_MB` fue configurado explícitamente."""
+    raw = os.getenv("PPE_MAX_UPLOAD_MB")
+    if raw is None:
+        return None
+    try:
+        megabytes = float(raw)
+    except ValueError:
+        return None
+    if not 0 < megabytes <= 1024:
+        return None
+    return int(megabytes * 1024 * 1024), megabytes
+
+
+def _is_allowed_type(content_type: str | None) -> bool:
+    """True si el MIME anunciado es PNG o JPEG."""
+    normalized = (content_type or "").split(";", 1)[0].strip().lower()
+    return normalized in ALLOWED_IMAGE_TYPES
+
+
+class LiveResponse(BaseModel):
+    """Contrato mínimo de `GET /health/live`, independiente del modelo."""
+
+    status: Literal["ok"]
+
+
+class ReadyResponse(BaseModel):
+    """Contrato de `GET /health/ready`, con identidad verificable del modelo."""
+
+    status: Literal["ready", "not_ready"]
+    api_version: str
+    model_loaded: bool
+    model_version: str
+    model_reference: str
+    model_sha256: str | None
+    model_artifact: str | None
 
 
 def _build_detector() -> Detector:
@@ -73,6 +143,8 @@ def create_app(
     model_identity: ModelIdentity | None = None,
 ) -> FastAPI:
     """Crea la aplicación; permite inyectar un detector y la identidad del modelo."""
+    settings = load_settings()
+    api_keys = configured_keys()
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
@@ -83,21 +155,23 @@ def create_app(
     application = FastAPI(
         title="GPCICD PPE Detection API",
         version="0.1.0",
-        description="Detección de EPP sobre imágenes JPEG/PNG.",
+        description=(
+            "API REST para la detección de EPP sobre imágenes JPEG/PNG, publicada "
+            "como MaaS (Model as a Service). La interfaz interactiva está en `/docs`; "
+            "la guía para consumidores externos está en `docs/maas/README.md`."
+        ),
         lifespan=lifespan,
     )
-    origins = [
-        origin.strip()
-        for origin in os.getenv("PPE_CORS_ORIGINS", "http://localhost:5173").split(",")
-        if origin.strip()
-    ]
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,
+        allow_origins=list(settings.cors_origins),
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    application.add_middleware(RequestLoggingMiddleware)
     application.state.detector = detector
+    application.state.source_url = (os.getenv("PPE_SOURCE_URL") or "").strip() or DEFAULT_SOURCE_URL
+    application.state.deploy_commit = (os.getenv("PPE_DEPLOY_COMMIT") or "").strip() or None
     identity = model_identity or default_model_identity()
     if model_version is not None:
         identity = replace(identity, version=model_version)
@@ -110,6 +184,15 @@ def create_app(
             except RuntimeError as exc:
                 raise HTTPException(status_code=503, detail=str(exc)) from exc
         return cast(Detector, application.state.detector)
+
+    async def require_api_key(request: Request) -> None:
+        """Traduce la validación de la clave a 401 sin eco del valor recibido."""
+        if not is_authorized(request.headers.get(API_KEY_HEADER), api_keys):
+            raise HTTPException(
+                status_code=401,
+                detail=f"{API_KEY_HEADER} inválida o ausente.",
+                headers={"WWW-Authenticate": "ApiKey"},
+            )
 
     @application.get("/health", response_model=HealthResponse)
     async def health() -> HealthResponse:
@@ -128,22 +211,120 @@ def create_app(
             model_reference=identity.reference,
             model_sha256=identity.sha256,
             model_artifact=identity.artifact,
+            source_url=cast(str, application.state.source_url),
+            commit=cast(str | None, application.state.deploy_commit),
         )
 
-    @application.post("/predict", response_model=PredictResponse)
+    @application.get("/health/live", response_model=LiveResponse)
+    async def live() -> LiveResponse:
+        """Confirma que el proceso responde sin mirar ni cargar el modelo."""
+        return LiveResponse(status="ok")
+
+    @application.get(
+        "/health/ready",
+        response_model=ReadyResponse,
+        responses={
+            503: {
+                "model": ReadyResponse,
+                "description": "El modelo todavía no está cargado.",
+            }
+        },
+    )
+    async def ready() -> ReadyResponse | JSONResponse:
+        """Informa si el modelo está listo sin provocar su carga."""
+        identity = cast(ModelIdentity, application.state.model_identity)
+        loaded = application.state.detector is not None
+        response = ReadyResponse(
+            status="ready" if loaded else "not_ready",
+            api_version=str(application.version),
+            model_loaded=loaded,
+            model_version=identity.version,
+            model_reference=identity.reference,
+            model_sha256=identity.sha256,
+            model_artifact=identity.artifact,
+        )
+        if not loaded:
+            return JSONResponse(status_code=503, content=response.model_dump(mode="json"))
+        return response
+
+    @application.post(
+        "/predict",
+        response_model=PredictResponse,
+        dependencies=[Depends(require_api_key)],
+        summary="Detectar EPP en una imagen",
+        description=("Valida la imagen y devuelve las detecciones de EPP del modelo configurado."),
+        responses={
+            200: {
+                "description": "Detecciones de EPP encontradas (puede ser una lista vacía).",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "detections": [
+                                {
+                                    "class_id": 3,
+                                    "class_name": "helmet",
+                                    "confidence": 0.91,
+                                    "bbox": [10.0, 20.0, 110.0, 140.0],
+                                    "image_width": 640,
+                                    "image_height": 480,
+                                }
+                            ],
+                            "image_width": 640,
+                            "image_height": 480,
+                            "model_version": "yolo26n-clean",
+                            "model_sha256": _EXAMPLE_MODEL_SHA,
+                            "model_artifact": "file:///models/best.pt",
+                            "model_reference": f"sha256:{_EXAMPLE_MODEL_SHA}",
+                            "elapsed_ms": 54.2,
+                        }
+                    }
+                },
+            },
+            400: {"description": "Imagen inválida, vacía o corrupta."},
+            401: {"description": f"{API_KEY_HEADER} inválida o ausente"},
+            422: {"description": "Parámetros fuera de rango o archivo no soportado."},
+            503: {"description": "El modelo todavía no está cargado."},
+        },
+    )
     async def predict(
-        file: Annotated[UploadFile, File(description="Imagen JPEG o PNG")],
-        conf: Annotated[float | None, Form(ge=0.01, le=0.99)] = None,
+        file: Annotated[UploadFile, File(description="Imagen JPEG o PNG de hasta 10 MB")],
+        conf: Annotated[
+            float | None,
+            Form(
+                ge=0.01,
+                le=0.99,
+                description=(
+                    "Umbral mínimo de confianza (0.01..0.99); omítalo para usar el default."
+                ),
+                examples=[0.25],
+            ),
+        ] = None,
     ) -> PredictResponse:
         """Valida la imagen y devuelve las detecciones del modelo configurado."""
+        configured_limit = _configured_upload_bytes()
         data = await file.read()
+        if configured_limit is not None and len(data) > configured_limit[0]:
+            raise HTTPException(
+                status_code=413,
+                detail=f"Archivo demasiado grande: el límite es {configured_limit[1]:g} MB.",
+            )
+        if data and not _is_allowed_type(file.content_type):
+            raise HTTPException(
+                status_code=415,
+                detail="Tipo de archivo no permitido: se aceptan image/png e image/jpeg.",
+            )
         try:
             image = validate_image_bytes(data, source=file.filename or "upload")
         except InvalidImageError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
         started = perf_counter()
-        detections: list[Detection] = get_detector().detect(image, conf=conf)
+        try:
+            detections: list[Detection] = get_detector().detect(image, conf=conf)
+        except DetectorNotConfiguredError as exc:
+            # Un detector inyectado también puede quedar sin modelo en tiempo de
+            # inferencia: REST debe traducirlo igual que gRPC (503 ↔ UNAVAILABLE).
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
         elapsed_ms = (perf_counter() - started) * 1000
         identity = cast(ModelIdentity, application.state.model_identity)
         return PredictResponse(

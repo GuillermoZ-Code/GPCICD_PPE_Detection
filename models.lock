@@ -1,0 +1,8 @@
+# Manifiesto canónico del modelo (HU-025).
+# Los pesos NO se versionan; solo se registra su ubicación y su integridad.
+# HU-024: el artefacto se publica en el Generic Package Registry de GitLab y el
+# pipeline lo descarga verificando el SHA256 antes de montarlo en el servidor.
+name = "ppe-detection"
+version = "yolo26n-clean"
+sha256 = "FEFB1F1A120FB3AC7BC0F4DE90E5E594BBEF5E936D8168750AA78FC3FB0F27F9"
+url = "https://gitlab.com/api/v4/projects/89281003/packages/generic/ppe-detection-models/yolo26n-clean/best.pt"

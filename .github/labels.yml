@@ -58,6 +58,36 @@
 - name: ep-05
   color: fbca04
   description: "EP-05 — Despliegue y operación"
+- name: ep-06
+  color: 1d76db
+  description: "EP-06 — CI/CD y pipeline (GitLab)"
+- name: ep-07
+  color: 0e8a16
+  description: "EP-07 — Despliegue e infraestructura"
+- name: ep-08
+  color: b60205
+  description: "EP-08 — Seguridad y cumplimiento"
+- name: ep-09
+  color: fbca04
+  description: "EP-09 — Modelo y evaluación"
+- name: ep-10
+  color: 5319e7
+  description: "EP-10 — Servicio, API y MaaS"
+- name: ep-11
+  color: f9d0c4
+  description: "EP-11 — Interfaz web (SPA)"
+- name: ep-12
+  color: c2e0c6
+  description: "EP-12 — Herramientas para agentes"
+- name: ep-13
+  color: bfdadc
+  description: "EP-13 — Observabilidad y operación"
+- name: ep-14
+  color: c5def5
+  description: "EP-14 — Gobierno técnico y trazabilidad"
+- name: ep-15
+  color: fef2c0
+  description: "EP-15 — Documentación y entrega"
 
 # --- Prioridad ---
 - name: must-have
@@ -66,3 +96,6 @@
 - name: should-have
   color: c5def5
   description: "Requisito deseable de la rúbrica"
+- name: could-have
+  color: ededed
+  description: "Requisito opcional de la rúbrica"

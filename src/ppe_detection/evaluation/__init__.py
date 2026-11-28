@@ -1,5 +1,19 @@
 """Evaluación reproducible del detector de EPP."""
 
+from ppe_detection.evaluation.artifacts import (
+    artifact_slug,
+    collect_evaluation_artifacts,
+    stable_artifact_name,
+)
+from ppe_detection.evaluation.errors import (
+    ErrorCase,
+    ErrorSummary,
+    GroundTruthBox,
+    ImageAnnotations,
+    PredictionBox,
+    analyze_errors,
+    render_error_report,
+)
 from ppe_detection.evaluation.evaluate import (
     EvaluationConfig,
     EvaluationError,
@@ -9,13 +23,75 @@ from ppe_detection.evaluation.evaluate import (
     sha256_file,
     validate_model_names,
 )
+from ppe_detection.evaluation.robustness import (
+    DEFAULT_SEED,
+    PERTURBATIONS,
+    RobustnessError,
+    add_gaussian_noise,
+    adjust_brightness,
+    apply_perturbation,
+    resize_scale,
+)
+from ppe_detection.evaluation.size_bias import (
+    BUCKETS,
+    SizeBiasError,
+    SizeMetrics,
+    average_precision_by_size,
+    evaluate_size_bias,
+    size_bucket,
+)
+from ppe_detection.evaluation.thresholds import (
+    GroundTruth,
+    ImageRecord,
+    Prediction,
+    ThresholdMetrics,
+    calibrate_thresholds,
+    calibration_payload,
+    evaluate_thresholds,
+    load_thresholds,
+    threshold_map,
+    write_thresholds,
+)
 
 __all__ = [
+    "BUCKETS",
+    "DEFAULT_SEED",
+    "PERTURBATIONS",
+    "ErrorCase",
+    "ErrorSummary",
     "EvaluationConfig",
     "EvaluationError",
+    "GroundTruth",
+    "GroundTruthBox",
+    "ImageAnnotations",
+    "ImageRecord",
+    "Prediction",
+    "PredictionBox",
+    "RobustnessError",
+    "SizeBiasError",
+    "SizeMetrics",
+    "ThresholdMetrics",
+    "add_gaussian_noise",
+    "adjust_brightness",
+    "analyze_errors",
+    "apply_perturbation",
+    "artifact_slug",
+    "average_precision_by_size",
     "build_summary",
+    "calibrate_thresholds",
+    "calibration_payload",
+    "collect_evaluation_artifacts",
     "evaluate",
+    "evaluate_size_bias",
+    "evaluate_thresholds",
+    "load_thresholds",
+    "render_error_report",
     "render_markdown",
+    "resize_scale",
     "sha256_file",
+    "size_bucket",
+    "stable_artifact_name",
+    "threshold_map",
     "validate_model_names",
+    "write_thresholds",
 ]
