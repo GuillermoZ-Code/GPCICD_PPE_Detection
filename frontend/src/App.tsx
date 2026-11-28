@@ -48,6 +48,7 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
   const [attempt, setAttempt] = useState(0)
   const imageUrlRef = useRef<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const resultHeadingRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
     applySettings(settings)
@@ -94,6 +95,14 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
   }, [drawerOpen])
+
+  // HU-080 AC-01: al terminar el análisis, el foco va al título de resultados
+  // para que el lector de pantalla anuncie el cambio de sección.
+  useEffect(() => {
+    if (analysis.status === 'ready') {
+      resultHeadingRef.current?.focus()
+    }
+  }, [analysis.status])
 
   const file = 'file' in analysis ? analysis.file : undefined
   const imageUrl = 'imageUrl' in analysis ? analysis.imageUrl : undefined
@@ -201,6 +210,9 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
 
   return (
     <div className="app">
+      <a className="skip-link" href="#main">
+        Saltar al contenido
+      </a>
       <Background />
 
       <header className="topbar">
@@ -241,7 +253,7 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
         </div>
       </header>
 
-      <main className="main">
+      <main className="main" id="main" tabIndex={-1}>
         <section className="hero">
           <p className="eyebrow">Visión por computador · 6 categorías</p>
           <h1>Detecta Equipos de Protección Personal en una imagen</h1>
@@ -263,11 +275,17 @@ export function App({ client, slowAfterMs = 8000 }: AppProps) {
             onAnalyze={handleAnalyze}
           />
 
-          <section className="panel panel--result" aria-labelledby="result-title">
+          <section
+            className="panel panel--result"
+            aria-labelledby="result-title"
+            aria-busy={busy}
+          >
             <header className="panel__header">
               <span className="step">02</span>
               <div>
-                <h2 id="result-title">Resultado</h2>
+                <h2 id="result-title" tabIndex={-1} ref={resultHeadingRef}>
+                  Resultado
+                </h2>
                 <p className="muted">Detecciones y ubicación</p>
               </div>
             </header>

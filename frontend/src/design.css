@@ -55,6 +55,9 @@
   --accent-strong: #c79f00;
   --accent-2: #1f6b45;
   --on-accent: #14170f;
+  --success: #1f6b45;
+  --warning: #7a5a00;
+  --error: #b23d34;
   --blob-opacity: 0;
 }
 
@@ -664,4 +667,26 @@ tbody tr:last-child td {
     width: 100%;
     opacity: 0.5;
   }
+}
+
+/* --- Enlace de salto (HU-080) -------------------------------------------- */
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.skip-link:focus {
+  left: 8px;
+  top: 8px;
 }
